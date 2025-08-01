@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCTOPUS - Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0969da;
+            --primary-hover: #0750a5;
+            --danger-color: #dc3545;
+            --danger-hover: #c82333;
+            --success-bg: #d4edda;
+            --success-text: #155724;
+            --info-bg: #d1ecf1;
+            --info-text: #0c5460;
+            --warning-bg: #fff3cd;
+            --warning-text: #856404;
+            --neutral-bg: #e2e3e5;
+            --neutral-text: #383d41;
+            --highlight-bg: #e0f0ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #ffffff;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar-logo i {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .sidebar-logo h2 {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f0f7ff;
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+
+        .menu-item i {
+            margin-right: 15px;
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #666;
+            margin-right: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .notification-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-profile span {
+            font-weight: 500;
+        }
+
+        /* Credits Display (Top Bar) */
+        .credits-display {
+            background-color: #f0f7ff;
+            border-radius: 20px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .credits-icon {
+            color: var(--primary-color);
+            margin-right: 8px;
+        }
+
+        .credits-text {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .credits-reset {
+            font-size: 12px;
+            color: #666;
+            margin-left: 5px;
+        }
+
+        /* Page Content (General for all content pages) */
+        .page-content {
+            padding: 30px;
+            flex: 1;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .page-title p {
+            color: #666;
+        }
+
+        /* General Button Styles (re-used across pages) */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger-hover);
+        }
+
+        /* Settings Page Specific Styles */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr; /* Nav on left, content on right */
+            gap: 30px;
+        }
+
+        .settings-nav {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .settings-nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .settings-nav-item:hover,
+        .settings-nav-item.active {
+            background-color: #f0f7ff;
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+
+        .settings-nav-item i {
+            margin-right: 10px;
+            font-size: 16px;
+            width: 20px; /* Align icons */
+            text-align: center;
+        }
+
+        .settings-content {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .settings-section {
+            display: none; /* Hidden by default */
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        .settings-section h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px; /* Slightly more rounded */
+            font-size: 15px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.2);
+        }
+
+        .form-action-buttons {
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        .form-action-buttons .btn {
+            margin-left: 10px;
+        }
+
+        /* Specific for Profile Avatar */
+        .profile-avatar-upload {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .profile-avatar-upload img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+        }
+        .profile-avatar-upload .upload-btn {
+            background-color: var(--neutral-bg);
+            color: var(--neutral-text);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .profile-avatar-upload .upload-btn:hover {
+            background-color: #d8d8d8;
+        }
+        .profile-avatar-upload input[type="file"] {
+            display: none;
+        }
+
+        /* Notification Toggles */
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-item span {
+            font-weight: 500;
+            color: #333;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 25px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 25px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 3.5px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(18px);
+        }
+
+        /* Integrations List */
+        .integration-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .integration-item:last-child {
+            border-bottom: none;
+        }
+        .integration-item .platform-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .integration-item .platform-info i {
+            font-size: 20px;
+        }
+        .integration-item .platform-info .status-badge {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .integration-item .platform-info .status-badge.connected {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+        .integration-item .platform-info .status-badge.disconnected {
+            background-color: var(--danger-bg); /* Assuming danger-bg exists in your variables */
+            color: var(--danger-color);
+        }
+        .integration-item .action-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .integration-item .action-link:hover {
+            color: var(--primary-hover);
+        }
+
+        /* Billing/Subscription */
+        .billing-card {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f8f8f8;
+        }
+        .billing-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .billing-card p {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .billing-card .btn-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .billing-card .btn-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Data & Privacy */
+        .data-privacy-actions .danger-zone {
+            border: 1px solid var(--danger-color);
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #fffafa;
+            margin-top: 30px;
+        }
+        .data-privacy-actions .danger-zone h3 {
+            color: var(--danger-color);
+            margin-bottom: 10px;
+        }
+        .data-privacy-actions .danger-zone p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+
+        /* Success message styling */
+        .success-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #28a745;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 9999; /* Highest z-index for messages */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .settings-grid {
+                grid-template-columns: 1fr; /* Stack nav and content */
+            }
+            .settings-nav {
+                padding: 10px; /* Less padding for nav */
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center; /* Center nav items */
+                gap: 5px;
+            }
+            .settings-nav-item {
+                padding: 8px 15px; /* Adjust item padding */
+                border-left: none;
+                border-bottom: 3px solid transparent; /* Use bottom border for active */
+            }
+            .settings-nav-item.active {
+                 border-left-color: transparent;
+                 border-bottom-color: var(--primary-color);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+                margin-right: 20px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 20px;
+            }
+            .page-title h1 {
+                font-size: 24px;
+            }
+            .page-title p {
+                font-size: 15px;
+            }
+
+            .credits-display {
+                display: none;
+            }
+            .settings-content {
+                padding: 20px;
+            }
+            .settings-section h2 {
+                font-size: 20px;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+            .form-label {
+                font-size: 13px;
+            }
+            .form-input, .form-select, .form-textarea {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+            .profile-avatar-upload {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .profile-avatar-upload img {
+                width: 70px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-robot" aria-hidden="true"></i>
+                <h2>OCTOPUS</h2>
+            </div>
+            <div class="sidebar-menu">
+                <a href="./dashboard.html" class="menu-item">
+                    <i class="fas fa-home" aria-hidden="true"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="./content.html" class="menu-item">
+                    <i class="fas fa-file-alt" aria-hidden="true"></i>
+                    <span>Content</span>
+                </a>
+                <a href="./analytics.html" class="menu-item">
+                    <i class="fas fa-chart-line" aria-hidden="true"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="./gallery.html" class="menu-item">
+                    <i class="fas fa-images" aria-hidden="true"></i>
+                    <span>Gallery</span>
+                </a>
+                <a href="./calendar.html" class="menu-item">
+                    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                    <span>Calendar</span>
+                </a>
+                <a href="./social_accounts.html" class="menu-item">
+                    <i class="fas fa-share-alt" aria-hidden="true"></i>
+                    <span>Social Accounts</span>
+                </a>
+                <a href="./credits.html" class="menu-item">
+                    <i class="fas fa-coins" aria-hidden="true"></i>
+                    <span>Credits</span>
+                </a>
+                <a href="./pricing.html" class="menu-item">
+                    <i class="fas fa-tag" aria-hidden="true"></i>
+                    <span>Pricing</span>
+                </a>
+                <a href="./settings.html" class="menu-item active">
+                    <i class="fas fa-cog" aria-hidden="true"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="top-bar">
+                <button class="menu-toggle" aria-label="Toggle sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="search-bar">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <input type="text" placeholder="Search settings..." aria-label="Search">
+                </div>
+                <div class="top-bar-actions">
+                    <div class="credits-display">
+                        <i class="fas fa-coins credits-icon" aria-hidden="true"></i>
+                        <span class="credits-text" id="currentCreditsDisplay">3/3 Credits</span>
+                        <span class="credits-reset" id="creditsResetTime">Resets in 5h</span>
+                    </div>
+                    <button class="notification-btn" aria-label="Notifications">
+                        <i class="fas fa-bell" aria-hidden="true"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="user-profile">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User profile image">
+                        <span>Sarah Johnson</span>
+                    </div>
+                </div>
+            </div>
+            <div class="page-content">
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1>Settings</h1>
+                        <p>Manage your account preferences and application settings.</p>
+                    </div>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="settings-nav">
+                        <a href="#general" class="settings-nav-item active" data-section="general">
+                            <i class="fas fa-user-circle" aria-hidden="true"></i> General
+                        </a>
+                        <a href="#notifications" class="settings-nav-item" data-section="notifications">
+                            <i class="fas fa-bell" aria-hidden="true"></i> Notifications
+                        </a>
+                        <a href="#integrations" class="settings-nav-item" data-section="integrations">
+                            <i class="fas fa-puzzle-piece" aria-hidden="true"></i> Integrations
+                        </a>
+                        <a href="#billing" class="settings-nav-item" data-section="billing">
+                            <i class="fas fa-credit-card" aria-hidden="true"></i> Billing & Subscription
+                        </a>
+                        <a href="#data-privacy" class="settings-nav-item" data-section="data-privacy">
+                            <i class="fas fa-shield-alt" aria-hidden="true"></i> Data & Privacy
+                        </a>
+                    </div>
+
+                    <div class="settings-content">
+                        <div id="general" class="settings-section active">
+                            <h2>General Account Settings</h2>
+                            <form>
+                                <div class="profile-avatar-upload">
+                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User Avatar" id="profileAvatarPreview">
+                                    <div>
+                                        <label for="avatarUpload" class="upload-btn">Change Photo</label>
+                                        <input type="file" id="avatarUpload" accept="image/*">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="userName">Full Name</label>
+                                    <input type="text" class="form-input" id="userName" value="Sarah Johnson">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="userEmail">Email Address</label>
+                                    <input type="email" class="form-input" id="userEmail" value="sarah.johnson@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="userPassword">Password</label>
+                                    <input type="password" class="form-input" id="userPassword" placeholder="********">
+                                    <small style="color: #666; margin-top: 5px; display: block;">Leave blank to keep current password.</small>
+                                </div>
+                                <div class="form-action-buttons">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div id="notifications" class="settings-section">
+                            <h2>Notification Preferences</h2>
+                            <div class="notification-item">
+                                <span>Email notifications for new content ideas</span>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <span>In-app alerts for content publishing status</span>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <span>Weekly summary reports via email</span>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <span>SMS alerts for critical issues</span>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="form-action-buttons">
+                                <button type="button" class="btn btn-primary">Save Notification Settings</button>
+                            </div>
+                        </div>
+
+                        <div id="integrations" class="settings-section">
+                            <h2>Connected Integrations</h2>
+                            <p style="color: #666; margin-bottom: 20px;">Manage connections to your social media platforms and other services.</p>
+                            <div class="integration-list">
+                                <div class="integration-item">
+                                    <div class="platform-info">
+                                        <i class="fab fa-facebook-f" style="color: #4267B2;"></i>
+                                        <span>Facebook</span>
+                                        <span class="status-badge connected">Connected</span>
+                                    </div>
+                                    <a href="social_accounts.html" class="action-link">Manage</a>
+                                </div>
+                                <div class="integration-item">
+                                    <div class="platform-info">
+                                        <i class="fab fa-youtube" style="color: #FF0000;"></i>
+                                        <span>YouTube</span>
+                                        <span class="status-badge disconnected">Disconnected</span>
+                                    </div>
+                                    <a href="social_accounts.html" class="action-link">Connect</a>
+                                </div>
+                                <div class="integration-item">
+                                    <div class="platform-info">
+                                        <i class="fab fa-linkedin-in" style="color: #0077B5;"></i>
+                                        <span>LinkedIn</span>
+                                        <span class="status-badge connected">Connected</span>
+                                    </div>
+                                    <a href="social_accounts.html" class="action-link">Manage</a>
+                                </div>
+                            </div>
+                            <div class="form-action-buttons">
+                                <a href="social_accounts.html" class="btn btn-primary">Go to Social Accounts</a>
+                            </div>
+                        </div>
+
+                        <div id="billing" class="settings-section">
+                            <h2>Billing & Subscription</h2>
+                            <div class="billing-card">
+                                <h3>Current Plan: Pro (Monthly)</h3>
+                                <p>Next Billing Date: August 15, 2025</p>
+                                <p>Remaining Credits: <span id="billingCreditsDisplay">3/3</span></p>
+                                <a href="pricing.html" class="btn-link">Change Plan</a>
+                                <a href="credits.html" class="btn-link" style="margin-left: 20px;">Buy More Credits</a>
+                            </div>
+                            <div class="billing-card">
+                                <h3>Payment Method</h3>
+                                <p>Visa ending in **** 1234 (Expires 10/26)</p>
+                                <a href="#" class="btn-link">Update Payment Method</a>
+                            </div>
+                            <div class="form-action-buttons">
+                                <button type="button" class="btn btn-primary">View Billing History</button>
+                            </div>
+                        </div>
+
+                        <div id="data-privacy" class="settings-section">
+                            <h2>Data & Privacy</h2>
+                            <div class="form-group">
+                                <label class="form-label" for="dataExport">Export Your Data</label>
+                                <p style="font-size: 14px; color: #666; margin-bottom: 10px;">Request a downloadable file of your account data.</p>
+                                <button type="button" class="btn btn-primary">Request Data Export</button>
+                            </div>
+                            <div class="data-privacy-actions">
+                                <div class="danger-zone">
+                                    <h3>Danger Zone</h3>
+                                    <p>Proceed with caution. These actions are irreversible.</p>
+                                    <button type="button" class="btn btn-danger">Delete All Content Data</button>
+                                    <button type="button" class="btn btn-danger" style="margin-left: 10px;">Delete Account Permanently</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="success-message" style="display: none;"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mock Credit Data (for top bar and billing section)
+            let currentCredits = 3;
+            const maxFreeCredits = 3;
+            const nextResetDate = new Date('2025-08-01T00:00:00'); // Set next reset to August 1, 2025
+
+            const currentCreditsDisplay = document.getElementById('currentCreditsDisplay');
+            const creditsResetTime = document.getElementById('creditsResetTime');
+            const billingCreditsDisplay = document.getElementById('billingCreditsDisplay'); // For billing section
+
+            // --- Settings Navigation Logic ---
+            const settingsNavItems = document.querySelectorAll('.settings-nav-item');
+            const settingsSections = document.querySelectorAll('.settings-section');
+
+            settingsNavItems.forEach(item => {
+                item.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default anchor link behavior
+                    const targetSectionId = this.dataset.section;
+
+                    // Remove active class from all nav items and sections
+                    settingsNavItems.forEach(nav => nav.classList.remove('active'));
+                    settingsSections.forEach(section => section.classList.remove('active'));
+
+                    // Add active class to clicked nav item
+                    this.classList.add('active');
+
+                    // Show the corresponding section
+                    document.getElementById(targetSectionId).classList.add('active');
+                });
+            });
+
+            // Activate the default 'General' section on page load
+            document.getElementById('general').classList.add('active');
+            document.querySelector('.settings-nav-item[data-section="general"]').classList.add('active');
+
+
+            // --- General Settings: Avatar Upload Preview ---
+            const avatarUpload = document.getElementById('avatarUpload');
+            const profileAvatarPreview = document.getElementById('profileAvatarPreview');
+
+            avatarUpload.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        profileAvatarPreview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // --- General Settings: Save Changes (Mock) ---
+            document.querySelector('#general form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                // In a real app, send data to backend via AJAX
+                showSuccessMessage('General settings saved successfully!');
+            });
+
+            // --- Notifications: Save Settings (Mock) ---
+            document.querySelector('#notifications .btn-primary').addEventListener('click', function() {
+                showSuccessMessage('Notification preferences updated!');
+            });
+
+            // --- Data & Privacy: Mock Actions ---
+            document.querySelector('#data-privacy .btn-primary').addEventListener('click', function() {
+                showSuccessMessage('Data export request initiated. You will receive an email shortly.');
+            });
+            document.querySelector('.danger-zone .btn-danger:first-child').addEventListener('click', function() {
+                if (confirm('Are you absolutely sure you want to delete ALL your content data? This cannot be undone.')) {
+                    showSuccessMessage('All content data deleted (mock action).');
+                }
+            });
+            document.querySelector('.danger-zone .btn-danger:last-child').addEventListener('click', function() {
+                if (confirm('Are you absolutely sure you want to delete your account permanently? This cannot be undone and all data will be lost.')) {
+                    showSuccessMessage('Account deletion initiated. You will be logged out (mock action).');
+                    // In a real app, this would log out the user and initiate backend deletion process
+                }
+            });
+
+            // --- Update Credits Display (for top bar and billing) ---
+            function updateCreditsDisplay() {
+                currentCreditsDisplay.textContent = `${currentCredits}/${maxFreeCredits} Credits`;
+                billingCreditsDisplay.textContent = `${currentCredits}/${maxFreeCredits}`; // Update billing section
+
+                const now = new Date();
+                const timeLeft = nextResetDate.getTime() - now.getTime(); // Time in milliseconds
+
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+
+                let resetText = '';
+                if (timeLeft < 0) {
+                    resetText = 'Credits reset!';
+                } else if (days > 0) {
+                    resetText = `Resets in ${days}d ${hours}h`;
+                } else if (hours > 0) {
+                    resetText = `Resets in ${hours}h ${minutes}m`;
+                } else if (minutes > 0) {
+                    resetText = `Resets in ${minutes}m`;
+                } else {
+                    resetText = `Resets very soon!`;
+                }
+                creditsResetTime.textContent = resetText;
+            }
+
+            // Update display initially and every minute (for countdown)
+            updateCreditsDisplay();
+            setInterval(updateCreditsDisplay, 60000); // Update every minute
+
+            // --- General Success Message Function ---
+            function showSuccessMessage(messageText) {
+                const messageDiv = document.querySelector('.success-message');
+                messageDiv.textContent = messageText;
+                messageDiv.style.display = 'block';
+
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 3000);
+            }
+
+            // Sidebar toggle
+            document.querySelector('.menu-toggle').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCTOPUS - Content Calendar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0969da;
+            --primary-hover: #0750a5;
+            --danger-color: #dc3545;
+            --danger-hover: #c82333;
+            --success-bg: #d4edda;
+            --success-text: #155724;
+            --info-bg: #d1ecf1;
+            --info-text: #0c5460;
+            --warning-bg: #fff3cd;
+            --warning-text: #856404;
+            --neutral-bg: #e2e3e5;
+            --neutral-text: #383d41;
+            --highlight-bg: #e0f0ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #ffffff;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar-logo i {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .sidebar-logo h2 {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f0f7ff;
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+
+        .menu-item i {
+            margin-right: 15px;
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #666;
+            margin-right: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .notification-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-profile span {
+            font-weight: 500;
+        }
+
+        /* Credits Display */
+        .credits-display {
+            background-color: #f0f7ff;
+            border-radius: 20px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .credits-icon {
+            color: var(--primary-color);
+            margin-right: 8px;
+        }
+
+        .credits-text {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .credits-reset {
+            font-size: 12px;
+            color: #666;
+            margin-left: 5px;
+        }
+
+        /* Calendar Content */
+        .calendar-content {
+            padding: 30px;
+            flex: 1;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .calendar-title h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .calendar-title p {
+            color: #666;
+        }
+
+        .calendar-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: #f0f7ff;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0f0ff;
+        }
+
+        /* Calendar Navigation */
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--primary-color);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background-color: #f0f7ff;
+        }
+
+        .current-month {
+            font-size: 20px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        /* Styled Year Selector */
+        .year-selector {
+            padding: 8px 12px; /* Increased padding */
+            border: 1px solid #ddd;
+            border-radius: 8px; /* More rounded corners */
+            font-size: 14px;
+            cursor: pointer;
+            background-color: white;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            appearance: none; /* Remove default arrow */
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2C118.8L146.2%2C259.4L5.4%2C118.8c-2.4-2.4-5.4-4.2-8.4-4.2c-3%2C0-6.1%2C1.8-8.4%2C4.2c-4.7%2C4.7-4.7%2C12.3%2C0%2C17L146.2%2C284c2.4%2C2.4%2C5.4%2C3.8%2C8.7%2C3.8c3.3%2C0%2C6.4-1.4%2C8.7-3.8l140.8-140.8c4.7-4.7%2C4.7-12.3%2C0-17C299.3%2C114.1%2C291.7%2C114.1%2C287%2C118.8z%22%2F%3E%3C%2Fsvg%3E'); /* Custom arrow */
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+            padding-right: 30px; /* Space for the custom arrow */
+        }
+
+        .year-selector:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.2); /* Focus ring */
+        }
+
+        .calendar-nav-center {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Calendar Container - Adjusted for side-by-side layout */
+        .calendar-container {
+            display: grid;
+            grid-template-columns: 2fr 1.2fr; /* Main calendar takes 2 parts, details takes 1.2 parts */
+            gap: 20px;
+            margin-bottom: 30px;
+            align-items: start; /* Align items to the top */
+        }
+
+        /* Content Details - Now on the right */
+        .content-details {
+            background-color: #ffffff; /* Consistent with other cards */
+            border-radius: 10px;
+            padding: 20px; /* More padding for better look */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex; /* Always display as flex to allow initial message */
+            flex-direction: column;
+            opacity: 1; /* Always visible */
+            transition: opacity 0.3s;
+            position: relative; /* For the close button positioning */
+            min-height: 250px; /* Minimum height for consistency */
+        }
+
+        /* Message for no content selected */
+        .content-details.no-content-selected .content-details-header,
+        .content-details.no-content-selected .content-details-list {
+            display: none;
+        }
+
+        .content-details.no-content-selected .default-message {
+            display: flex; /* Show the default message */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            padding: 20px;
+            gap: 10px;
+            color: #666;
+        }
+        .content-details.no-content-selected .default-message i {
+            font-size: 48px;
+            color: var(--primary-color);
+        }
+        .content-details.no-content-selected .default-message h3 {
+            font-size: 18px;
+            color: #333;
+        }
+        .content-details.no-content-selected .default-message p {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+
+        .content-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .content-details-title {
+            font-weight: 600;
+            font-size: 18px; /* Slightly larger title */
+        }
+
+        .content-details-close {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 20px; /* Larger close button */
+            transition: color 0.3s;
+        }
+
+        .content-details-close:hover {
+            color: #333;
+        }
+
+        .content-details-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .content-details-item {
+            background-color: #f8f9fa; /* Slightly different background for items */
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03); /* Lighter shadow for items */
+        }
+
+        .content-details-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 12px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .content-details-icon.facebook {
+            background-color: #4267B2;
+        }
+
+        .content-details-icon.twitter {
+            background-color: #1DA1F2;
+        }
+
+        .content-details-icon.instagram {
+            background-color: #E1306C;
+        }
+
+        .content-details-icon.linkedin {
+            background-color: #0077B5;
+        }
+
+        .content-details-icon.youtube {
+            background-color: #FF0000;
+        }
+
+        .content-details-info {
+            flex: 1;
+        }
+
+        .content-details-platform {
+            font-weight: 500;
+            margin-bottom: 3px;
+            font-size: 13px; /* Smaller font for platform */
+            color: #555;
+        }
+
+        .content-details-title-text {
+            font-size: 14px;
+            font-weight: 600; /* Bolder title for clarity */
+            margin-bottom: 3px;
+        }
+
+        .content-details-time {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .content-details-type {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .content-details-type.video {
+            background-color: var(--info-bg);
+            color: var(--info-text);
+        }
+
+        .content-details-type.reel {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .content-details-type.post {
+            background-color: var(--warning-bg);
+            color: var(--warning-text);
+        }
+
+        /* Main Calendar - Reduced size implicitly by grid-template-columns */
+        .main-calendar {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background-color: #eee;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .day-header {
+            background-color: #f8f9fa;
+            padding: 10px 5px; /* Reduced padding */
+            text-align: center;
+            font-weight: 600;
+            color: #666;
+            font-size: 13px; /* Slightly smaller font */
+        }
+
+        .calendar-day {
+            background-color: white;
+            min-height: 100px; /* Reduced min-height */
+            padding: 8px; /* Reduced padding */
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .calendar-day:hover {
+            background-color: var(--highlight-bg);
+        }
+
+        .calendar-day.other-month {
+            background-color: #f8f9fa;
+            color: #ccc;
+        }
+
+        .calendar-day.today {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .calendar-day.selected {
+            background-color: var(--highlight-bg);
+            border: 2px solid var(--primary-color);
+        }
+
+        /* Highlight days with videos specifically */
+        .calendar-day.has-video {
+            background-color: var(--info-bg); /* Use info-bg for video highlights */
+            font-weight: 600;
+        }
+
+        .calendar-day.has-video .day-number::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--info-text); /* Dot color for videos */
+        }
+
+        /* Ensure .today styling for video-highlighted days is distinct if desired */
+        .calendar-day.has-video.today {
+            background-color: #17a2b8; /* A darker shade for today's video highlight */
+            color: white;
+        }
+
+        .calendar-day.has-video.today .day-number::after {
+            background-color: white;
+        }
+
+        /* Highlight for any content */
+        .calendar-day.has-content .day-number::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--primary-color); /* Dot color for general content */
+        }
+
+        /* Override general content dot if it also has video content */
+        .calendar-day.has-content.has-video .day-number::after {
+            background-color: var(--info-text); /* Video dot color takes precedence */
+        }
+
+        .day-number {
+            font-weight: 500;
+            margin-bottom: 5px;
+            position: relative;
+            font-size: 14px; /* Default day number size */
+        }
+
+        .calendar-day.today .day-number {
+             color: white; /* Ensure day number is white on today's date */
+        }
+
+        .calendar-day.has-video .day-number {
+            color: var(--info-text); /* Ensure day number is info-text color on video days */
+        }
+
+        .calendar-day.has-video.today .day-number {
+            color: white; /* Ensure day number is white on today's video days */
+        }
+
+        /* Remove day events from main calendar days */
+        .day-events {
+            display: none;
+        }
+
+        /* Content Schedule */
+        .content-schedule {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-top: 30px; /* Add margin above since it's below calendar container */
+        }
+
+        .schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .schedule-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .schedule-filters {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            background: none;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .schedule-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .schedule-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            transition: all 0.3s;
+        }
+
+        .schedule-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .schedule-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            color: white;
+        }
+
+        .schedule-icon.blog {
+            background-color: #28a745;
+        }
+
+        .schedule-icon.video {
+            background-color: #17a2b8;
+        }
+
+        .schedule-icon.social {
+            background-color: #ffc107;
+        }
+
+        .schedule-icon.email {
+            background-color: #6c757d;
+        }
+
+        .schedule-details {
+            flex: 1;
+        }
+
+        .schedule-item-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .schedule-meta {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .schedule-time {
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-right: 15px;
+        }
+
+        .schedule-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .schedule-action {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .schedule-action:hover {
+            color: var(--primary-hover);
+        }
+
+        .schedule-action.delete {
+            color: var(--danger-color);
+        }
+
+        .schedule-action.delete:hover {
+            color: var(--danger-hover);
+        }
+
+        /* AI Suggestions */
+        .ai-suggestions {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-top: 30px; /* Add margin above since it's below calendar container */
+        }
+
+        .suggestions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .suggestions-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .ai-badge {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .ai-badge i {
+            margin-right: 5px;
+        }
+
+        .suggestions-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .suggestion-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .suggestion-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .suggestion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .suggestion-type {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .suggestion-type.blog {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .suggestion-type.video {
+            background-color: var(--info-bg);
+            color: var(--info-text);
+        }
+
+        .suggestion-type.social {
+            background-color: var(--warning-bg);
+            color: var(--warning-text);
+        }
+
+        .suggestion-title {
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .suggestion-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .suggestion-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .suggestion-date {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .suggestion-action {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .suggestion-action:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Create Content Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .content-type-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .content-type {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .content-type:hover {
+            border-color: var(--primary-color);
+        }
+
+        .content-type.selected {
+            border-color: var(--primary-color);
+            background-color: #f0f7ff;
+        }
+
+        .content-type i {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        .content-type span {
+            display: block;
+            font-weight: 500;
+        }
+
+        .ai-suggestion-box {
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ai-suggestion-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .ai-suggestion-header i {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .ai-suggestion-header span {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .ai-suggestion-text {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cancel {
+            background-color: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Create Button */
+        .create-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(9, 105, 218, 0.3);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .create-button:hover {
+            background-color: var(--primary-hover);
+            transform: scale(1.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .calendar-container {
+                grid-template-columns: 1fr; /* Stack on smaller screens */
+            }
+
+            .content-details {
+                margin-top: 20px; /* Add space when stacked */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+                margin-right: 20px;
+            }
+
+            .calendar-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .calendar-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .calendar-grid {
+                font-size: 12px;
+            }
+
+            .calendar-day {
+                min-height: 80px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .content-type-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .credits-display {
+                display: none;
+            }
+
+            .calendar-nav {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .calendar-nav-center {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-robot" aria-hidden="true"></i>
+                <h2>OCTOPUS</h2>
+            </div>
+            <div class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item">
+                    <i class="fas fa-home" aria-hidden="true"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="content.html" class="menu-item">
+                    <i class="fas fa-file-alt" aria-hidden="true"></i>
+                    <span>Content</span>
+                </a>
+                <a href="analytics.html" class="menu-item">
+                    <i class="fas fa-chart-line" aria-hidden="true"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="gallery.html" class="menu-item">
+                    <i class="fas fa-images" aria-hidden="true"></i>
+                    <span>Gallery</span>
+                </a>
+                <a href="calendar.html" class="menu-item active">
+                    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                    <span>Calendar</span>
+                </a>
+                <a href="./social_accounts.html" class="menu-item">
+                    <i class="fas fa-share-alt" aria-hidden="true"></i>
+                    <span>Social Accounts</span>
+                </a>
+                <a href="./credits.html" class="menu-item">
+                    <i class="fas fa-coins" aria-hidden="true"></i>
+                    <span>Credits</span>
+                </a>
+                <a href="./pricing.html" class="menu-item">
+                    <i class="fas fa-tag" aria-hidden="true"></i>
+                    <span>Pricing</span>
+                </a>
+                <a href="./settings.html" class="menu-item">
+                    <i class="fas fa-cog" aria-hidden="true"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="top-bar">
+                <button class="menu-toggle" aria-label="Toggle sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="search-bar">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <input type="text" placeholder="Search content, analytics, or settings..." aria-label="Search">
+                </div>
+                <div class="top-bar-actions">
+                    <div class="credits-display">
+                        <i class="fas fa-coins credits-icon" aria-hidden="true"></i>
+                        <span class="credits-text">3/3 Credits</span>
+                        <span class="credits-reset">Resets in 5h</span>
+                    </div>
+                    <button class="notification-btn" aria-label="Notifications">
+                        <i class="fas fa-bell" aria-hidden="true"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="user-profile">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User profile image">
+                        <span>Sarah Johnson</span>
+                    </div>
+                </div>
+            </div>
+            <div class="calendar-content">
+                <div class="calendar-header">
+                    <div class="calendar-title">
+                        <h1>Content Calendar</h1>
+                        <p>Schedule and manage your AI-generated content</p>
+                    </div>
+                    <div class="calendar-actions">
+                        <button class="btn btn-secondary" id="todayBtn" aria-label="Go to today">Today</button>
+                        <button class="btn btn-primary" id="createContentBtn" aria-label="Create new content">Create Content</button>
+                    </div>
+                </div>
+
+                <div class="calendar-nav">
+                    <button class="nav-btn" id="prevMonthBtn" aria-label="Previous month">
+                        <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+                    <div class="calendar-nav-center">
+                        <div class="current-month" id="currentMonth"></div>
+                        <select class="year-selector" id="yearSelector" aria-label="Select year"></select>
+                    </div>
+                    <button class="nav-btn" id="nextMonthBtn" aria-label="Next month">
+                        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <div class="calendar-container">
+                    <div class="main-calendar">
+                        <div class="calendar-grid" id="mainCalendar">
+                            </div>
+                    </div>
+
+                    <div class="content-details" id="contentDetails">
+                        <div class="default-message">
+                            <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                            <h3>Select a Date to View Content</h3>
+                            <p>Click on any highlighted date in the calendar to see the scheduled content for that day.</p>
+                            <p>Dates with a blue dot have general content. Dates highlighted in light blue with a darker blue dot specifically indicate video content.</p>
+                        </div>
+                        <div class="content-details-header">
+                            <div class="content-details-title" id="contentDetailsTitle"></div>
+                            <button class="content-details-close" id="contentDetailsClose" aria-label="Close content details">
+                                <i class="fas fa-times" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="content-details-list" id="contentDetailsList">
+                            </div>
+                    </div>
+                </div>
+
+                <div class="content-schedule">
+                    <div class="schedule-header">
+                        <div class="schedule-title">Scheduled Content</div>
+                        <div class="schedule-filters">
+                            <button class="filter-btn active" data-filter="all" aria-label="Show all content">All</button>
+                            <button class="filter-btn" data-filter="blog" aria-label="Show blog content">Blog</button>
+                            <button class="filter-btn" data-filter="video" aria-label="Show video content">Video</button>
+                            <button class="filter-btn" data-filter="social" aria-label="Show social content">Social</button>
+                            <button class="filter-btn" data-filter="email" aria-label="Show email content">Email</button>
+                        </div>
+                    </div>
+                    <div class="schedule-list" id="scheduleList">
+                        </div>
+                </div>
+
+                <div class="ai-suggestions">
+                    <div class="suggestions-header">
+                        <div class="suggestions-title">AI Content Suggestions</div>
+                        <div class="ai-badge">
+                            <i class="fas fa-robot" aria-hidden="true"></i>
+                            <span>Powered by AI</span>
+                        </div>
+                    </div>
+                    <div class="suggestions-list" id="suggestionsList">
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="createContentModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Create New Content</div>
+                    <button class="modal-close" id="closeModalBtn" aria-label="Close modal">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="content-type-selector">
+                        <div class="content-type selected" data-type="blog" role="button" aria-label="Select Blog Post">
+                            <i class="fas fa-file-alt" aria-hidden="true"></i>
+                            <span>Blog Post</span>
+                        </div>
+                        <div class="content-type" data-type="video" role="button" aria-label="Select Video">
+                            <i class="fas fa-video" aria-hidden="true"></i>
+                            <span>Video</span>
+                        </div>
+                        <div class="content-type" data-type="social" role="button" aria-label="Select Social Media">
+                            <i class="fas fa-share-alt" aria-hidden="true"></i>
+                            <span>Social Media</span>
+                        </div>
+                        <div class="content-type" data-type="email" role="button" aria-label="Select Email">
+                            <i class="fas fa-envelope" aria-hidden="true"></i>
+                            <span>Email</span>
+                        </div>
+                    </div>
+
+                    <div class="ai-suggestion-box">
+                        <div class="ai-suggestion-header">
+                            <i class="fas fa-lightbulb" aria-hidden="true"></i>
+                            <span>AI Suggestion</span>
+                        </div>
+                        <div class="ai-suggestion-text">
+                            Based on your audience engagement, we suggest creating content about "10 Tips for Effective Content Marketing" which has a 78% engagement prediction.
+                        </div>
+                    </div>
+
+                    <form id="createContentForm">
+                        <div class="form-group">
+                            <label class="form-label" for="contentTitle">Content Title</label>
+                            <input type="text" class="form-input" id="contentTitle" placeholder="Enter content title" required aria-required="true">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="contentDescription">Description</label>
+                            <textarea class="form-textarea" id="contentDescription" placeholder="Enter content description" required aria-required="true"></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="scheduleDate">Schedule Date</label>
+                                <input type="date" class="form-input" id="scheduleDate" required aria-required="true">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="scheduleTime">Schedule Time</label>
+                                <input type="time" class="form-input" id="scheduleTime" required aria-required="true">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="platform">Platform</label>
+                            <select class="form-select" id="platform" required aria-required="true">
+                                <option value="">Select Platform</option>
+                                <option value="website">Website</option>
+                                <option value="facebook">Facebook</option>
+                                <option value="twitter">Twitter</option>
+                                <option value="instagram">Instagram</option>
+                                <option value="linkedin">LinkedIn</option>
+                                <option value="youtube">YouTube</option>
+                                <option value="email">Email</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="creditsRequired">Credits Required</label>
+                            <input type="number" class="form-input" id="creditsRequired" value="1" min="1" max="3" readonly aria-readonly="true">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-cancel" id="cancelBtn" aria-label="Cancel">Cancel</button>
+                    <button class="btn btn-primary" id="saveContentBtn" aria-label="Save content">Save Content</button>
+                </div>
+            </div>
+        </div>
+
+        <button class="create-button" id="createButton" aria-label="Create new content">
+            <i class="fas fa-plus" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Current date
+            const today = new Date();
+            let currentMonth = today.getMonth();
+            let currentYear = today.getFullYear();
+            let selectedDate = null; // Initially no date selected
+
+            // Month names
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+
+            // Day names
+            const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+            // Sample uploaded content data
+            const uploadedContent = [
+                { id: 1, date: "2023-06-05", title: "10 Tips for Effective Content Marketing", type: "video", platform: "youtube", time: "10:30 AM", platformName: "YouTube" },
+                { id: 2, date: "2023-06-05", title: "Content Marketing Tips", type: "reel", platform: "instagram", time: "2:15 PM", platformName: "Instagram" },
+                { id: 3, date: "2023-06-08", title: "AI Content Creation Tools", type: "post", platform: "facebook", time: "9:45 AM", platformName: "Facebook" },
+                { id: 4, date: "2023-06-12", title: "Weekly Content Roundup", type: "post", platform: "twitter", time: "11:20 AM", platformName: "Twitter" },
+                { id: 5, date: "2023-06-15", title: "AI in Marketing", type: "video", platform: "youtube", time: "3:00 PM", platformName: "YouTube" },
+                { id: 6, date: "2023-06-18", title: "Marketing Newsletter", type: "post", platform: "linkedin", time: "1:30 PM", platformName: "LinkedIn" },
+                { id: 7, date: "2023-06-22", title: "Content Strategy Tips", type: "reel", platform: "instagram", time: "4:15 PM", platformName: "Instagram" },
+                { id: 8, date: "2023-06-25", title: "Social Media Trends", type: "video", platform: "youtube", time: "10:00 AM", platformName: "YouTube" }
+            ];
+
+            // Sample events data (used for general calendar events, not directly displayed in day cells anymore)
+            const events = [
+                { date: "2023-06-05", title: "10 Tips for Effective Content Marketing", type: "blog" },
+                { date: "2023-06-08", title: "How to Use AI for Content Creation", type: "video" },
+                { date: "2023-06-12", title: "Weekly Content Roundup", type: "social" },
+                { date: "2023-06-15", title: "The Future of AI in Marketing", type: "blog" },
+                { date: "2023-06-18", title: "Monthly Newsletter - June", type: "email" },
+                { date: "2023-06-22", title: "Content Strategy Webinar", type: "video" },
+                { date: "2023-06-25", title: "Social Media Trends", type: "social" },
+                { date: "2023-06-28", title: "Email Marketing Best Practices", type: "email" }
+            ];
+
+            // Sample schedule data
+            const scheduleItems = [
+                { id: 1, title: "10 Tips for Effective Content Marketing", type: "blog", date: "June 5, 2023", time: "10:00 AM", platform: "Website" },
+                { id: 2, title: "How to Use AI for Content Creation", type: "video", date: "June 8, 2023", time: "2:00 PM", platform: "YouTube" },
+                { id: 3, title: "Weekly Content Roundup", type: "social", date: "June 12, 2023", time: "9:00 AM", platform: "Twitter" },
+                { id: 4, title: "The Future of AI in Marketing", type: "blog", date: "June 15, 2023", time: "11:00 AM", platform: "Website" },
+                { id: 5, title: "Monthly Newsletter - June", type: "email", date: "June 18, 2023", time: "1:00 PM", platform: "Email" }
+            ];
+
+            // Sample AI suggestions
+            const suggestions = [
+                { id: 1, title: "10 Tips for Effective Content Marketing", type: "blog", date: "June 5, 2023", description: "Based on your audience engagement, this topic has a 78% engagement prediction." },
+                { id: 2, title: "How to Use AI for Content Creation", type: "video", date: "June 8, 2023", description: "Video content about AI tools has performed well with your audience." },
+                { id: 3, title: "Social Media Trends for 2023", type: "social", date: "June 12, 2023", description: "Trending topic with high engagement potential on social platforms." },
+                { id: 4, title: "Email Marketing Best Practices", type: "email", date: "June 18, 2023", description: "Your email subscribers respond well to educational content." }
+            ];
+
+            // Initialize calendar
+            populateYearDropdown();
+            renderCalendar();
+            renderScheduleItems();
+            renderSuggestions();
+            showDefaultContentDetails(); // Show the default message on load
+
+            // Event listeners
+            document.getElementById('prevMonthBtn').addEventListener('click', function() {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                updateYearDropdowns();
+                renderCalendar();
+                showDefaultContentDetails(); // Show default message on month change
+            });
+
+            document.getElementById('nextMonthBtn').addEventListener('click', function() {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                updateYearDropdowns();
+                renderCalendar();
+                showDefaultContentDetails(); // Show default message on month change
+            });
+
+            document.getElementById('todayBtn').addEventListener('click', function() {
+                currentMonth = today.getMonth();
+                currentYear = today.getFullYear();
+                selectedDate = new Date(today); // Select today when 'Today' button is clicked
+                updateYearDropdowns();
+                renderCalendar();
+                // Check if today has content to display, otherwise show default message
+                const hasContentToday = uploadedContent.some(content => content.date === formatDateForInput(today));
+                if (hasContentToday) {
+                    showContentDetails(today, 'all');
+                } else {
+                    showDefaultContentDetails();
+                }
+            });
+
+            document.getElementById('yearSelector').addEventListener('change', function() {
+                currentYear = parseInt(this.value);
+                updateYearDropdowns();
+                renderCalendar();
+                showDefaultContentDetails(); // Show default message on year change
+            });
+
+            document.getElementById('createContentBtn').addEventListener('click', function() {
+                document.getElementById('createContentModal').classList.add('active');
+                document.getElementById('scheduleDate').value = formatDateForInput(today);
+            });
+
+            document.getElementById('createButton').addEventListener('click', function() {
+                document.getElementById('createContentModal').classList.add('active');
+                document.getElementById('scheduleDate').value = formatDateForInput(today);
+            });
+
+            document.getElementById('closeModalBtn').addEventListener('click', function() {
+                document.getElementById('createContentModal').classList.remove('active');
+            });
+
+            document.getElementById('cancelBtn').addEventListener('click', function() {
+                document.getElementById('createContentModal').classList.remove('active');
+            });
+
+            // Sidebar toggle
+            document.querySelector('.menu-toggle').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.toggle('active');
+            });
+
+            // Content type selector
+            let selectedContentType = 'blog';
+            document.querySelectorAll('.content-type').forEach(type => {
+                type.addEventListener('click', function() {
+                    document.querySelectorAll('.content-type').forEach(t => t.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedContentType = this.getAttribute('data-type');
+                    const credits = selectedContentType === 'video' ? 2 : 1;
+                    document.getElementById('creditsRequired').value = credits;
+                });
+            });
+
+            // Save content
+            document.getElementById('saveContentBtn').addEventListener('click', function() {
+                const form = document.getElementById('createContentForm');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                const title = document.getElementById('contentTitle').value;
+                const description = document.getElementById('contentDescription').value;
+                const date = document.getElementById('scheduleDate').value;
+                const time = document.getElementById('scheduleTime').value;
+                const platform = document.getElementById('platform').value;
+                const creditsRequired = parseInt(document.getElementById('creditsRequired').value);
+
+                const availableCredits = 3; // Mock value; fetch from server in real app
+                if (availableCredits < creditsRequired) {
+                    alert('You do not have enough credits to create this content');
+                    return;
+                }
+
+                // Add to uploadedContent and scheduleItems
+                const newContent = {
+                    id: uploadedContent.length + 1,
+                    date,
+                    title,
+                    type: selectedContentType,
+                    platform,
+                    time: formatTimeForDisplay(time),
+                    platformName: platform.charAt(0).toUpperCase() + platform.slice(1)
+                };
+                uploadedContent.push(newContent);
+                scheduleItems.push({
+                    id: scheduleItems.length + 1,
+                    title,
+                    type: selectedContentType,
+                    date: formatDateForDisplay(date),
+                    time: formatTimeForDisplay(time),
+                    platform: platform.charAt(0).toUpperCase() + platform.slice(1)
+                });
+
+                // Show success message
+                const message = document.createElement('div');
+                message.style.position = 'fixed';
+                message.style.top = '20px';
+                message.style.left = '50%';
+                message.style.transform = 'translateX(-50%)';
+                message.style.backgroundColor = '#28a745';
+                message.style.color = 'white';
+                message.style.padding = '15px 30px';
+                message.style.borderRadius = '5px';
+                message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+                message.style.zIndex = '1001';
+                message.textContent = 'Content scheduled successfully!';
+                document.body.appendChild(message);
+
+                setTimeout(() => {
+                    message.remove();
+                }, 3000);
+
+                // Close modal
+                document.getElementById('createContentModal').classList.remove('active');
+
+                // Reset form
+                form.reset();
+                document.querySelector('.content-type[data-type="blog"]').classList.add('selected');
+                document.querySelectorAll('.content-type:not([data-type="blog"])').forEach(t => t.classList.remove('selected'));
+                document.getElementById('creditsRequired').value = 1;
+
+                // Refresh calendar and schedule
+                renderCalendar();
+                renderScheduleItems();
+            });
+
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.getAttribute('data-filter');
+                    renderScheduleItems(filter);
+                });
+            });
+
+            // Content details close button
+            document.getElementById('contentDetailsClose').addEventListener('click', function() {
+                selectedDate = null; // Deselect date
+                renderCalendar(); // Re-render to clear selected highlight
+                showDefaultContentDetails(); // Show the default message
+            });
+
+            // Populate year dropdown
+            function populateYearDropdown() {
+                const yearSelector = document.getElementById('yearSelector');
+                const startYear = 2020;
+                const endYear = 2030;
+
+                yearSelector.innerHTML = '';
+
+                for (let year = startYear; year <= endYear; year++) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    if (year === currentYear) {
+                        option.selected = true;
+                    }
+                    yearSelector.appendChild(option);
+                }
+            }
+
+            // Update year dropdowns
+            function updateYearDropdowns() {
+                document.getElementById('yearSelector').value = currentYear;
+            }
+
+            // Render calendar
+            function renderCalendar() {
+                const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                document.getElementById('currentMonth').textContent = `${monthNames[currentMonth]}`;
+                const calendar = document.getElementById('mainCalendar');
+                calendar.innerHTML = '';
+
+                dayNames.forEach(day => {
+                    const dayHeader = document.createElement('div');
+                    dayHeader.className = 'day-header';
+                    dayHeader.textContent = day;
+                    calendar.appendChild(dayHeader);
+                });
+
+                for (let i = 0; i < firstDay; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'calendar-day other-month';
+                    calendar.appendChild(emptyDay);
+                }
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    const date = new Date(currentYear, currentMonth, day);
+                    const dateString = formatDateForInput(date);
+
+                    if (date.toDateString() === today.toDateString()) {
+                        dayElement.classList.add('today');
+                    }
+
+                    if (selectedDate && date.toDateString() === selectedDate.toDateString()) {
+                        dayElement.classList.add('selected');
+                    }
+
+                    // Check for all content types
+                    const hasContent = uploadedContent.some(content => content.date === dateString);
+                    if (hasContent) {
+                        dayElement.classList.add('has-content');
+                    }
+
+                    // Check specifically for videos
+                    const hasVideoContent = uploadedContent.some(content => content.date === dateString && (content.type === 'video' || content.type === 'reel'));
+                    if (hasVideoContent) {
+                        dayElement.classList.add('has-video');
+                    }
+
+                    const dayNumber = document.createElement('div');
+                    dayNumber.className = 'day-number';
+                    dayNumber.textContent = day;
+                    dayElement.appendChild(dayNumber);
+
+                    // Removed .day-events from being appended directly to calendar-day
+
+                    dayElement.addEventListener('click', function() {
+                        selectedDate = date;
+                        renderCalendar(); // Re-render to update selected state
+                        if (hasVideoContent) {
+                            showContentDetails(date, 'video'); // Show only videos
+                        } else if (hasContent) {
+                            showContentDetails(date, 'all'); // Show all content if no specific videos
+                        } else {
+                            showDefaultContentDetails(); // If no content, show default message
+                        }
+                    });
+
+                    calendar.appendChild(dayElement);
+                }
+            }
+
+            // Show content details for a specific date and optionally filter by type
+            function showContentDetails(date, filterType = 'all') {
+                const contentDetails = document.getElementById('contentDetails');
+                const contentDetailsTitle = document.getElementById('contentDetailsTitle');
+                const contentDetailsList = document.getElementById('contentDetailsList');
+                const defaultMessage = contentDetails.querySelector('.default-message');
+
+                // Hide default message, show content sections
+                defaultMessage.style.display = 'none';
+                contentDetails.classList.remove('no-content-selected');
+                contentDetails.querySelector('.content-details-header').style.display = 'flex';
+                contentDetailsList.style.display = 'flex';
+
+
+                const formattedDate = `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+
+                contentDetailsList.innerHTML = ''; // Clear previous content
+
+                let dateContent = uploadedContent.filter(content => content.date === formatDateForInput(date));
+
+                if (filterType !== 'all') {
+                    dateContent = dateContent.filter(content => content.type === filterType || content.type === 'reel'); // 'reel' is also a type of video
+                }
+
+                if (dateContent.length === 0) {
+                    showDefaultContentDetails(); // If no content after filtering, show default
+                    return;
+                }
+
+                // Update title based on filter
+                if (filterType === 'video') {
+                    contentDetailsTitle.textContent = `Video Content for ${formattedDate}`;
+                } else {
+                    contentDetailsTitle.textContent = `Content for ${formattedDate}`;
+                }
+
+
+                dateContent.forEach(content => {
+                    const contentItem = document.createElement('div');
+                    contentItem.className = 'content-details-item';
+                    contentItem.innerHTML = `
+                        <div class="content-details-icon ${content.platform}" aria-hidden="true">
+                            <i class="fab ${getPlatformIcon(content.platform)}"></i>
+                        </div>
+                        <div class="content-details-info">
+                            <div class="content-details-title-text">${content.title}</div>
+                            <div class="content-details-platform">${content.platformName}</div>
+                            <div class="content-details-time">${content.time}</div>
+                        </div>
+                        <div class="content-details-type ${content.type}">${content.type}</div>
+                    `;
+                    contentDetailsList.appendChild(contentItem);
+                });
+
+                contentDetails.classList.add('active');
+            }
+
+            // Hide content details and show default message
+            function showDefaultContentDetails() {
+                const contentDetails = document.getElementById('contentDetails');
+                const defaultMessage = contentDetails.querySelector('.default-message');
+
+                contentDetails.classList.add('no-content-selected');
+                contentDetails.querySelector('.content-details-header').style.display = 'none';
+                contentDetails.querySelector('.content-details-list').style.display = 'none';
+                defaultMessage.style.display = 'flex'; // Show the default message
+                contentDetails.classList.remove('active'); // Ensure it transitions in as default state
+                setTimeout(() => { // Small delay to allow transition if needed
+                    contentDetails.classList.add('active');
+                }, 50);
+            }
+
+
+            // Render schedule items
+            function renderScheduleItems(filter = 'all') {
+                const scheduleList = document.getElementById('scheduleList');
+                scheduleList.innerHTML = '';
+                let filteredItems = scheduleItems;
+                if (filter !== 'all') {
+                    filteredItems = scheduleItems.filter(item => item.type === filter);
+                }
+
+                filteredItems.forEach(item => {
+                    const scheduleItem = document.createElement('div');
+                    scheduleItem.className = 'schedule-item';
+                    scheduleItem.innerHTML = `
+                        <div class="schedule-icon ${item.type}" aria-hidden="true">
+                            <i class="fas ${getIconByType(item.type)}"></i>
+                        </div>
+                        <div class="schedule-details">
+                            <div class="schedule-item-title">${item.title}</div>
+                            <div class="schedule-meta">${item.platform} • ${item.date}</div>
+                        </div>
+                        <div class="schedule-time">${item.time}</div>
+                        <div class="schedule-actions">
+                            <button class="schedule-action" aria-label="Edit schedule item"><i class="fas fa-edit" aria-hidden="true"></i></button>
+                            <button class="schedule-action delete" aria-label="Delete schedule item"><i class="fas fa-trash" aria-hidden="true"></i></button>
+                        </div>
+                    `;
+                    scheduleList.appendChild(scheduleItem);
+                });
+            }
+
+            // Render AI suggestions
+            function renderSuggestions() {
+                const suggestionsList = document.getElementById('suggestionsList');
+                suggestionsList.innerHTML = '';
+                suggestions.forEach(suggestion => {
+                    const suggestionCard = document.createElement('div');
+                    suggestionCard.className = 'suggestion-card';
+                    suggestionCard.innerHTML = `
+                        <div class="suggestion-header">
+                            <div class="suggestion-type ${suggestion.type}">${suggestion.type}</div>
+                            <button class="schedule-action" aria-label="Dismiss suggestion"><i class="fas fa-times" aria-hidden="true"></i></button>
+                        </div>
+                        <div class="suggestion-title">${suggestion.title}</div>
+                        <div class="suggestion-desc">${suggestion.description}</div>
+                        <div class="suggestion-footer">
+                            <div class="suggestion-date">${suggestion.date}</div>
+                            <button class="suggestion-action" aria-label="Use this suggestion">Use Suggestion</button>
+                        </div>
+                    `;
+                    suggestionCard.querySelector('.suggestion-action').addEventListener('click', function() {
+                        document.getElementById('createContentModal').classList.add('active');
+                        document.getElementById('contentTitle').value = suggestion.title;
+                        document.getElementById('contentDescription').value = suggestion.description;
+                        document.getElementById('scheduleDate').value = formatDateForInput(new Date(suggestion.date));
+                        document.querySelector(`.content-type[data-type="${suggestion.type}"]`).click();
+                    });
+                    suggestionsList.appendChild(suggestionCard);
+                });
+            }
+
+            // Helper function to get icon by type
+            function getIconByType(type) {
+                switch (type) {
+                    case 'blog': return 'fa-file-alt';
+                    case 'video': return 'fa-video';
+                    case 'social': return 'fa-share-alt';
+                    case 'email': return 'fa-envelope';
+                    case 'reel': return 'fa-video'; // Reel is also a video type
+                    default: return 'fa-file';
+                }
+            }
+
+            // Helper function to get platform icon
+            function getPlatformIcon(platform) {
+                switch (platform) {
+                    case 'facebook': return 'fa-facebook-f';
+                    case 'twitter': return 'fa-twitter';
+                    case 'instagram': return 'fa-instagram';
+                    case 'linkedin': return 'fa-linkedin-in';
+                    case 'youtube': return 'fa-youtube';
+                    default: return 'fa-globe';
+                }
+            }
+
+            // Helper function to format date for input
+            function formatDateForInput(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            // Helper function to format date for display
+            function formatDateForDisplay(dateString) {
+                const date = new Date(dateString);
+                return `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+            }
+
+            // Helper function to format time for display
+            function formatTimeForDisplay(timeString) {
+                const [hours, minutes] = timeString.split(':');
+                const hour = parseInt(hours);
+                const ampm = hour >= 12 ? 'PM' : 'AM';
+                const displayHour = hour % 12 || 12;
+                return `${displayHour}:${minutes} ${ampm}`;
+            }
+        });
+    </script>
+</body>
+</html>

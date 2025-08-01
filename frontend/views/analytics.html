@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCTOPUS - Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #ffffff;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar-logo i {
+            font-size: 24px;
+            color: #0969da;
+            margin-right: 10px;
+        }
+
+        .sidebar-logo h2 {
+            font-size: 24px;
+            color: #0969da;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f0f7ff;
+            color: #0969da;
+            border-left-color: #0969da;
+        }
+
+        .menu-item i {
+            margin-right: 15px;
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #0969da;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #666;
+            margin-right: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .notification-btn:hover {
+            color: #0969da;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #0969da;
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-profile span {
+            font-weight: 500;
+        }
+
+        /* Credits Display */
+        .credits-display {
+            background-color: #f0f7ff;
+            border-radius: 20px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .credits-icon {
+            color: #0969da;
+            margin-right: 8px;
+        }
+
+        .credits-text {
+            font-weight: 500;
+            color: #0969da;
+        }
+
+        .credits-reset {
+            font-size: 12px;
+            color: #666;
+            margin-left: 5px;
+        }
+
+        /* Analytics Page */
+        .analytics-page {
+            padding: 30px;
+            flex: 1;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .date-range-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .date-range-btn {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .date-range-btn:hover, .date-range-btn.active {
+            border-color: #0969da;
+            color: #0969da;
+        }
+
+        .export-btn {
+            background-color: #0969da;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .export-btn:hover {
+            background-color: #0750a5;
+        }
+
+        .export-btn i {
+            margin-right: 8px;
+        }
+
+        /* Key Metrics */
+        .key-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .metric-title {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .metric-icon.blue {
+            background-color: #0969da;
+        }
+
+        .metric-icon.green {
+            background-color: #28a745;
+        }
+
+        .metric-icon.purple {
+            background-color: #6f42c1;
+        }
+
+        .metric-icon.orange {
+            background-color: #fd7e14;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .metric-change {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .metric-change.positive {
+            color: #28a745;
+        }
+
+        .metric-change.negative {
+            color: #dc3545;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .chart-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chart-option {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .chart-option:hover, .chart-option.active {
+            color: #0969da;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Content Creation Process */
+        .process-flow {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .process-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .process-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            padding: 0 10px;
+        }
+
+        .process-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 30px;
+            right: -15px;
+            width: 30px;
+            height: 2px;
+            background-color: #e9ecef;
+        }
+
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #f0f7ff;
+            color: #0969da;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 15px;
+            font-size: 24px;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .step-description {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .step-metrics {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #0969da;
+            font-weight: 500;
+        }
+
+        /* AI Performance */
+        .ai-performance {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .performance-item {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .performance-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #0969da;
+            margin-bottom: 5px;
+        }
+
+        .performance-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Content Distribution */
+        .content-distribution {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .platform-item {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .platform-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .platform-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 10px;
+            font-size: 18px;
+            color: white;
+        }
+
+        .platform-icon.facebook {
+            background-color: #4267B2;
+        }
+
+        .platform-icon.twitter {
+            background-color: #1DA1F2;
+        }
+
+        .platform-icon.instagram {
+            background-color: #E1306C;
+        }
+
+        .platform-icon.linkedin {
+            background-color: #0077B5;
+        }
+
+        .platform-icon.youtube {
+            background-color: #FF0000;
+        }
+
+        .platform-icon.tiktok {
+            background-color: #000000;
+        }
+
+        .platform-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .platform-count {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Recent Content */
+        .recent-content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .content-table th {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .content-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .content-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .content-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .content-title {
+            font-weight: 500;
+        }
+
+        .content-niche {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            background-color: #e3f2fd;
+            color: #0277bd;
+        }
+
+        .content-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .content-status.completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .content-status.processing {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .content-status.scheduled {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .process-steps {
+                flex-direction: column;
+            }
+
+            .process-step:not(:last-child)::after {
+                display: none;
+            }
+
+            .process-step {
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .key-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .credits-display {
+                display: none;
+            }
+
+            .content-table {
+                font-size: 14px;
+            }
+
+            .content-table th,
+            .content-table td {
+                padding: 10px;
+            }
+
+            .performance-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .platform-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-robot"></i>
+                <h2>OCTOPUS</h2>
+            </div>
+            <div class="sidebar-menu">
+                <a href="./dashboard.html" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="./content.html" class="menu-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Content</span>
+                </a>
+                <a href="./analytics.html" class="menu-item active">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="./gallery.html" class="menu-item">
+                    <i class="fas fa-images"></i>
+                    <span>Gallery</span>
+                </a>
+                <a href=".//calendar.html" class="menu-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendar</span>
+                </a>
+                <a href="./social_accounts.html" class="menu-item">
+                    <i class="fas fa-share-alt"></i>
+                    <span>Social Accounts</span>
+                </a>
+                <a href="./credits.html" class="menu-item">
+                    <i class="fas fa-coins"></i>
+                    <span>Credits</span>
+                </a>
+                <a href="./pricing.html" class="menu-item">
+                    <i class="fas fa-tag"></i>
+                    <span>Pricing</span>
+                </a>
+                <a href="./settings.html" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search analytics...">
+                </div>
+                <div class="top-bar-actions">
+                    <div class="credits-display">
+                        <i class="fas fa-coins credits-icon"></i>
+                        <span class="credits-text">3/3 Credits</span>
+                        <span class="credits-reset">Resets in 5h</span>
+                    </div>
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="user-profile">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User">
+                        <span>Sarah Johnson</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Page -->
+            <div class="analytics-page">
+                <div class="page-header">
+                    <h1 class="page-title">AI Content Creation Analytics</h1>
+                    <div class="date-range-selector">
+                        <button class="date-range-btn">Today</button>
+                        <button class="date-range-btn">Last 7 Days</button>
+                        <button class="date-range-btn active">Last 30 Days</button>
+                        <button class="date-range-btn">Last 90 Days</button>
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i>
+                            Export Report
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="key-metrics">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">Content Created</div>
+                            <div class="metric-icon blue">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value">24</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>12% from last month</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">AI Accuracy Score</div>
+                            <div class="metric-icon green">
+                                <i class="fas fa-bullseye"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value">94%</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>3% from last month</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">Avg. Creation Time</div>
+                            <div class="metric-icon purple">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value">4.2 min</div>
+                        <div class="metric-change negative">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>0.8 min from last month</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-title">User Satisfaction</div>
+                            <div class="metric-icon orange">
+                                <i class="fas fa-smile"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value">4.7/5</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>0.2 from last month</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Creation Process -->
+                <div class="process-flow">
+                    <div class="chart-header">
+                        <div class="chart-title">Content Creation Process</div>
+                    </div>
+                    <div class="process-steps">
+                        <div class="process-step">
+                            <div class="step-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div class="step-title">Idea Generation</div>
+                            <div class="step-description">AI generates content ideas based on your niche</div>
+                            <div class="step-metrics">Avg: 2.1 min</div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-icon">
+                                <i class="fas fa-pen"></i>
+                            </div>
+                            <div class="step-title">Script Writing</div>
+                            <div class="step-description">AI creates engaging scripts for your content</div>
+                            <div class="step-metrics">Avg: 1.5 min</div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-icon">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <div class="step-title">Video Creation</div>
+                            <div class="step-description">AI generates and edits the video content</div>
+                            <div class="step-metrics">Avg: 3.2 min</div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-icon">
+                                <i class="fas fa-share-alt"></i>
+                            </div>
+                            <div class="step-title">Publishing</div>
+                            <div class="step-description">AI uploads to your connected social accounts</div>
+                            <div class="step-metrics">Avg: 0.5 min</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Content Creation Over Time</div>
+                            <div class="chart-options">
+                                <button class="chart-option active">Content</button>
+                                <button class="chart-option">Time</button>
+                                <button class="chart-option">Accuracy</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="creationChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Content Type Distribution</div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="distributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Performance -->
+                <div class="ai-performance">
+                    <div class="chart-header">
+                        <div class="chart-title">AI Performance Metrics</div>
+                    </div>
+                    <div class="performance-grid">
+                        <div class="performance-item">
+                            <div class="performance-value">94%</div>
+                            <div class="performance-label">Script Accuracy</div>
+                        </div>
+                        <div class="performance-item">
+                            <div class="performance-value">92%</div>
+                            <div class="performance-label">Video Quality</div>
+                        </div>
+                        <div class="performance-item">
+                            <div class="performance-value">96%</div>
+                            <div class="performance-label">Relevance Score</div>
+                        </div>
+                        <div class="performance-item">
+                            <div class="performance-value">89%</div>
+                            <div class="performance-label">Engagement Prediction</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Distribution -->
+                <div class="content-distribution">
+                    <div class="chart-header">
+                        <div class="chart-title">Platform Distribution</div>
+                    </div>
+                    <div class="platform-grid">
+                        <div class="platform-item">
+                            <div class="platform-icon facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </div>
+                            <div class="platform-name">Facebook</div>
+                            <div class="platform-count">8 pieces</div>
+                        </div>
+                        <div class="platform-item">
+                            <div class="platform-icon twitter">
+                                <i class="fab fa-twitter"></i>
+                            </div>
+                            <div class="platform-name">Twitter</div>
+                            <div class="platform-count">6 pieces</div>
+                        </div>
+                        <div class="platform-item">
+                            <div class="platform-icon instagram">
+                                <i class="fab fa-instagram"></i>
+                            </div>
+                            <div class="platform-name">Instagram</div>
+                            <div class="platform-count">5 pieces</div>
+                        </div>
+                        <div class="platform-item">
+                            <div class="platform-icon linkedin">
+                                <i class="fab fa-linkedin-in"></i>
+                            </div>
+                            <div class="platform-name">LinkedIn</div>
+                            <div class="platform-count">3 pieces</div>
+                        </div>
+                        <div class="platform-item">
+                            <div class="platform-icon youtube">
+                                <i class="fab fa-youtube"></i>
+                            </div>
+                            <div class="platform-name">YouTube</div>
+                            <div class="platform-count">2 pieces</div>
+                        </div>
+                        <div class="platform-item">
+                            <div class="platform-icon tiktok">
+                                <i class="fab fa-tiktok"></i>
+                            </div>
+                            <div class="platform-name">TikTok</div>
+                            <div class="platform-count">0 pieces</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Content -->
+                <div class="recent-content">
+                    <div class="chart-header">
+                        <div class="chart-title">Recently Created Content</div>
+                        <a href="#" class="section-action">View All</a>
+                    </div>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>Content</th>
+                                <th>Niche</th>
+                                <th>Creation Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="content-title">How to Use AI for Content Creation</td>
+                                <td><span class="content-niche">Technology</span></td>
+                                <td>4.2 min</td>
+                                <td><span class="content-status completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td class="content-title">10 Tips for Effective Content Marketing</td>
+                                <td><span class="content-niche">Marketing</span></td>
+                                <td>3.8 min</td>
+                                <td><span class="content-status completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td class="content-title">Weekly Tech News Roundup</td>
+                                <td><span class="content-niche">Technology</span></td>
+                                <td>5.1 min</td>
+                                <td><span class="content-status processing">Processing</span></td>
+                            </tr>
+                            <tr>
+                                <td class="content-title">Digital Marketing Trends 2023</td>
+                                <td><span class="content-niche">Marketing</span></td>
+                                <td>4.5 min</td>
+                                <td><span class="content-status scheduled">Scheduled</span></td>
+                            </tr>
+                            <tr>
+                                <td class="content-title">AI Tools for Small Businesses</td>
+                                <td><span class="content-niche">Business</span></td>
+                                <td>3.9 min</td>
+                                <td><span class="content-status completed">Completed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const dateRangeBtns = document.querySelectorAll('.date-range-btn');
+        const exportBtn = document.querySelector('.export-btn');
+        const chartOptions = document.querySelectorAll('.chart-option');
+        
+        // Date range selector
+        dateRangeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                dateRangeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // In a real implementation, this would update the charts with new data
+                const message = document.createElement('div');
+                message.style.position = 'fixed';
+                message.style.top = '20px';
+                message.style.left = '50%';
+                message.style.transform = 'translateX(-50%)';
+                message.style.backgroundColor = '#0969da';
+                message.style.color = 'white';
+                message.style.padding = '15px 30px';
+                message.style.borderRadius = '5px';
+                message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+                message.style.zIndex = '1001';
+                message.textContent = `Updating analytics for: ${btn.textContent}`;
+                
+                document.body.appendChild(message);
+                
+                setTimeout(() => {
+                    message.remove();
+                }, 3000);
+            });
+        });
+        
+        // Export button
+        exportBtn.addEventListener('click', () => {
+            // In a real implementation, this would generate and download a report
+            const message = document.createElement('div');
+            message.style.position = 'fixed';
+            message.style.top = '20px';
+            message.style.left = '50%';
+            message.style.transform = 'translateX(-50%)';
+            message.style.backgroundColor = '#0969da';
+            message.style.color = 'white';
+            message.style.padding = '15px 30px';
+            message.style.borderRadius = '5px';
+            message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+            message.style.zIndex = '1001';
+            message.textContent = 'Generating report...';
+            
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.textContent = 'Report downloaded successfully!';
+                setTimeout(() => {
+                    message.remove();
+                }, 2000);
+            }, 2000);
+        });
+        
+        // Chart options
+        chartOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                chartOptions.forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+                
+                // In a real implementation, this would update the chart data
+                const message = document.createElement('div');
+                message.style.position = 'fixed';
+                message.style.top = '20px';
+                message.style.left = '50%';
+                message.style.transform = 'translateX(-50%)';
+                message.style.backgroundColor = '#0969da';
+                message.style.color = 'white';
+                message.style.padding = '15px 30px';
+                message.style.borderRadius = '5px';
+                message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+                message.style.zIndex = '1001';
+                message.textContent = `Showing ${option.textContent} data`;
+                
+                document.body.appendChild(message);
+                
+                setTimeout(() => {
+                    message.remove();
+                }, 3000);
+            });
+        });
+        
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Content Creation Over Time Chart
+            const creationCtx = document.getElementById('creationChart').getContext('2d');
+            const creationChart = new Chart(creationCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jun 1', 'Jun 5', 'Jun 10', 'Jun 15', 'Jun 20', 'Jun 25', 'Jun 30'],
+                    datasets: [{
+                        label: 'Content Pieces',
+                        data: [3, 5, 4, 6, 5, 7, 6],
+                        backgroundColor: 'rgba(9, 105, 218, 0.1)',
+                        borderColor: '#0969da',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Number of Content Pieces'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Content Type Distribution Chart
+            const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+            const distributionChart = new Chart(distributionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Videos', 'Posts', 'Reels'],
+                    datasets: [{
+                        data: [45, 30, 25],
+                        backgroundColor: [
+                            '#0969da',
+                            '#28a745',
+                            '#fd7e14'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        });
+        
+        // Toggle sidebar on mobile
+        const sidebar = document.querySelector('.sidebar');
+        const logo = document.querySelector('.sidebar-logo');
+        
+        logo.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

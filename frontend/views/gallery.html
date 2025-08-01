@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCTOPUS - Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #ffffff;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar-logo i {
+            font-size: 24px;
+            color: #0969da;
+            margin-right: 10px;
+        }
+
+        .sidebar-logo h2 {
+            font-size: 24px;
+            color: #0969da;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #f0f7ff;
+            color: #0969da;
+            border-left-color: #0969da;
+        }
+
+        .menu-item i {
+            margin-right: 15px;
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #0969da;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #666;
+            margin-right: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .notification-btn:hover {
+            color: #0969da;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #0969da;
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-profile span {
+            font-weight: 500;
+        }
+
+        /* Credits Display */
+        .credits-display {
+            background-color: #f0f7ff;
+            border-radius: 20px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .credits-icon {
+            color: #0969da;
+            margin-right: 8px;
+        }
+
+        .credits-text {
+            font-weight: 500;
+            color: #0969da;
+        }
+
+        .credits-reset {
+            font-size: 12px;
+            color: #666;
+            margin-left: 5px;
+        }
+
+        /* Gallery Page */
+        .gallery-page {
+            padding: 30px;
+            flex: 1;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 15px;
+        }
+
+        .filter-btn {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            border-color: #0969da;
+            color: #0969da;
+        }
+
+        .filter-btn i {
+            margin-right: 5px;
+        }
+
+        /* Gallery Stats */
+        .gallery-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 15px;
+            color: white;
+            font-size: 20px;
+        }
+
+        .stat-icon.videos {
+            background-color: #0969da;
+        }
+
+        .stat-icon.posts {
+            background-color: #28a745;
+        }
+
+        .stat-icon.reels {
+            background-color: #fd7e14;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-thumbnail {
+            height: 200px;
+            background-color: #f0f7ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-thumbnail i {
+            font-size: 48px;
+            color: #0969da;
+        }
+
+        .gallery-type {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #0969da;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .gallery-duration {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .gallery-details {
+            padding: 15px;
+        }
+
+        .gallery-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .gallery-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .gallery-date {
+            display: flex;
+            align-items: center;
+        }
+
+        .gallery-date i {
+            margin-right: 5px;
+            font-size: 12px;
+        }
+
+        .gallery-platform {
+            display: flex;
+            align-items: center;
+        }
+
+        .platform-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 5px;
+            font-size: 10px;
+            color: white;
+        }
+
+        .platform-icon.facebook {
+            background-color: #4267B2;
+        }
+
+        .platform-icon.twitter {
+            background-color: #1DA1F2;
+        }
+
+        .platform-icon.instagram {
+            background-color: #E1306C;
+        }
+
+        .platform-icon.linkedin {
+            background-color: #0077B5;
+        }
+
+        .platform-icon.youtube {
+            background-color: #FF0000;
+        }
+
+        .platform-icon.tiktok {
+            background-color: #000000;
+        }
+
+        /* Gallery Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-media {
+            width: 100%;
+            max-height: 400px;
+            background-color: #f0f7ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .modal-media img {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+        }
+
+        .modal-media i {
+            font-size: 64px;
+            color: #0969da;
+        }
+
+        .modal-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .info-label {
+            font-weight: 500;
+            margin-right: 10px;
+            color: #666;
+            min-width: 80px;
+        }
+
+        .info-value {
+            font-weight: 500;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: #0969da;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0750a5;
+        }
+
+        .btn-secondary {
+            background-color: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .gallery-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .filter-options {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+
+            .credits-display {
+                display: none;
+            }
+
+            .modal-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-robot"></i>
+                <h2>OCTOPUS</h2>
+            </div>
+            <div class="sidebar-menu">
+                <a href="./dashboard.html" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="./content.html" class="menu-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Content</span>
+                </a>
+                <a href="./analytics.html" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="./gallery.html" class="menu-item active">
+                    <i class="fas fa-images"></i>
+                    <span>Gallery</span>
+                </a>
+                <a href="./calendar.html" class="menu-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendar</span>
+                </a>
+                <a href="./social_accounts.html" class="menu-item">
+                    <i class="fas fa-share-alt"></i>
+                    <span>Social Accounts</span>
+                </a>
+                <a href="./credits.html" class="menu-item">
+                    <i class="fas fa-coins"></i>
+                    <span>Credits</span>
+                </a>
+                <a href="./pricing.html" class="menu-item">
+                    <i class="fas fa-tag"></i>
+                    <span>Pricing</span>
+                </a>
+                <a href="./settings.html" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search gallery...">
+                </div>
+                <div class="top-bar-actions">
+                    <div class="credits-display">
+                        <i class="fas fa-coins credits-icon"></i>
+                        <span class="credits-text">3/3 Credits</span>
+                        <span class="credits-reset">Resets in 5h</span>
+                    </div>
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="user-profile">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User">
+                        <span>Sarah Johnson</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery Page -->
+            <div class="gallery-page">
+                <div class="page-header">
+                    <h1 class="page-title">Content Gallery</h1>
+                    <div class="filter-options">
+                        <button class="filter-btn active">
+                            <i class="fas fa-th"></i>
+                            All
+                        </button>
+                        <button class="filter-btn">
+                            <i class="fas fa-video"></i>
+                            Videos
+                        </button>
+                        <button class="filter-btn">
+                            <i class="fas fa-file-alt"></i>
+                            Posts
+                        </button>
+                        <button class="filter-btn">
+                            <i class="fas fa-film"></i>
+                            Reels
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Gallery Stats -->
+                <div class="gallery-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon videos">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Videos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon posts">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Posts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon reels">
+                            <i class="fas fa-film"></i>
+                        </div>
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Reels</div>
+                    </div>
+                </div>
+
+                <!-- Gallery Grid -->
+                <div class="gallery-grid">
+                    <div class="gallery-item" data-type="video">
+                        <div class="gallery-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Video">
+                            <div class="gallery-type">Video</div>
+                            <div class="gallery-duration">3:45</div>
+                        </div>
+                        <div class="gallery-details">
+                            <h3 class="gallery-title">How to Use AI for Content Creation</h3>
+                            <div class="gallery-meta">
+                                <div class="gallery-date">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Jun 15, 2023</span>
+                                </div>
+                                <div class="gallery-platform">
+                                    <div class="platform-icon youtube"></div>
+                                    <span>YouTube</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-item" data-type="post">
+                        <div class="gallery-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Post">
+                            <div class="gallery-type">Post</div>
+                        </div>
+                        <div class="gallery-details">
+                            <h3 class="gallery-title">10 Tips for Effective Content Marketing</h3>
+                            <div class="gallery-meta">
+                                <div class="gallery-date">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Jun 12, 2023</span>
+                                </div>
+                                <div class="gallery-platform">
+                                    <div class="platform-icon facebook"></div>
+                                    <span>Facebook</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-item" data-type="reel">
+                        <div class="gallery-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Reel">
+                            <div class="gallery-type">Reel</div>
+                            <div class="gallery-duration">0:30</div>
+                        </div>
+                        <div class="gallery-details">
+                            <h3 class="gallery-title">Weekly Tech News Roundup</h3>
+                            <div class="gallery-meta">
+                                <div class="gallery-date">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Jun 10, 2023</span>
+                                </div>
+                                <div class="gallery-platform">
+                                    <div class="platform-icon instagram"></div>
+                                    <span>Instagram</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-item" data-type="video">
+                        <div class="gallery-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Video">
+                            <div class="gallery-type">Video</div>
+                            <div class="gallery-duration">5:12</div>
+                        </div>
+                        <div class="gallery-details">
+                            <h3 class="gallery-title">Content Creation Tools Review</h3>
+                            <div class="gallery-meta">
+                                <div class="gallery-date">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Jun 5, 2023</span>
+                                </div>
+                                <div class="gallery-platform">
+                                    <div class="platform-icon youtube"></div>
+                                    <span>YouTube</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-item" data-type="post">
+                        <div class="gallery-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1611974789855-9c2a6a49a8be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Post">
+                            <div class="gallery-type">Post</div>
+                        </div>
+                        <div class="gallery-details">
+                            <h3 class="gallery-title">Digital Marketing Trends 2023</h3>
+                            <div class="gallery-meta">
+                                <div class="gallery-date">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Jun 3, 2023</span>
+                                </div>
+                                <div class="gallery-platform">
+                                    <div class="platform-icon linkedin"></div>
+                                    <span>LinkedIn</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-item" data-type="reel">
+                        <div class="gallery-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1622630998477-20aa696ecb05?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Reel">
+                            <div class="gallery-type">Reel</div>
+                            <div class="gallery-duration">0:45</div>
+                        </div>
+                        <div class="gallery-details">
+                            <h3 class="gallery-title">AI Tools for Small Businesses</h3>
+                            <div class="gallery-meta">
+                                <div class="gallery-date">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Jun 1, 2023</span>
+                                </div>
+                                <div class="gallery-platform">
+                                    <div class="platform-icon tiktok"></div>
+                                    <span>TikTok</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-item" data-type="video">
+                        <div class="gallery-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Video">
+                            <div class="gallery-type">Video</div>
+                            <div class="gallery-duration">4:30</div>
+                        </div>
+                        <div class="gallery-details">
+                            <h3 class="gallery-title">The Future of AI in Marketing</h3>
+                            <div class="gallery-meta">
+                                <div class="gallery-date">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>May 28, 2023</span>
+                                </div>
+                                <div class="gallery-platform">
+                                    <div class="platform-icon youtube"></div>
+                                    <span>YouTube</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-item" data-type="post">
+                        <div class="gallery-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Post">
+                            <div class="gallery-type">Post</div>
+                        </div>
+                        <div class="gallery-details">
+                            <h3 class="gallery-title">Building Your Personal Brand</h3>
+                            <div class="gallery-meta">
+                                <div class="gallery-date">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>May 25, 2023</span>
+                                </div>
+                                <div class="gallery-platform">
+                                    <div class="platform-icon twitter"></div>
+                                    <span>Twitter</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-item" data-type="reel">
+                        <div class="gallery-thumbnail">
+                            <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Reel">
+                            <div class="gallery-type">Reel</div>
+                            <div class="gallery-duration">0:60</div>
+                        </div>
+                        <div class="gallery-details">
+                            <h3 class="gallery-title">5 Quick Productivity Hacks</h3>
+                            <div class="gallery-meta">
+                                <div class="gallery-date">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>May 22, 2023</span>
+                                </div>
+                                <div class="gallery-platform">
+                                    <div class="platform-icon instagram"></div>
+                                    <span>Instagram</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Modal -->
+    <div class="modal" id="galleryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Content Details</h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-media" id="modalMedia">
+                    <img src="" alt="Content" id="modalImage">
+                </div>
+                <div class="modal-info">
+                    <div class="info-item">
+                        <div class="info-label">Type:</div>
+                        <div class="info-value" id="modalType">Video</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Title:</div>
+                        <div class="info-value" id="modalTitleValue">Content Title</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Platform:</div>
+                        <div class="info-value" id="modalPlatform">YouTube</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Date:</div>
+                        <div class="info-value" id="modalDate">Jun 15, 2023</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Duration:</div>
+                        <div class="info-value" id="modalDuration">3:45</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Status:</div>
+                        <div class="info-value" id="modalStatus">Published</div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary">Close</button>
+                    <button class="btn btn-primary">Download</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const modal = document.getElementById('galleryModal');
+        const modalClose = document.getElementById('modalClose');
+        const modalCloseBtn = document.querySelector('.modal-actions .btn-secondary');
+        
+        // Filter functionality
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active state
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Filter gallery items
+                const filter = btn.textContent.trim().toLowerCase();
+                
+                if (filter === 'all') {
+                    galleryItems.forEach(item => {
+                        item.style.display = 'block';
+                    });
+                } else {
+                    galleryItems.forEach(item => {
+                        if (item.dataset.type === filter) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        });
+        
+        // Gallery item click
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Get item details
+                const type = item.dataset.type;
+                const title = item.querySelector('.gallery-title').textContent;
+                const platform = item.querySelector('.gallery-platform span').textContent;
+                const date = item.querySelector('.gallery-date span').textContent;
+                const duration = item.querySelector('.gallery-duration')?.textContent || 'N/A';
+                const imageSrc = item.querySelector('.gallery-thumbnail img').src;
+                
+                // Update modal content
+                document.getElementById('modalType').textContent = type.charAt(0).toUpperCase() + type.slice(1);
+                document.getElementById('modalTitleValue').textContent = title;
+                document.getElementById('modalPlatform').textContent = platform;
+                document.getElementById('modalDate').textContent = date;
+                document.getElementById('modalDuration').textContent = duration;
+                document.getElementById('modalStatus').textContent = 'Published';
+                document.getElementById('modalImage').src = imageSrc;
+                
+                // Show modal
+                modal.classList.add('active');
+            });
+        });
+        
+        // Close modal
+        const closeModal = () => {
+            modal.classList.remove('active');
+        };
+        
+        modalClose.addEventListener('click', closeModal);
+        modalCloseBtn.addEventListener('click', closeModal);
+        
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        // Download button
+        document.querySelector('.modal-actions .btn-primary').addEventListener('click', () => {
+            // In a real implementation, this would download the content
+            const message = document.createElement('div');
+            message.style.position = 'fixed';
+            message.style.top = '20px';
+            message.style.left = '50%';
+            message.style.transform = 'translateX(-50%)';
+            message.style.backgroundColor = '#0969da';
+            message.style.color = 'white';
+            message.style.padding = '15px 30px';
+            message.style.borderRadius = '5px';
+            message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+            message.style.zIndex = '1001';
+            message.textContent = 'Downloading content...';
+            
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.textContent = 'Download completed!';
+                setTimeout(() => {
+                    message.remove();
+                }, 2000);
+            }, 2000);
+        });
+        
+        // Toggle sidebar on mobile
+        const sidebar = document.querySelector('.sidebar');
+        const logo = document.querySelector('.sidebar-logo');
+        
+        logo.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
