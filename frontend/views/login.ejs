@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OCTOPUS - Sign In</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCTOPUS - Sign In</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
         * {
             margin: 0;
             padding: 0;
@@ -227,125 +227,99 @@
     </style>
 </head>
 <body>
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="auth-container">
-            <div class="auth-image"></div>
-            <div class="auth-forms">
-                <h1 class="auth-title">Welcome Back</h1>
-                <p class="auth-subtitle">Sign in to continue to your account</p>
-                
-                <!-- Sign In Form -->
-                <form id="signin-form">
-                    <div class="form-group">
-                        <label for="signin-email">Email Address</label>
-                        <input type="email" id="signin-email" class="form-control" placeholder="Enter your email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signin-password">Password</label>
-                        <input type="password" id="signin-password" class="form-control" placeholder="Enter your password" required>
-                        <i class="fas fa-eye-slash password-toggle" id="toggle-password"></i>
-                    </div>
-                    <div class="form-check">
-                        <a href="#">Forgot password?</a>
-                    </div>
-                    
-                    <button type="submit" class="btn">Sign In</button>
-                </form>
-                
-                <div class="signup-link">
-                    Don't have an account? <a href="./signup.html">Sign Up</a>
-                </div>
-                
-                <div class="social-login">
-                    <p><span>Or sign in with</span></p>
-                    <a href="#" class="google-btn" id="google-signin">
-                        <i class="fab fa-google"></i>
-                        Sign in with Google
-                    </a>
-                </div>
+  <div class="main-content">
+    <div class="auth-container">
+      <div class="auth-image"></div>
+      <div class="auth-forms">
+        <h1 class="auth-title">Welcome Back</h1>
+        <p class="auth-subtitle">Sign in to continue to your account</p>
+
+        <!-- Display Flash Messages -->
+        <% if (success && success.length > 0) { %>
+          <% success.forEach(function(message) { %>
+            <div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #0969da; color: white; padding: 15px 30px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); z-index: 1001;">
+              <%= message %>
             </div>
+          <% }); %>
+        <% } %>
+        <% if (error && error.length > 0) { %>
+          <% error.forEach(function(message) { %>
+            <div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #d32f2f; color: white; padding: 15px 30px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); z-index: 1001;">
+              <%= message %>
+            </div>
+          <% }); %>
+        <% } %>
+
+        <!-- Sign In Form -->
+        <form id="signin-form" action="/login" method="POST">
+          <div class="form-group">
+            <label for="signin-email">Email Address</label>
+            <input type="email" id="signin-email" name="email" class="form-control" placeholder="Enter your email" required>
+          </div>
+          <div class="form-group">
+            <label for="signin-password">Password</label>
+            <input type="password" id="signin-password" name="password" class="form-control" placeholder="Enter your password" required>
+            <i class="fas fa-eye-slash password-toggle" id="toggle-password"></i>
+          </div>
+          <div class="form-check">
+            <a href="#">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn">Sign In</button>
+        </form>
+
+        <div class="signup-link">
+          Don't have an account? <a href="/signup">Sign Up</a>
         </div>
+
+        <div class="social-login">
+          <p><span>Or sign in with</span></p>
+          <a href="#" class="google-btn" id="google-signin">
+            <i class="fab fa-google"></i>
+            Sign in with Google
+          </a>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // Password visibility toggle
-        document.getElementById('toggle-password').addEventListener('click', function() {
-            const passwordInput = document.getElementById('signin-password');
-            const icon = this;
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            }
-        });
+  <script>
+    // Password visibility toggle
+    document.getElementById('toggle-password').addEventListener('click', function() {
+      const passwordInput = document.getElementById('signin-password');
+      const icon = this;
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      }
+    });
 
-        // Form submission handler
-        document.getElementById('signin-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // In a real implementation, this would submit the form data to a server
-            const message = 'Sign in successful! Redirecting to dashboard...';
-            
-            // Show success message
-            const successMessage = document.createElement('div');
-            successMessage.style.position = 'fixed';
-            successMessage.style.top = '20px';
-            successMessage.style.left = '50%';
-            successMessage.style.transform = 'translateX(-50%)';
-            successMessage.style.backgroundColor = '#0969da';
-            successMessage.style.color = 'white';
-            successMessage.style.padding = '15px 30px';
-            successMessage.style.borderRadius = '8px';
-            successMessage.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-            successMessage.style.zIndex = '1001';
-            successMessage.textContent = message;
-            
-            document.body.appendChild(successMessage);
-            
-            // Remove message after 3 seconds
-            setTimeout(() => {
-                successMessage.remove();
-                // In a real implementation, redirect to dashboard
-                // window.location.href = '/dashboard';
-            }, 3000);
-        });
-        
-        // Google sign-in button handler
-        document.getElementById('google-signin').addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            // In a real implementation, this would initiate Google OAuth
-            const message = 'Redirecting to Google authentication...';
-            
-            // Show message
-            const infoMessage = document.createElement('div');
-            infoMessage.style.position = 'fixed';
-            infoMessage.style.top = '20px';
-            infoMessage.style.left = '50%';
-            infoMessage.style.transform = 'translateX(-50%)';
-            infoMessage.style.backgroundColor = '#4285f4';
-            infoMessage.style.color = 'white';
-            infoMessage.style.padding = '15px 30px';
-            infoMessage.style.borderRadius = '8px';
-            infoMessage.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-            infoMessage.style.zIndex = '1001';
-            infoMessage.textContent = message;
-            
-            document.body.appendChild(infoMessage);
-            
-            // Remove message after 3 seconds
-            setTimeout(() => {
-                infoMessage.remove();
-                // In a real implementation, redirect to Google OAuth
-                // window.location.href = '/auth/google';
-            }, 3000);
-        });
-    </script>
+    // Google sign-in button handler
+    document.getElementById('google-signin').addEventListener('click', (e) => {
+      e.preventDefault();
+      const message = 'Redirecting to Google authentication...';
+      const infoMessage = document.createElement('div');
+      infoMessage.style.position = 'fixed';
+      infoMessage.style.top = '20px';
+      infoMessage.style.left = '50%';
+      infoMessage.style.transform = 'translateX(-50%)';
+      infoMessage.style.backgroundColor = '#4285f4';
+      infoMessage.style.color = 'white';
+      infoMessage.style.padding = '15px 30px';
+      infoMessage.style.borderRadius = '8px';
+      infoMessage.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+      infoMessage.style.zIndex = '1001';
+      infoMessage.textContent = message;
+      document.body.appendChild(infoMessage);
+      setTimeout(() => {
+        infoMessage.remove();
+        // window.location.href = '/auth/google';
+      }, 3000);
+    });
+  </script>
 </body>
 </html>
