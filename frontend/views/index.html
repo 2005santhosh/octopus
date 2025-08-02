@@ -12,13 +12,68 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         body {
             background-color: #ffffff;
             color: #333;
             overflow-x: hidden;
         }
-
+        
+        /* Video Intro Styles */
+        .video-intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .video-intro.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .intro-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .skip-intro {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background-color: rgba(9, 105, 218, 0.7);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+            z-index: 10000;
+        }
+        
+        .skip-intro:hover {
+            background-color: rgba(9, 105, 218, 0.9);
+        }
+        
+        /* Main content hidden initially */
+        .main-content {
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+        
+        .main-content.visible {
+            opacity: 1;
+        }
+        
         /* Navbar Styles */
         .navbar {
             display: flex;
@@ -31,34 +86,28 @@
             top: 0;
             z-index: 1000;
         }
-
         .logo {
             font-size: 24px;
             font-weight: bold;
             color: #0969da;
         }
-
         .nav-links {
             display: flex;
             list-style: none;
             align-items: center;
         }
-
         .nav-links li {
             margin-left: 30px;
         }
-
         .nav-links a {
             text-decoration: none;
             color: #333;
             font-weight: 500;
             transition: color 0.3s;
         }
-
         .nav-links a:hover {
             color: #0969da;
         }
-
         .login-button {
             background-color: #0969da;
             color: white;
@@ -68,12 +117,10 @@
             font-weight: 500;
             transition: all 0.3s;
         }
-
         .login-button:hover {
             background-color: #0750a5;
             color: white;
         }
-
         /* Hero Section */
         .hero {
             display: flex;
@@ -83,28 +130,23 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-
         .hero-content {
             flex: 1;
             padding-right: 50px;
         }
-
         .hero h1 {
             font-size: 48px;
             margin-bottom: 20px;
             line-height: 1.2;
         }
-
         .octopus-text {
             color: #0969da;
         }
-
         .hero p {
             font-size: 18px;
             margin-bottom: 30px;
             line-height: 1.6;
         }
-
         .cta-button {
             background-color: #0969da;
             color: white;
@@ -116,13 +158,11 @@
             transition: all 0.3s;
             font-weight: 600;
         }
-
         .cta-button:hover {
             background-color: #0750a5;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(9, 105, 218, 0.3);
         }
-
         .hero-video {
             flex: 1;
             position: relative;
@@ -130,7 +170,6 @@
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
-
         .hero-video video {
             width: 100%;
             height: auto;
@@ -138,11 +177,9 @@
             transform: scale(1.1);
             transition: transform 0.5s;
         }
-
         .hero-video:hover video {
             transform: scale(1.15);
         }
-
         /* Why Octopus Section */
         .why-octopus {
             display: flex;
@@ -151,7 +188,6 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-
         .why-octopus-video {
             flex: 1;
             margin-right: 50px;
@@ -160,7 +196,6 @@
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
-
         .why-octopus-video video {
             width: 100%;
             height: auto;
@@ -168,59 +203,49 @@
             transform: scale(1.1);
             transition: transform 0.5s;
         }
-
         .why-octopus-video:hover video {
             transform: scale(1.15);
         }
-
         .why-octopus-content {
             flex: 1;
         }
-
         .why-octopus h2 {
             font-size: 36px;
             margin-bottom: 20px;
             color: #0969da;
         }
-
         .why-octopus p {
             font-size: 18px;
             line-height: 1.6;
             margin-bottom: 20px;
         }
-
         /* Success Stories Section */
         .success-stories {
             padding: 80px 0;
             background-color: #f8f9fa;
             overflow: hidden;
         }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 50px;
         }
-
         .success-stories h2 {
             text-align: center;
             font-size: 36px;
             margin-bottom: 50px;
             color: #0969da;
         }
-
         .carousel-container {
             position: relative;
             overflow: hidden;
             width: 100%;
         }
-
         .stories-carousel {
             display: flex;
             animation: scroll 30s linear infinite;
             width: 200%; /* Double width to accommodate two sets of stories */
         }
-
         .story-card {
             flex: 0 0 300px;
             background-color: white;
@@ -229,7 +254,6 @@
             margin-right: 30px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
-
         .story-card img {
             width: 80px;
             height: 80px;
@@ -238,18 +262,15 @@
             object-fit: cover;
             border: 3px solid #0969da;
         }
-
         .story-card h3 {
             font-size: 20px;
             margin-bottom: 10px;
         }
-
         .story-card p {
             font-size: 16px;
             line-height: 1.5;
             color: #666;
         }
-
         @keyframes scroll {
             0% {
                 transform: translateX(0);
@@ -258,20 +279,17 @@
                 transform: translateX(-50%); /* Move by half the container width (one full set) */
             }
         }
-
         /* Features Section */
         .features {
             padding: 80px 0;
             text-align: center;
             background-color: #f8f9fa;
         }
-
         .features h2 {
             font-size: 36px;
             margin-bottom: 50px;
             color: #0969da;
         }
-
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -279,7 +297,6 @@
             max-width: 1000px;
             margin: 0 auto;
         }
-
         .feature-card {
             background-color: white;
             border-radius: 10px;
@@ -289,7 +306,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .feature-card::before {
             content: '';
             position: absolute;
@@ -301,16 +317,13 @@
             transform: translateX(-100%);
             transition: transform 0.3s ease;
         }
-
         .feature-card:hover::before {
             transform: translateX(0);
         }
-
         .feature-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
-
         .feature-icon {
             background-color: #0969da;
             color: white;
@@ -324,24 +337,20 @@
             font-size: 24px;
             transition: all 0.3s ease;
         }
-
         .feature-card:hover .feature-icon {
             transform: scale(1.1);
             box-shadow: 0 5px 15px rgba(9, 105, 218, 0.3);
         }
-
         .feature-card h3 {
             font-size: 20px;
             margin-bottom: 15px;
             color: #333;
         }
-
         .feature-card p {
             font-size: 16px;
             line-height: 1.5;
             color: #666;
         }
-
         /* Inspiration Card */
         .inspiration-card {
             background-color: #0969da;
@@ -353,124 +362,100 @@
             text-align: center;
             box-shadow: 0 10px 30px rgba(9, 105, 218, 0.3);
         }
-
         .inspiration-card h2 {
             font-size: 36px;
             margin-bottom: 20px;
         }
-
         .inspiration-card p {
             font-size: 20px;
             line-height: 1.6;
             margin-bottom: 30px;
         }
-
         .inspiration-card .cta-button {
             background-color: white;
             color: #0969da;
         }
-
         .inspiration-card .cta-button:hover {
             background-color: #f8f9fa;
         }
-
         /* Footer */
         footer {
             background-color: #f8f9fa;
             padding: 50px;
             text-align: center;
         }
-
         .footer-content {
             display: flex;
             justify-content: space-between;
             max-width: 1200px;
             margin: 0 auto;
         }
-
         .footer-logo {
             font-size: 24px;
             font-weight: bold;
             color: #0969da;
             margin-bottom: 20px;
         }
-
         .footer-links {
             display: flex;
             list-style: none;
         }
-
         .footer-links li {
             margin-left: 30px;
         }
-
         .footer-links a {
             text-decoration: none;
             color: #333;
             font-weight: 500;
             transition: color 0.3s;
         }
-
         .footer-links a:hover {
             color: #0969da;
         }
-
         .copyright {
             margin-top: 30px;
             color: #666;
         }
-
         /* Responsive Design */
         @media (max-width: 992px) {
             .hero, .why-octopus {
                 flex-direction: column;
             }
-
             .hero-content, .why-octopus-content {
                 padding-right: 0;
                 margin-bottom: 30px;
             }
-
             .why-octopus-video {
                 margin-right: 0;
             }
         }
-
         @media (max-width: 768px) {
             .navbar {
                 padding: 15px 20px;
             }
-
             .nav-links {
                 display: none;
             }
-
             .hero, .why-octopus, .container {
                 padding: 40px 20px;
             }
-
             .hero h1 {
                 font-size: 36px;
             }
-
             .features-grid {
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
                 gap: 20px;
             }
-
             .story-card {
                 flex: 0 0 250px;
             }
-
             .footer-content {
                 flex-direction: column;
             }
-
             .footer-links {
                 margin-top: 20px;
                 justify-content: center;
             }
-
             .footer-links li {
                 margin: 0 15px;
             }
@@ -478,195 +463,230 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="logo">OCTOPUS</div>
-        <ul class="nav-links">
-            <li><a href="#hero">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#stories">Stories</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="/frontend/views/auth.html" class="login-button" style="color: #ffffff;">Login</a></li>
-        </ul>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero" id="hero">
-        <div class="hero-content">
-            <h1>Transform Your Content with <span class="octopus-text">OCTOPUS</span></h1>
-            <p>OCTOPUS is an AI-driven content creation and management tool that revolutionizes how you produce, organize, and distribute content across all platforms.</p>
-            <button class="cta-button">Get Started Free</button>
-        </div>
-        <div class="hero-video">
-            <video autoplay muted loop>
-                <source src="/frontend/assets/octopus3.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-    </section>
-
-    <!-- Why Octopus Section -->
-    <section class="why-octopus" id="about">
-        <div class="why-octopus-video">
-            <video autoplay muted loop>
-                <source src="/frontend/assets/octopus2.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-        <div class="why-octopus-content">
-            <h2>Why OCTOPUS?</h2>
-            <p>OCTOPUS leverages cutting-edge AI technology to streamline your content workflow, from ideation to publication. Our platform learns your brand voice and audience preferences to create engaging content that resonates.</p>
-            <p>With OCTOPUS, you can produce high-quality content at scale, maintain consistency across all channels, and analyze performance to continuously optimize your strategy.</p>
-            <p>Join thousands of content creators, marketers, and businesses who have transformed their content strategy with OCTOPUS.</p>
-        </div>
-    </section>
-
-    <!-- Success Stories Section -->
-    <section class="success-stories" id="stories">
-        <div class="container">
-            <h2>Success Stories</h2>
-            <div class="carousel-container">
-                <div class="stories-carousel">
-                    <!-- First set of stories -->
-                    <div class="story-card">
-                        <img src="https://img.freepik.com/premium-photo/beautiful-asain-woman-fashion-models-digital-painting-drawing-portrait_1020867-91503.jpg" alt="User">
-                        <h3>Sarah Johnson</h3>
-                        <p>"OCTOPUS helped our marketing team increase content output by 300% while maintaining quality. It's been a game-changer for our business."</p>
-                    </div>
-                    <div class="story-card">
-                        <img src="https://img.freepik.com/premium-photo/handsome-man-studio-black-background_1001749-24698.jpg" alt="User">
-                        <h3>Michael Chen</h3>
-                        <p>"The AI-powered content suggestions are incredibly accurate. OCTOPUS understands our brand voice better than some of our junior writers."</p>
-                    </div>
-                    <div class="story-card">
-                        <img src="https://tse1.explicit.bing.net/th/id/OIP.lnJcPEQv7l0Z23zfAe8jcAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="User">
-                        <h3>Emma Rodriguez</h3>
-                        <p>"Managing content across multiple platforms used to be a nightmare. OCTOPUS streamlined everything and saved us countless hours."</p>
-                    </div>
-                    <div class="story-card">
-                        <img src="https://img.freepik.com/premium-photo/model-man-skin-care-concept-isolated-white-transparent-background-ai-generated-image_145713-15597.jpg" alt="User">
-                        <h3>David Thompson</h3>
-                        <p>"The analytics features in OCTOPUS gave us insights we never had before. Our engagement rates have skyrocketed since implementing the platform."</p>
-                    </div>
-                    <!-- Duplicate the first set to create a seamless loop -->
-                    <div class="story-card">
-                        <img src="https://img.freepik.com/premium-photo/beautiful-asain-woman-fashion-models-digital-painting-drawing-portrait_1020867-91503.jpg" alt="User">
-                        <h3>Sarah Johnson</h3>
-                        <p>"OCTOPUS helped our marketing team increase content output by 300% while maintaining quality. It's been a game-changer for our business."</p>
-                    </div>
-                    <div class="story-card">
-                        <img src="https://img.freepik.com/premium-photo/handsome-man-studio-black-background_1001749-24698.jpg" alt="User">
-                        <h3>Michael Chen</h3>
-                        <p>"The AI-powered content suggestions are incredibly accurate. OCTOPUS understands our brand voice better than some of our junior writers."</p>
-                    </div>
-                    <div class="story-card">
-                        <img src="https://tse1.explicit.bing.net/th/id/OIP.lnJcPEQv7l0Z23zfAe8jcAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="User">
-                        <h3>Emma Rodriguez</h3>
-                        <p>"Managing content across multiple platforms used to be a nightmare. OCTOPUS streamlined everything and saved us countless hours."</p>
-                    </div>
-                    <div class="story-card">
-                        <img src="https://img.freepik.com/premium-photo/model-man-skin-care-concept-isolated-white-transparent-background-ai-generated-image_145713-15597.jpg" alt="User">
-                        <h3>David Thompson</h3>
-                        <p>"The analytics features in OCTOPUS gave us insights we never had before. Our engagement rates have skyrocketed since implementing the platform."</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="container">
-            <h2>Features</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-magic"></i>
-                    </div>
-                    <h3>AI Content Generation</h3>
-                    <p>Create high-quality content in seconds with our advanced AI algorithms.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-share-alt"></i>
-                    </div>
-                    <h3>Multi-Platform Publishing</h3>
-                    <p>Publish your content across multiple platforms with a single click.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Content Analytics</h3>
-                    <p>Track performance and gain insights with comprehensive analytics.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-volume-up"></i>
-                    </div>
-                    <h3>Brand Voice Consistency</h3>
-                    <p>Maintain a consistent brand voice across all your content.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Collaboration Tools</h3>
-                    <p>Work seamlessly with your team using our collaboration features.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <h3>SEO Optimization</h3>
-                    <p>Optimize your content for search engines to increase visibility.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <h3>Content Calendar</h3>
-                    <p>Plan and schedule your content with our intuitive calendar.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-tachometer-alt"></i>
-                    </div>
-                    <h3>Performance Tracking</h3>
-                    <p>Monitor and track the performance of your content in real-time.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Inspiration Card -->
-    <div class="inspiration-card">
-        <h2>Ready to Transform Your Content Strategy?</h2>
-        <p>Join thousands of content creators, marketers, and businesses who have revolutionized their workflow with OCTOPUS. The future of content creation is here.</p>
-        <button class="cta-button">Start Your Free Trial</button>
+    <!-- Video Intro -->
+    <div class="video-intro" id="videoIntro">
+        <video class="intro-video" id="introVideo" autoplay muted>
+            <source src="/frontend/assets/intro.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <button class="skip-intro" id="skipIntro">Skip Intro</button>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div>
-                <div class="footer-logo">OCTOPUS</div>
-                <p>AI-driven content creation and management</p>
-            </div>
-            <ul class="footer-links">
+    <!-- Main Content (initially hidden) -->
+    <div class="main-content" id="mainContent">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="logo">OCTOPUS</div>
+            <ul class="nav-links">
                 <li><a href="#hero">Home</a></li>
-                <li><a href="#about">Privacy</a></li>
-                <li><a href="#stories">Terms & Conditions</a></li>
-                <li><a href="#features">Careers</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#stories">Stories</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="/frontend/views/auth.html" class="login-button" style="color: #ffffff;">Login</a></li>
             </ul>
+        </nav>
+        <!-- Hero Section -->
+        <section class="hero" id="hero">
+            <div class="hero-content">
+                <h1>Transform Your Content with <span class="octopus-text">OCTOPUS</span></h1>
+                <p>OCTOPUS is an AI-driven content creation and management tool that revolutionizes how you produce, organize, and distribute content across all platforms.</p>
+                <button class="cta-button">Get Started Free</button>
+            </div>
+            <div class="hero-video">
+                <video autoplay muted loop>
+                    <source src="/frontend/assets/octopus3.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </section>
+        <!-- Why Octopus Section -->
+        <section class="why-octopus" id="about">
+            <div class="why-octopus-video">
+                <video autoplay muted loop>
+                    <source src="/frontend/assets/octopus2.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="why-octopus-content">
+                <h2>Why OCTOPUS?</h2>
+                <p>OCTOPUS leverages cutting-edge AI technology to streamline your content workflow, from ideation to publication. Our platform learns your brand voice and audience preferences to create engaging content that resonates.</p>
+                <p>With OCTOPUS, you can produce high-quality content at scale, maintain consistency across all channels, and analyze performance to continuously optimize your strategy.</p>
+                <p>Join thousands of content creators, marketers, and businesses who have transformed their content strategy with OCTOPUS.</p>
+            </div>
+        </section>
+        <!-- Success Stories Section -->
+        <section class="success-stories" id="stories">
+            <div class="container">
+                <h2>Success Stories</h2>
+                <div class="carousel-container">
+                    <div class="stories-carousel">
+                        <!-- First set of stories -->
+                        <div class="story-card">
+                            <img src="https://img.freepik.com/premium-photo/beautiful-asain-woman-fashion-models-digital-painting-drawing-portrait_1020867-91503.jpg" alt="User">
+                            <h3>Sarah Johnson</h3>
+                            <p>"OCTOPUS helped our marketing team increase content output by 300% while maintaining quality. It's been a game-changer for our business."</p>
+                        </div>
+                        <div class="story-card">
+                            <img src="https://img.freepik.com/premium-photo/handsome-man-studio-black-background_1001749-24698.jpg" alt="User">
+                            <h3>Michael Chen</h3>
+                            <p>"The AI-powered content suggestions are incredibly accurate. OCTOPUS understands our brand voice better than some of our junior writers."</p>
+                        </div>
+                        <div class="story-card">
+                            <img src="https://tse1.explicit.bing.net/th/id/OIP.lnJcPEQv7l0Z23zfAe8jcAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="User">
+                            <h3>Emma Rodriguez</h3>
+                            <p>"Managing content across multiple platforms used to be a nightmare. OCTOPUS streamlined everything and saved us countless hours."</p>
+                        </div>
+                        <div class="story-card">
+                            <img src="https://img.freepik.com/premium-photo/model-man-skin-care-concept-isolated-white-transparent-background-ai-generated-image_145713-15597.jpg" alt="User">
+                            <h3>David Thompson</h3>
+                            <p>"The analytics features in OCTOPUS gave us insights we never had before. Our engagement rates have skyrocketed since implementing the platform."</p>
+                        </div>
+                        <!-- Duplicate the first set to create a seamless loop -->
+                        <div class="story-card">
+                            <img src="https://img.freepik.com/premium-photo/beautiful-asain-woman-fashion-models-digital-painting-drawing-portrait_1020867-91503.jpg" alt="User">
+                            <h3>Sarah Johnson</h3>
+                            <p>"OCTOPUS helped our marketing team increase content output by 300% while maintaining quality. It's been a game-changer for our business."</p>
+                        </div>
+                        <div class="story-card">
+                            <img src="https://img.freepik.com/premium-photo/handsome-man-studio-black-background_1001749-24698.jpg" alt="User">
+                            <h3>Michael Chen</h3>
+                            <p>"The AI-powered content suggestions are incredibly accurate. OCTOPUS understands our brand voice better than some of our junior writers."</p>
+                        </div>
+                        <div class="story-card">
+                            <img src="https://tse1.explicit.bing.net/th/id/OIP.lnJcPEQv7l0Z23zfAe8jcAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="User">
+                            <h3>Emma Rodriguez</h3>
+                            <p>"Managing content across multiple platforms used to be a nightmare. OCTOPUS streamlined everything and saved us countless hours."</p>
+                        </div>
+                        <div class="story-card">
+                            <img src="https://img.freepik.com/premium-photo/model-man-skin-care-concept-isolated-white-transparent-background-ai-generated-image_145713-15597.jpg" alt="User">
+                            <h3>David Thompson</h3>
+                            <p>"The analytics features in OCTOPUS gave us insights we never had before. Our engagement rates have skyrocketed since implementing the platform."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <div class="container">
+                <h2>Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-magic"></i>
+                        </div>
+                        <h3>AI Content Generation</h3>
+                        <p>Create high-quality content in seconds with our advanced AI algorithms.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <h3>Multi-Platform Publishing</h3>
+                        <p>Publish your content across multiple platforms with a single click.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Content Analytics</h3>
+                        <p>Track performance and gain insights with comprehensive analytics.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-volume-up"></i>
+                        </div>
+                        <h3>Brand Voice Consistency</h3>
+                        <p>Maintain a consistent brand voice across all your content.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Collaboration Tools</h3>
+                        <p>Work seamlessly with your team using our collaboration features.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>SEO Optimization</h3>
+                        <p>Optimize your content for search engines to increase visibility.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h3>Content Calendar</h3>
+                        <p>Plan and schedule your content with our intuitive calendar.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <h3>Performance Tracking</h3>
+                        <p>Monitor and track the performance of your content in real-time.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Inspiration Card -->
+        <div class="inspiration-card">
+            <h2>Ready to Transform Your Content Strategy?</h2>
+            <p>Join thousands of content creators, marketers, and businesses who have revolutionized their workflow with OCTOPUS. The future of content creation is here.</p>
+            <button class="cta-button">Start Your Free Trial</button>
         </div>
-        <div class="copyright">
-            &copy; 2025 OCTOPUS. All rights reserved.
-        </div>
-    </footer>
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">OCTOPUS</div>
+                    <p>AI-driven content creation and management</p>
+                </div>
+                <ul class="footer-links">
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#about">Privacy</a></li>
+                    <li><a href="#stories">Terms & Conditions</a></li>
+                    <li><a href="#features">Careers</a></li>
+                </ul>
+            </div>
+            <div class="copyright">
+                &copy; 2025 OCTOPUS. All rights reserved.
+            </div>
+        </footer>
+    </div>
 
     <script>
-        
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoIntro = document.getElementById('videoIntro');
+            const introVideo = document.getElementById('introVideo');
+            const skipIntro = document.getElementById('skipIntro');
+            const mainContent = document.getElementById('mainContent');
+            
+            // Function to end the intro and show the landing page
+            function endIntro() {
+                videoIntro.classList.add('fade-out');
+                
+                // After the fade-out transition, hide the intro and show the main content
+                setTimeout(() => {
+                    videoIntro.style.display = 'none';
+                    mainContent.classList.add('visible');
+                }, 500); // Changed from 1000ms to 500ms
+            }
+            
+            // Event listener for when the video ends
+            introVideo.addEventListener('ended', endIntro);
+            
+            // Event listener for the skip button
+            skipIntro.addEventListener('click', endIntro);
+            
+            // Fallback: If the video fails to play, end the intro after 5 seconds
+            setTimeout(() => {
+                if (videoIntro.style.display !== 'none') {
+                    endIntro();
+                }
+            }, 5000);
+        });
     </script>
 </body>
 </html>
