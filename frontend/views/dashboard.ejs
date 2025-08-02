@@ -895,39 +895,39 @@
                 <h2>OCTOPUS</h2>
             </div>
             <div class="sidebar-menu">
-                <a href="./dashboard.ejs" class="menu-item active">
+                <a href="/dashboard" class="menu-item active">
                     <i class="fas fa-home"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="./content.ejs" class="menu-item">
+                <a href="/content" class="menu-item">
                     <i class="fas fa-file-alt"></i>
                     <span>Content</span>
                 </a>
-                <a href="./analytics.ejs" class="menu-item">
+                <a href="/analytics" class="menu-item">
                     <i class="fas fa-chart-line"></i>
                     <span>Analytics</span>
                 </a>
-                <a href="./gallery.ejs" class="menu-item">
+                <a href="/gallery" class="menu-item">
                     <i class="fas fa-images"></i>
                     <span>Gallery</span>
                 </a>
-                <a href="./calendar.ejs" class="menu-item">
+                <a href="/calendar" class="menu-item">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Calendar</span>
                 </a>
-                <a href="./social_accounts.ejs" class="menu-item">
+                <a href="/social-accounts" class="menu-item">
                     <i class="fas fa-share-alt"></i>
                     <span>Social Accounts</span>
                 </a>
-                <a href="./credits.ejs" class="menu-item">
+                <a href="/credits" class="menu-item">
                     <i class="fas fa-coins"></i>
                     <span>Credits</span>
                 </a>
-                <a href="./pricing.ejs" class="menu-item">
+                <a href="/pricing" class="menu-item">
                     <i class="fas fa-tag"></i>
                     <span>Pricing</span>
                 </a>
-                <a href="./settings.ejs" class="menu-item">
+                <a href="/settings" class="menu-item">
                     <i class="fas fa-cog"></i>
                     <span>Settings</span>
                 </a>
@@ -993,7 +993,7 @@
                 <div class="social-accounts">
                     <div class="section-header">
                         <div class="section-title">Connected Social Accounts</div>
-                        <a href="./social_accounts.html" class="section-action">Manage All</a>
+                        <a href="/social-accounts" class="section-action">Manage All</a>
                     </div>
                     <div class="social-list">
                         <div class="social-item">
@@ -1046,7 +1046,7 @@
                             </div>
                             <button class="social-action disconnect">Disconnect</button>
                         </div>
-                        <a href="#" class="add-social">
+                        <a href="/social-accounts" class="add-social">
                             <div>
                                 <i class="fas fa-plus"></i>
                                 <div>Add Account</div>
@@ -1117,7 +1117,7 @@
                     <div class="section-card">
                         <div class="section-header">
                             <div class="section-title">Recent Content</div>
-                            <a href="./content.html" class="section-action">View All</a>
+                            <a href="/content" class="section-action">View All</a>
                         </div>
                         <div class="content-list">
                             <div class="content-item">
@@ -1179,21 +1179,21 @@
                             <div class="section-title">Quick Actions</div>
                         </div>
                         <div class="quick-actions">
-                            <a href="./content.html" class="quick-action">
+                            <a href="/content" class="quick-action">
                                 <i class="fas fa-plus"></i>
                                 <span>Create Content</span>
                             </a>
-                            <a href="#" class="quick-action">
-                                <i class="fas fa-robot"></i>
-                                <span>AI Assistant</span>
+                            <a href="/analytics" class="quick-action">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>View Reports</span>
                             </a>
-                            <a href="./calendar.html" class="quick-action">
+                            <a href="/calendar" class="quick-action">
                                 <i class="fas fa-calendar-plus"></i>
                                 <span>Track Post</span>
                             </a>
-                            <a href="#" class="quick-action">
-                                <i class="fas fa-chart-bar"></i>
-                                <span>View Reports</span>
+                            <a href="/social-accounts" class="quick-action">
+                                <i class="fas fa-share-alt"></i>
+                                <span>Manage Social</span>
                             </a>
                         </div>
                     </div>
@@ -1203,7 +1203,7 @@
                 <div class="section-card">
                     <div class="section-header">
                         <div class="section-title">Content Performance</div>
-                        <a href="#" class="section-action">View Report</a>
+                        <a href="/analytics" class="section-action">View Report</a>
                     </div>
                     <div class="chart-container">
                         <div class="chart-bars">
@@ -1250,10 +1250,28 @@
     </button>
 
     <script>
+        // Show notification message
+        function showMessage(text, bgColor) {
+            const message = document.createElement('div');
+            message.style.position = 'fixed';
+            message.style.top = '20px';
+            message.style.left = '50%';
+            message.style.transform = 'translateX(-50%)';
+            message.style.backgroundColor = bgColor;
+            message.style.color = 'white';
+            message.style.padding = '15px 30px';
+            message.style.borderRadius = '5px';
+            message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+            message.style.zIndex = '1001';
+            message.textContent = text;
+            document.body.appendChild(message);
+            setTimeout(() => {
+                message.remove();
+            }, 3000);
+        }
+
         // Toggle sidebar on mobile
         document.addEventListener('DOMContentLoaded', function() {
-            // This would typically be connected to a hamburger menu toggle
-            // For demo purposes, we'll just add a click event to the logo
             const sidebar = document.querySelector('.sidebar');
             const logo = document.querySelector('.sidebar-logo');
             
@@ -1261,179 +1279,63 @@
                 sidebar.classList.toggle('active');
             });
 
+            // Menu item navigation
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const href = this.getAttribute('href');
+                    const actionText = this.querySelector('span').textContent;
+                    showMessage(`Navigating to ${actionText}...`, '#0969da');
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 1000);
+                });
+            });
+
+            // Quick action navigation
+            document.querySelectorAll('.quick-action').forEach(action => {
+                action.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const href = this.getAttribute('href');
+                    const actionText = this.querySelector('span').textContent;
+                    showMessage(`Opening ${actionText}...`, '#0969da');
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 1000);
+                });
+            });
+
             // Create button functionality
             const createButton = document.querySelector('.create-button');
             createButton.addEventListener('click', function() {
-                // Check if user has credits
                 const credits = 3; // This would be fetched from the server in a real app
-                
                 if (credits <= 0) {
-                    // Show message about no credits
-                    const message = document.createElement('div');
-                    message.style.position = 'fixed';
-                    message.style.top = '20px';
-                    message.style.left = '50%';
-                    message.style.transform = 'translateX(-50%)';
-                    message.style.backgroundColor = '#dc3545';
-                    message.style.color = 'white';
-                    message.style.padding = '15px 30px';
-                    message.style.borderRadius = '5px';
-                    message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-                    message.style.zIndex = '1001';
-                    message.textContent = 'You have no credits left. Please upgrade your plan or wait for daily reset.';
-                    
-                    document.body.appendChild(message);
-                    
-                    setTimeout(() => {
-                        message.remove();
-                    }, 5000);
+                    showMessage('You have no credits left. Please upgrade your plan or wait for daily reset.', '#dc3545');
                 } else {
-                    // In a real implementation, this would open a content creation modal or page
-                    const message = document.createElement('div');
-                    message.style.position = 'fixed';
-                    message.style.top = '20px';
-                    message.style.left = '50%';
-                    message.style.transform = 'translateX(-50%)';
-                    message.style.backgroundColor = '#0969da';
-                    message.style.color = 'white';
-                    message.style.padding = '15px 30px';
-                    message.style.borderRadius = '5px';
-                    message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-                    message.style.zIndex = '1001';
-                    message.textContent = 'Opening content creation tools...';
-                    
-                    document.body.appendChild(message);
-                    
-                    setTimeout(() => {
-                        message.remove();
-                    }, 3000);
+                    showMessage('Opening content creation tools...', '#0969da');
                 }
             });
-
-            // Quick action buttons
-            // document.querySelectorAll('.quick-action').forEach(action => {
-            //     action.addEventListener('click', function(e) {
-            //         e.preventDefault();
-            //         const actionText = this.querySelector('span').textContent;
-                    
-            //         const message = document.createElement('div');
-            //         message.style.position = 'fixed';
-            //         message.style.top = '20px';
-            //         message.style.left = '50%';
-            //         message.style.transform = 'translateX(-50%)';
-            //         message.style.backgroundColor = '#0969da';
-            //         message.style.color = 'white';
-            //         message.style.padding = '15px 30px';
-            //         message.style.borderRadius = '5px';
-            //         message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-            //         message.style.zIndex = '1001';
-            //         message.textContent = `Opening ${actionText}...`;
-                    
-            //         document.body.appendChild(message);
-                    
-            //         setTimeout(() => {
-            //             message.remove();
-            //         }, 3000);
-            //     });
-            // });
 
             // Notification button
             const notificationBtn = document.querySelector('.notification-btn');
             notificationBtn.addEventListener('click', function() {
-                const message = document.createElement('div');
-                message.style.position = 'fixed';
-                message.style.top = '20px';
-                message.style.left = '50%';
-                message.style.transform = 'translateX(-50%)';
-                message.style.backgroundColor = '#0969da';
-                message.style.color = 'white';
-                message.style.padding = '15px 30px';
-                message.style.borderRadius = '5px';
-                message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-                message.style.zIndex = '1001';
-                message.textContent = 'Opening notifications...';
-                
-                document.body.appendChild(message);
-                
-                setTimeout(() => {
-                    message.remove();
-                }, 3000);
+                showMessage('Opening notifications...', '#0969da');
             });
 
             // Buy credits button
             const buyCreditsBtn = document.querySelector('.buy-credits');
             buyCreditsBtn.addEventListener('click', function() {
-                const message = document.createElement('div');
-                message.style.position = 'fixed';
-                message.style.top = '20px';
-                message.style.left = '50%';
-                message.style.transform = 'translateX(-50%)';
-                message.style.backgroundColor = '#0969da';
-                message.style.color = 'white';
-                message.style.padding = '15px 30px';
-                message.style.borderRadius = '5px';
-                message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-                message.style.zIndex = '1001';
-                message.textContent = 'Redirecting to pricing page...';
-                
-                document.body.appendChild(message);
-                
+                showMessage('Redirecting to pricing page...', '#0969da');
                 setTimeout(() => {
-                    message.remove();
-                }, 3000);
-            });
-
-            // Pricing plan buttons
-            document.querySelectorAll('.pricing-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    if (this.textContent === 'Current Plan') {
-                        return; // Do nothing for current plan
-                    }
-                    
-                    const message = document.createElement('div');
-                    message.style.position = 'fixed';
-                    message.style.top = '20px';
-                    message.style.left = '50%';
-                    message.style.transform = 'translateX(-50%)';
-                    message.style.backgroundColor = '#0969da';
-                    message.style.color = 'white';
-                    message.style.padding = '15px 30px';
-                    message.style.borderRadius = '5px';
-                    message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-                    message.style.zIndex = '1001';
-                    message.textContent = 'Redirecting to checkout...';
-                    
-                    document.body.appendChild(message);
-                    
-                    setTimeout(() => {
-                        message.remove();
-                    }, 3000);
-                });
+                    window.location.href = '/pricing';
+                }, 1000);
             });
 
             // Social account disconnect buttons
             document.querySelectorAll('.social-action.disconnect').forEach(button => {
                 button.addEventListener('click', function() {
                     const socialName = this.closest('.social-item').querySelector('.social-name').textContent;
-                    
-                    const message = document.createElement('div');
-                    message.style.position = 'fixed';
-                    message.style.top = '20px';
-                    message.style.left = '50%';
-                    message.style.transform = 'translateX(-50%)';
-                    message.style.backgroundColor = '#dc3545';
-                    message.style.color = 'white';
-                    message.style.padding = '15px 30px';
-                    message.style.borderRadius = '5px';
-                    message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-                    message.style.zIndex = '1001';
-                    message.textContent = `Disconnecting ${socialName} account...`;
-                    
-                    document.body.appendChild(message);
-                    
-                    setTimeout(() => {
-                        message.remove();
-                    }, 3000);
+                    showMessage(`Disconnecting ${socialName} account...`, '#dc3545');
                 });
             });
 
@@ -1441,25 +1343,10 @@
             const addSocialBtn = document.querySelector('.add-social');
             addSocialBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                
-                const message = document.createElement('div');
-                message.style.position = 'fixed';
-                message.style.top = '20px';
-                message.style.left = '50%';
-                message.style.transform = 'translateX(-50%)';
-                message.style.backgroundColor = '#0969da';
-                message.style.color = 'white';
-                message.style.padding = '15px 30px';
-                message.style.borderRadius = '5px';
-                message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-                message.style.zIndex = '1001';
-                message.textContent = 'Opening social account connection...';
-                
-                document.body.appendChild(message);
-                
+                showMessage('Opening social account connection...', '#0969da');
                 setTimeout(() => {
-                    message.remove();
-                }, 3000);
+                    window.location.href = this.getAttribute('href');
+                }, 1000);
             });
         });
     </script>
