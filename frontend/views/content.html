@@ -21,26 +21,22 @@
             --neutral-text: #383d41;
             --highlight-bg: #e0f0ff;
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         body {
             background-color: #f8f9fa;
             color: #333;
             overflow-x: hidden;
         }
-
         /* Dashboard Layout */
         .dashboard-container {
             display: flex;
             min-height: 100vh;
         }
-
         /* Sidebar */
         .sidebar {
             width: 250px;
@@ -52,29 +48,24 @@
             overflow-y: auto;
             z-index: 1000;
         }
-
         .sidebar-logo {
             display: flex;
             align-items: center;
             padding: 0 20px 30px;
             border-bottom: 1px solid #eee;
         }
-
         .sidebar-logo i {
             font-size: 24px;
             color: var(--primary-color);
             margin-right: 10px;
         }
-
         .sidebar-logo h2 {
             font-size: 24px;
             color: var(--primary-color);
         }
-
         .sidebar-menu {
             padding: 20px 0;
         }
-
         .menu-item {
             display: flex;
             align-items: center;
@@ -84,20 +75,17 @@
             transition: all 0.3s;
             border-left: 3px solid transparent;
         }
-
         .menu-item:hover, .menu-item.active {
             background-color: #f0f7ff;
             color: var(--primary-color);
             border-left-color: var(--primary-color);
         }
-
         .menu-item i {
             margin-right: 15px;
             font-size: 18px;
             width: 20px;
             text-align: center;
         }
-
         /* Main Content */
         .main-content {
             flex: 1;
@@ -106,7 +94,6 @@
             flex-direction: column;
             transition: margin-left 0.3s;
         }
-
         /* Top Bar */
         .top-bar {
             background-color: #ffffff;
@@ -119,7 +106,6 @@
             top: 0;
             z-index: 900;
         }
-
         .menu-toggle {
             display: none;
             background: none;
@@ -128,13 +114,11 @@
             color: #666;
             cursor: pointer;
         }
-
         .search-bar {
             flex: 1;
             max-width: 500px;
             position: relative;
         }
-
         .search-bar input {
             width: 100%;
             padding: 10px 15px 10px 40px;
@@ -143,12 +127,10 @@
             font-size: 14px;
             transition: border-color 0.3s;
         }
-
         .search-bar input:focus {
             outline: none;
             border-color: var(--primary-color);
         }
-
         .search-bar i {
             position: absolute;
             left: 15px;
@@ -156,12 +138,10 @@
             transform: translateY(-50%);
             color: #999;
         }
-
         .top-bar-actions {
             display: flex;
             align-items: center;
         }
-
         .notification-btn {
             position: relative;
             background: none;
@@ -172,11 +152,9 @@
             cursor: pointer;
             transition: color 0.3s;
         }
-
         .notification-btn:hover {
             color: var(--primary-color);
         }
-
         .notification-badge {
             position: absolute;
             top: -5px;
@@ -191,24 +169,20 @@
             justify-content: center;
             align-items: center;
         }
-
         .user-profile {
             display: flex;
             align-items: center;
             cursor: pointer;
         }
-
         .user-profile img {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             margin-right: 10px;
         }
-
         .user-profile span {
             font-weight: 500;
         }
-
         /* Credits Display */
         .credits-display {
             background-color: var(--highlight-bg);
@@ -218,50 +192,41 @@
             align-items: center;
             margin-right: 20px;
         }
-
         .credits-icon {
             color: var(--primary-color);
             margin-right: 8px;
         }
-
         .credits-text {
             font-weight: 500;
             color: var(--primary-color);
         }
-
         .credits-reset {
             font-size: 12px;
             color: #666;
             margin-left: 5px;
         }
-
         /* Content Page */
         .content-page {
             padding: 30px;
             flex: 1;
         }
-
         .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
         }
-
         .page-title {
             font-size: 28px;
             font-weight: 600;
         }
-
         .page-actions {
             display: flex;
             gap: 15px;
         }
-
         .filter-dropdown {
             position: relative;
         }
-
         .filter-btn {
             background-color: white;
             border: 1px solid #ddd;
@@ -273,15 +238,12 @@
             font-size: 14px;
             transition: all 0.3s;
         }
-
         .filter-btn:hover {
             border-color: var(--primary-color);
         }
-
         .filter-btn i {
             margin-right: 8px;
         }
-
         .filter-menu {
             position: absolute;
             top: 100%;
@@ -294,23 +256,19 @@
             z-index: 100;
             display: none;
         }
-
         .filter-menu.active {
             display: block;
         }
-
         .filter-item {
             padding: 10px 15px;
             cursor: pointer;
             transition: background-color 0.3s;
             font-size: 14px;
         }
-
         .filter-item:hover, .filter-item.selected {
             background-color: var(--highlight-bg);
             color: var(--primary-color);
         }
-
         .create-content-btn {
             background-color: var(--primary-color);
             color: white;
@@ -324,15 +282,12 @@
             align-items: center;
             transition: all 0.3s;
         }
-
         .create-content-btn:hover {
             background-color: var(--primary-hover);
         }
-
         .create-content-btn i {
             margin-right: 8px;
         }
-
         /* Popular Content Banner */
         .popular-banner {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
@@ -344,23 +299,19 @@
             align-items: center;
             justify-content: space-between;
         }
-
         .popular-banner h2 {
             font-size: 22px;
             font-weight: 600;
         }
-
         .popular-banner p {
             font-size: 16px;
             opacity: 0.9;
             max-width: 60%;
         }
-
         .popular-banner-icon {
             font-size: 48px;
             opacity: 0.8;
         }
-
         /* Content Stats */
         .content-stats {
             display: grid;
@@ -368,7 +319,6 @@
             gap: 20px;
             margin-bottom: 30px;
         }
-
         .stat-card {
             background-color: white;
             border-radius: 10px;
@@ -376,24 +326,20 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             transition: all 0.3s;
         }
-
         .stat-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
-
         .stat-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
-
         .stat-card-title {
             font-size: 16px;
             color: #666;
         }
-
         .stat-card-icon {
             width: 40px;
             height: 40px;
@@ -403,131 +349,110 @@
             align-items: center;
             color: white;
         }
-
         .stat-card-icon.blue {
             background-color: var(--primary-color);
         }
-
         .stat-card-icon.green {
             background-color: #28a745;
         }
-
         .stat-card-icon.purple {
             background-color: #6f42c1;
         }
-
         .stat-card-icon.orange {
             background-color: #fd7e14;
         }
-
         .stat-card-value {
             font-size: 24px;
             font-weight: 600;
         }
-
-        /* Content Table - NEW STYLES */
+        /* Content Table - FIXED STYLES */
         .content-table-container {
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            overflow-x: auto; /* Enable horizontal scrolling on small screens */
+            overflow-x: auto;
         }
-
         .content-table {
-            display: grid;
-            /* Define grid columns for your table layout */
-            grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr 1.5fr; /* ID, Title, Type, Status, Date, Platform, Actions */
             width: 100%;
-            min-width: 900px; /* Minimum width to prevent squishing on smaller screens before scroll */
+            border-collapse: collapse;
+            min-width: 900px;
         }
-
-        .table-header,
-        .table-row {
-            display: contents; /* Allows children to be direct grid items */
-        }
-
-        .table-header .table-cell,
-        .table-row .table-cell {
+        .content-table th, .content-table td {
             padding: 15px 20px;
             text-align: left;
             border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            word-break: break-word; /* Prevents long words from breaking layout */
         }
-
-        .table-header .table-cell {
+        .content-table th {
             background-color: #f8f9fa;
             font-weight: 600;
             color: #555;
             text-transform: uppercase;
             font-size: 13px;
         }
-
-        .table-row:last-child .table-cell {
+        .content-table tr:last-child td {
             border-bottom: none;
         }
-
+        .content-table tr:hover {
+            background-color: #f9f9f9;
+        }
         /* Specific cell styling for better presentation */
-        .table-cell.content-id {
+        .content-id {
             font-weight: bold;
             color: #999;
             font-size: 13px;
+            width: 60px;
         }
-        .table-cell.content-title-cell {
+        .content-title-cell {
             font-weight: 600;
             color: #333;
             font-size: 15px;
+            min-width: 250px;
         }
-        .table-cell.content-type-cell .content-type-badge {
-            margin-bottom: 0; /* Remove extra margin in table cell */
+        .content-type-cell {
+            width: 120px;
         }
-        .table-cell.content-status-cell .content-status-badge {
-            margin-bottom: 0; /* Remove extra margin in table cell */
+        .content-status-cell {
+            width: 120px;
         }
-        .table-cell.content-platform-cell {
+        .content-date-cell {
             font-size: 14px;
             color: #666;
+            width: 120px;
         }
-        .table-cell.content-platform-cell i {
+        .content-platform-cell {
+            font-size: 14px;
+            color: #666;
+            width: 150px;
+        }
+        .content-platform-cell i {
             margin-right: 8px;
             font-size: 16px;
             color: #999;
         }
-        .table-cell.content-date-cell {
-            font-size: 14px;
-            color: #666;
-        }
-
         .table-actions-cell {
-            display: flex;
-            gap: 5px; /* Smaller gap for buttons */
-            justify-content: flex-start; /* Align actions to start */
+            width: 150px;
         }
-
-        .table-action-btn { /* Smaller buttons for table cells */
+        .table-action-btn {
             background: none;
             border: none;
             color: #666;
             cursor: pointer;
-            font-size: 14px; /* Smaller icon size */
-            padding: 5px; /* Padding for click area */
+            font-size: 14px;
+            padding: 5px;
+            margin-right: 5px;
             border-radius: 4px;
             transition: all 0.3s;
         }
-
         .table-action-btn:hover {
             background-color: #f0f7ff;
             color: var(--primary-color);
         }
-
         .table-action-btn.delete:hover {
-            background-color: #fcebeb; /* Light red background on hover */
+            background-color: #fcebeb;
             color: var(--danger-color);
         }
 
-
-        /* Content type badges (re-used) */
+        /* Content type badges */
         .content-type-badge {
             display: inline-block;
             padding: 5px 10px;
@@ -540,8 +465,7 @@
         .content-type-badge.social { background-color: var(--warning-bg); color: var(--warning-text); }
         .content-type-badge.email { background-color: var(--neutral-bg); color: var(--neutral-text); }
 
-
-        /* Status badges (re-used) */
+        /* Status badges */
         .content-status-badge {
             padding: 5px 10px;
             border-radius: 15px;
@@ -549,24 +473,20 @@
             font-weight: 500;
             text-transform: capitalize;
         }
-
         .content-status-badge.published {
             background-color: var(--success-bg);
             color: var(--success-text);
         }
-
         .content-status-badge.draft {
             background-color: var(--warning-bg);
             color: var(--warning-text);
         }
-
         .content-status-badge.scheduled {
             background-color: var(--info-bg);
             color: var(--info-text);
         }
 
-
-        /* Content Creation Modal (reused from Calendar/Social) */
+        /* Content Creation Modal */
         .modal {
             display: none;
             position: fixed;
@@ -579,11 +499,9 @@
             justify-content: center;
             align-items: center;
         }
-
         .modal.active {
             display: flex;
         }
-
         .modal-content {
             background-color: white;
             border-radius: 10px;
@@ -595,7 +513,6 @@
             position: relative;
             z-index: 2001;
         }
-
         .modal-header {
             padding: 20px;
             border-bottom: 1px solid #eee;
@@ -603,12 +520,10 @@
             justify-content: space-between;
             align-items: center;
         }
-
         .modal-title {
             font-size: 20px;
             font-weight: 600;
         }
-
         .modal-close {
             background: none;
             border: none;
@@ -617,25 +532,20 @@
             cursor: pointer;
             transition: color 0.3s;
         }
-
         .modal-close:hover {
             color: #333;
         }
-
         .modal-body {
             padding: 20px;
         }
-
         .form-group {
             margin-bottom: 20px;
         }
-
         .form-label {
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
         }
-
         .form-input, .form-select, .form-textarea {
             width: 100%;
             padding: 10px 15px;
@@ -644,30 +554,25 @@
             font-size: 14px;
             transition: border-color 0.3s;
         }
-
         .form-input:focus, .form-select:focus, .form-textarea:focus {
             outline: none;
             border-color: var(--primary-color);
         }
-
         .form-textarea {
             min-height: 100px;
             resize: vertical;
         }
-
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
-
         .content-type-selector {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
             margin-bottom: 20px;
         }
-
         .content-type-modal-option {
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -676,55 +581,45 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-
         .content-type-modal-option:hover {
             border-color: var(--primary-color);
         }
-
         .content-type-modal-option.selected {
             border-color: var(--primary-color);
             background-color: var(--highlight-bg);
         }
-
         .content-type-modal-option i {
             font-size: 24px;
             margin-bottom: 8px;
             color: var(--primary-color);
         }
-
         .content-type-modal-option span {
             display: block;
             font-weight: 500;
         }
-
         .ai-suggestion-box {
             background-color: var(--highlight-bg);
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 20px;
         }
-
         .ai-suggestion-header {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
         }
-
         .ai-suggestion-header i {
             color: var(--primary-color);
             margin-right: 10px;
         }
-
         .ai-suggestion-header span {
             font-weight: 600;
             color: var(--primary-color);
         }
-
         .ai-suggestion-text {
             font-size: 14px;
             color: #666;
         }
-
         .modal-footer {
             padding: 20px;
             border-top: 1px solid #eee;
@@ -732,7 +627,6 @@
             justify-content: flex-end;
             gap: 10px;
         }
-
         .btn-cancel {
             background-color: #f8f9fa;
             color: #333;
@@ -743,11 +637,9 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-
         .btn-cancel:hover {
             background-color: #e9ecef;
         }
-
         .btn-save {
             background-color: var(--primary-color);
             color: white;
@@ -762,6 +654,89 @@
             background-color: var(--primary-hover);
         }
 
+        /* Generate Script Button */
+        .generate-script-container {
+            display: flex;
+            margin-top: 10px;
+        }
+        .generate-script-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        .generate-script-btn:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+        }
+        .generate-script-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .generate-script-btn i {
+            margin-right: 8px;
+        }
+
+        /* Aspect Ratio Selector */
+        .aspect-ratio-selector {
+            margin-top: 15px;
+        }
+        .aspect-ratio-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .aspect-ratio-option {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        .aspect-ratio-option:hover {
+            border-color: var(--primary-color);
+        }
+        .aspect-ratio-option.selected {
+            border-color: var(--primary-color);
+            background-color: var(--highlight-bg);
+            color: var(--primary-color);
+        }
+
+        /* Video Duration Selector */
+        .video-duration-selector {
+            margin-top: 15px;
+            display: none;
+        }
+        .video-duration-selector.active {
+            display: block;
+        }
+        .video-duration-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .video-duration-option {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        .video-duration-option:hover {
+            border-color: var(--primary-color);
+        }
+        .video-duration-option.selected {
+            border-color: var(--primary-color);
+            background-color: var(--highlight-bg);
+            color: var(--primary-color);
+        }
 
         /* Success message styling */
         .success-message {
@@ -777,107 +752,52 @@
             z-index: 9999;
         }
 
-
         /* Responsive Design */
         @media (max-width: 992px) {
             .content-table {
-                min-width: 700px; /* Allow scroll, but make it smaller */
+                min-width: 700px;
             }
         }
-
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s;
             }
-
             .sidebar.active {
                 transform: translateX(0);
             }
-
             .main-content {
                 margin-left: 0;
             }
-
             .menu-toggle {
                 display: block;
                 margin-right: 20px;
             }
-
             .content-stats {
                 grid-template-columns: 1fr;
             }
-
             .content-page .page-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
             }
-
             .page-actions {
                 width: 100%;
                 justify-content: space-between;
             }
-
             .credits-display {
                 display: none;
             }
-
             .popular-banner {
                 flex-direction: column;
                 text-align: center;
                 gap: 15px;
             }
-
             .popular-banner p {
                 max-width: 100%;
             }
-
             .content-table-container {
-                overflow-x: auto; /* Ensure horizontal scroll */
-            }
-            .content-table {
-                grid-template-columns: 1fr 1fr; /* Example: Stack columns for mobile */
-                min-width: unset; /* Remove min-width to allow wrapping */
-            }
-
-            .table-header .table-cell,
-            .table-row .table-cell {
-                padding: 10px 15px; /* Smaller padding */
-                font-size: 12px;
-            }
-            .table-header {
-                display: none; /* Hide header on small screens if desired for card-like effect */
-            }
-            .table-row {
-                 border: 1px solid #eee; /* Add border for row separation */
-                 margin-bottom: 10px; /* Space between rows */
-                 display: grid; /* Re-enable grid for the row itself */
-                 grid-template-columns: 1fr 1fr; /* Example for small screens */
-                 gap: 5px; /* Gap between stacked cells */
-            }
-            .table-row .table-cell:nth-child(odd) { /* Style labels for mobile */
-                font-weight: 600;
-                color: #333;
-            }
-            .table-row .table-cell:nth-child(even) {
-                text-align: right; /* Align values right */
-            }
-            .table-cell.content-title-cell {
-                 grid-column: 1 / -1; /* Title spans full width */
-                 font-size: 16px;
-                 text-align: left;
-                 border-bottom: none;
-            }
-            .table-cell.content-id {
-                display: none; /* Hide ID on small screens */
-            }
-            .table-actions-cell {
-                 grid-column: 1 / -1; /* Actions span full width */
-                 justify-content: center; /* Center action buttons */
-                 border-top: 1px solid #f0f0f0;
-                 padding-top: 10px;
-                 margin-top: 10px;
+                overflow-x: auto;
             }
             .content-type-selector {
                 grid-template-columns: repeat(2, 1fr);
@@ -935,7 +855,6 @@
                 </a>
             </div>
         </div>
-
         <div class="main-content">
             <div class="top-bar">
                 <button class="menu-toggle" aria-label="Toggle sidebar">
@@ -961,7 +880,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="content-page">
                 <div class="page-header">
                     <h1 class="page-title">Content Lab</h1>
@@ -989,7 +907,6 @@
                         </button>
                     </div>
                 </div>
-
                 <div class="popular-banner">
                     <div>
                         <h2>Most Popular Content</h2>
@@ -997,7 +914,6 @@
                     </div>
                     <i class="fas fa-fire popular-banner-icon"></i>
                 </div>
-
                 <div class="content-stats">
                     <div class="stat-card">
                         <div class="stat-card-header">
@@ -1036,23 +952,25 @@
                         <div class="stat-card-value" id="scheduledContentCount">0</div>
                     </div>
                 </div>
-
                 <div class="content-table-container">
-                    <div class="content-table" id="contentTable">
-                        <div class="table-header">
-                            <div class="table-cell">ID</div>
-                            <div class="table-cell">Title</div>
-                            <div class="table-cell">Type</div>
-                            <div class="table-cell">Status</div>
-                            <div class="table-cell">Date</div>
-                            <div class="table-cell">Platform</div>
-                            <div class="table-cell">Actions</div>
-                        </div>
-                        </div>
+                    <table class="content-table" id="contentTable">
+                        <thead>
+                            <tr class="table-header">
+                                <th class="table-cell">ID</th>
+                                <th class="table-cell">Title</th>
+                                <th class="table-cell">Type</th>
+                                <th class="table-cell">Status</th>
+                                <th class="table-cell">Date</th>
+                                <th class="table-cell">Platform</th>
+                                <th class="table-cell">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contentTableBody">
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-
         <div class="modal" id="createContentModal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1061,24 +979,15 @@
                 </div>
                 <div class="modal-body">
                     <div class="content-type-selector">
-                        <div class="content-type-modal-option selected" data-type="blog" role="button" aria-label="Select Blog Post">
+                        <div class="content-type-modal-option selected" data-type="post" role="button" aria-label="Select Post">
                             <i class="fas fa-file-alt"></i>
-                            <span>Blog Post</span>
+                            <span>POST</span>
                         </div>
                         <div class="content-type-modal-option" data-type="video" role="button" aria-label="Select Video">
                             <i class="fas fa-video"></i>
                             <span>Video</span>
                         </div>
-                        <div class="content-type-modal-option" data-type="social" role="button" aria-label="Select Social Media">
-                            <i class="fas fa-share-alt"></i>
-                            <span>Social Media</span>
-                        </div>
-                        <div class="content-type-modal-option" data-type="email" role="button" aria-label="Select Email">
-                            <i class="fas fa-envelope"></i>
-                            <span>Email</span>
-                        </div>
                     </div>
-
                     <div class="ai-suggestion-box">
                         <div class="ai-suggestion-header">
                             <i class="fas fa-lightbulb"></i>
@@ -1088,18 +997,40 @@
                             Based on your audience engagement, we suggest creating content about "10 Tips for Effective Content Marketing" which has a 78% engagement prediction.
                         </div>
                     </div>
-
                     <form id="createContentForm">
                         <div class="form-group">
                             <label class="form-label" for="modalContentTitle">Content Title</label>
                             <input type="text" class="form-input" id="modalContentTitle" placeholder="Enter content title" required aria-required="true">
                         </div>
-
                         <div class="form-group">
                             <label class="form-label" for="modalContentDescription">Description</label>
                             <textarea class="form-textarea form-input" id="modalContentDescription" placeholder="Enter content description" required aria-required="true"></textarea>
+                            <div class="generate-script-container">
+                                <button type="button" class="generate-script-btn" id="generateScriptBtn" disabled>
+                                    <i class="fas fa-magic"></i>
+                                    Generate Script
+                                </button>
+                            </div>
                         </div>
-
+                        
+                        <!-- Aspect Ratio Selector -->
+                        <div class="form-group aspect-ratio-selector">
+                            <label class="form-label">Aspect Ratio</label>
+                            <div class="aspect-ratio-options">
+                                <div class="aspect-ratio-option selected" data-ratio="9:16">9:16 (Instagram Reels, TikTok)</div>
+                                <div class="aspect-ratio-option" data-ratio="16:9">16:9 (YouTube, Facebook)</div>
+                                <div class="aspect-ratio-option" data-ratio="1:1">1:1 (Instagram Posts)</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Video Duration Selector (only for video content type) -->
+                        <div class="form-group video-duration-selector" id="videoDurationSelector">
+                            <label class="form-label">Video Duration</label>
+                            <div class="video-duration-options" id="videoDurationOptions">
+                                <!-- Options will be populated based on aspect ratio selection -->
+                            </div>
+                        </div>
+                        
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="scheduleDate">Schedule Date</label>
@@ -1110,21 +1041,17 @@
                                 <input type="time" class="form-input" id="scheduleTime" required aria-required="true">
                             </div>
                         </div>
-
                         <div class="form-group">
                             <label class="form-label" for="platform">Platform</label>
                             <select class="form-select form-input" id="platform" required aria-required="true">
                                 <option value="">Select Platform</option>
-                                <option value="website">Website</option>
                                 <option value="facebook">Facebook</option>
                                 <option value="twitter">Twitter</option>
                                 <option value="instagram">Instagram</option>
                                 <option value="linkedin">LinkedIn</option>
                                 <option value="youtube">YouTube</option>
-                                <option value="email">Email</option>
                             </select>
                         </div>
-
                         <div class="form-group">
                             <label class="form-label" for="creditsRequired">Credits Required</label>
                             <input type="number" class="form-input" id="creditsRequired" value="1" min="1" max="3" readonly aria-readonly="true">
@@ -1137,14 +1064,11 @@
                 </div>
             </div>
         </div>
-
         <button class="create-button" id="createButton">
             <i class="fas fa-plus"></i>
         </button>
     </div>
-
     <div class="success-message" style="display: none;"></div>
-
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1154,10 +1078,8 @@
             const maxFreeCredits = 3;
             // Current time is Thursday, July 31, 2025 at 8:41:20 PM IST.
             const nextResetDate = new Date('2025-08-01T00:00:00'); // Consistent reset date, corrected to current year + 1 month.
-
             const currentCreditsDisplay = document.getElementById('currentCreditsDisplay');
             const creditsResetTime = document.getElementById('creditsResetTime');
-
             const createContentBtn = document.getElementById('createContentBtn');
             const createButton = document.getElementById('createButton'); // Floating + button
             const createContentModal = document.getElementById('createContentModal');
@@ -1165,21 +1087,23 @@
             const cancelModalBtn = document.getElementById('cancelModalBtn');
             const saveContentBtn = document.getElementById('saveContentBtn');
             const createContentForm = document.getElementById('createContentForm');
-
             const filterBtn = document.getElementById('filterBtn');
             const filterMenu = document.getElementById('filterMenu');
-            const contentTable = document.getElementById('contentTable'); // Changed from contentGrid
-
+            const contentTableBody = document.getElementById('contentTableBody');
             const totalContentCount = document.getElementById('totalContentCount');
             const publishedContentCount = document.getElementById('publishedContentCount');
             const draftsContentCount = document.getElementById('draftsContentCount');
             const scheduledContentCount = document.getElementById('scheduledContentCount');
-
+            const generateScriptBtn = document.getElementById('generateScriptBtn');
+            const modalContentDescription = document.getElementById('modalContentDescription');
+            const videoDurationSelector = document.getElementById('videoDurationSelector');
+            const videoDurationOptions = document.getElementById('videoDurationOptions');
+            
             // --- Sample Content Data ---
             let allContent = [
                 {
                     id: 1,
-                    type: 'blog',
+                    type: 'post',
                     title: 'The Future of AI in Content Creation',
                     excerpt: 'Explore how artificial intelligence is revolutionizing content generation, from drafting blog posts to optimizing video scripts. Understand the tools and techniques shaping the industry...',
                     date: '2025-07-20',
@@ -1219,7 +1143,7 @@
                 },
                 {
                     id: 5,
-                    type: 'blog',
+                    type: 'post',
                     title: 'Understanding SEO for AI-Generated Content',
                     excerpt: 'Can AI-generated content rank well on Google? This article dives into SEO best practices for AI-assisted writing, keyword research, and content structure...',
                     date: '2025-07-15',
@@ -1238,43 +1162,43 @@
                     platformName: 'Twitter',
                 },
             ];
-
             let filteredContent = [...allContent]; // Initialize with all content
             let currentFilter = 'all'; // Default filter
-
+            let selectedModalContentType = 'post';
+            let selectedAspectRatio = '9:16';
+            let selectedVideoDuration = '15s';
+            
             // --- Initial Render ---
-            renderContentTable(); // Changed function name
+            renderContentTable();
             updateContentStats();
             updateCreditsDisplay(); // For top bar
-
+            updateVideoDurationOptions(); // Initialize video duration options
+            
             // --- Event Listeners ---
             createContentBtn.addEventListener('click', openCreateModal);
             createButton.addEventListener('click', openCreateModal);
             closeModalBtn.addEventListener('click', closeCreateModal);
             cancelModalBtn.addEventListener('click', closeCreateModal);
             saveContentBtn.addEventListener('click', saveNewContent);
-
+            
             // Filter button & menu
             filterBtn.addEventListener('click', (e) => {
                 e.stopPropagation(); // Prevent document click from closing it immediately
                 filterMenu.classList.toggle('active');
                 filterBtn.setAttribute('aria-expanded', filterMenu.classList.contains('active'));
             });
-
             filterMenu.querySelectorAll('.filter-item').forEach(item => {
                 item.addEventListener('click', function() {
                     filterMenu.classList.remove('active');
                     filterBtn.setAttribute('aria-expanded', false);
-
                     // Update selected visual state
                     filterMenu.querySelectorAll('.filter-item').forEach(li => li.classList.remove('selected'));
                     this.classList.add('selected');
-
                     currentFilter = this.dataset.filter;
                     applyFilterAndRender();
                 });
             });
-
+            
             // Close filter menu when clicking outside
             document.addEventListener('click', (e) => {
                 if (!filterBtn.contains(e.target) && !filterMenu.contains(e.target)) {
@@ -1282,14 +1206,13 @@
                     filterBtn.setAttribute('aria-expanded', false);
                 }
             });
-
+            
             // Sidebar toggle
             document.querySelector('.menu-toggle').addEventListener('click', function() {
                 document.querySelector('.sidebar').classList.toggle('active');
             });
-
-            // Modal content type selector logic (from Calendar page)
-            let selectedModalContentType = 'blog';
+            
+            // Modal content type selector logic
             document.querySelectorAll('.content-type-modal-option').forEach(type => {
                 type.addEventListener('click', function() {
                     document.querySelectorAll('.content-type-modal-option').forEach(t => t.classList.remove('selected'));
@@ -1297,47 +1220,85 @@
                     selectedModalContentType = this.getAttribute('data-type');
                     const credits = selectedModalContentType === 'video' ? 2 : 1;
                     document.getElementById('creditsRequired').value = credits;
+                    
+                    // Show/hide video duration selector based on content type
+                    if (selectedModalContentType === 'video') {
+                        videoDurationSelector.classList.add('active');
+                    } else {
+                        videoDurationSelector.classList.remove('active');
+                    }
                 });
             });
-
+            
+            // Aspect ratio selector logic
+            document.querySelectorAll('.aspect-ratio-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.aspect-ratio-option').forEach(o => o.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedAspectRatio = this.getAttribute('data-ratio');
+                    updateVideoDurationOptions();
+                });
+            });
+            
+            // Video duration selector logic
+            videoDurationOptions.addEventListener('click', function(e) {
+                if (e.target.classList.contains('video-duration-option')) {
+                    document.querySelectorAll('.video-duration-option').forEach(o => o.classList.remove('selected'));
+                    e.target.classList.add('selected');
+                    selectedVideoDuration = e.target.textContent;
+                }
+            });
+            
+            // Generate script button logic
+            modalContentDescription.addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    generateScriptBtn.disabled = false;
+                } else {
+                    generateScriptBtn.disabled = true;
+                }
+            });
+            
+            generateScriptBtn.addEventListener('click', function() {
+                // Mock AI script generation
+                const description = modalContentDescription.value;
+                const generatedScript = `Based on your description "${description}", here's a generated script:\n\nIntroduction: Grab your audience's attention with a compelling hook.\n\nMain Content: Expand on your key points, providing valuable insights and examples.\n\nConclusion: Summarize your main points and include a call to action.`;
+                
+                modalContentDescription.value = generatedScript;
+                showSuccessMessage('Script generated successfully!');
+            });
+            
             // --- Functions ---
-
             // Renders content in a tabular form
             function renderContentTable() {
-                // Clear existing content rows, but keep headers
-                const existingRows = contentTable.querySelectorAll('.table-row');
-                existingRows.forEach(row => row.remove());
-
+                contentTableBody.innerHTML = '';
+                
                 if (filteredContent.length === 0) {
-                    const noContentRow = document.createElement('div');
-                    noContentRow.className = 'table-row';
+                    const noContentRow = document.createElement('tr');
                     noContentRow.innerHTML = `
-                        <div class="table-cell" style="grid-column: 1 / -1; text-align: center; padding: 20px;">No content found for the current filter.</div>
+                        <td colspan="7" style="text-align: center; padding: 20px;">No content found for the current filter.</td>
                     `;
-                    contentTable.appendChild(noContentRow);
+                    contentTableBody.appendChild(noContentRow);
                     return;
                 }
-
+                
                 filteredContent.forEach(content => {
-                    const row = document.createElement('div');
-                    row.className = 'table-row';
+                    const row = document.createElement('tr');
                     const platformIconClass = getPlatformIcon(content.platform);
                     const platformNameDisplay = content.platformName || content.platform.charAt(0).toUpperCase() + content.platform.slice(1);
-
                     row.innerHTML = `
-                        <div class="table-cell content-id">${content.id}</div>
-                        <div class="table-cell content-title-cell">${content.title}</div>
-                        <div class="table-cell content-type-cell">
+                        <td class="content-id">${content.id}</td>
+                        <td class="content-title-cell">${content.title}</td>
+                        <td class="content-type-cell">
                             <span class="content-type-badge ${content.type}">${content.type}</span>
-                        </div>
-                        <div class="table-cell content-status-cell">
+                        </td>
+                        <td class="content-status-cell">
                             <span class="content-status-badge ${content.status}">${content.status}</span>
-                        </div>
-                        <div class="table-cell content-date-cell">${formatDateForDisplay(content.date)}</div>
-                        <div class="table-cell content-platform-cell">
+                        </td>
+                        <td class="content-date-cell">${formatDateForDisplay(content.date)}</td>
+                        <td class="content-platform-cell">
                             <i class="fab ${platformIconClass}"></i> ${platformNameDisplay}
-                        </div>
-                        <div class="table-cell table-actions-cell">
+                        </td>
+                        <td class="table-actions-cell">
                             <button class="table-action-btn edit-content" data-id="${content.id}" title="Edit Content">
                                 <i class="fas fa-edit"></i>
                             </button>
@@ -1347,22 +1308,21 @@
                             <button class="table-action-btn delete-content" data-id="${content.id}" title="Delete Content">
                                 <i class="fas fa-trash"></i>
                             </button>
-                        </div>
+                        </td>
                     `;
-                    contentTable.appendChild(row);
+                    contentTableBody.appendChild(row);
                 });
-
+                
                 // Add event listeners for dynamic buttons
                 addContentActionListeners();
             }
-
+            
             // Attaches event listeners to action buttons on content table rows
             function addContentActionListeners() {
                 // Use event delegation on the parent table for efficiency
-                contentTable.addEventListener('click', function(event) {
+                contentTableBody.addEventListener('click', function(event) {
                     const targetButton = event.target.closest('.table-action-btn');
                     if (!targetButton) return; // Not a button click
-
                     const id = parseInt(targetButton.dataset.id);
                     if (targetButton.classList.contains('edit-content')) {
                         editContent(id);
@@ -1373,7 +1333,47 @@
                     }
                 });
             }
-
+            
+            // Updates video duration options based on aspect ratio
+            function updateVideoDurationOptions() {
+                videoDurationOptions.innerHTML = '';
+                
+                if (selectedAspectRatio === '9:16') {
+                    const durations = ['10s', '15s', '20s', '25s', '30s', '35s', '40s', '45s', '50s', '55s', '60s'];
+                    durations.forEach(duration => {
+                        const option = document.createElement('div');
+                        option.className = 'video-duration-option';
+                        if (duration === selectedVideoDuration) {
+                            option.classList.add('selected');
+                        }
+                        option.textContent = duration;
+                        videoDurationOptions.appendChild(option);
+                    });
+                } else if (selectedAspectRatio === '16:9') {
+                    const durations = ['1min', '1.30min', '2min', '2.30min', '3min', '3.30min', '4min'];
+                    durations.forEach(duration => {
+                        const option = document.createElement('div');
+                        option.className = 'video-duration-option';
+                        if (duration === selectedVideoDuration) {
+                            option.classList.add('selected');
+                        }
+                        option.textContent = duration;
+                        videoDurationOptions.appendChild(option);
+                    });
+                } else if (selectedAspectRatio === '1:1') {
+                    const durations = ['10s', '15s', '20s', '30s', '45s', '60s'];
+                    durations.forEach(duration => {
+                        const option = document.createElement('div');
+                        option.className = 'video-duration-option';
+                        if (duration === selectedVideoDuration) {
+                            option.classList.add('selected');
+                        }
+                        option.textContent = duration;
+                        videoDurationOptions.appendChild(option);
+                    });
+                }
+            }
+            
             // Opens the content creation/edit modal
             function openCreateModal() {
                 // Set default date to today
@@ -1382,42 +1382,54 @@
                 const now = new Date();
                 const currentTime = now.toTimeString().slice(0, 5); // "HH:MM"
                 document.getElementById('scheduleTime').value = currentTime;
-
                 createContentModal.classList.add('active');
             }
-
+            
             // Closes the content creation/edit modal
             function closeCreateModal() {
                 createContentModal.classList.remove('active');
                 createContentForm.reset();
-                // Reset content type selector to default (e.g., Blog Post)
+                // Reset content type selector to default (e.g., Post)
                 document.querySelectorAll('.content-type-modal-option').forEach(t => t.classList.remove('selected'));
-                document.querySelector('.content-type-modal-option[data-type="blog"]').classList.add('selected');
-                selectedModalContentType = 'blog';
+                document.querySelector('.content-type-modal-option[data-type="post"]').classList.add('selected');
+                selectedModalContentType = 'post';
                 document.getElementById('creditsRequired').value = 1;
+                
+                // Reset aspect ratio and video duration
+                document.querySelectorAll('.aspect-ratio-option').forEach(o => o.classList.remove('selected'));
+                document.querySelector('.aspect-ratio-option[data-ratio="9:16"]').classList.add('selected');
+                selectedAspectRatio = '9:16';
+                updateVideoDurationOptions();
+                
+                // Hide video duration selector if not video type
+                if (selectedModalContentType !== 'video') {
+                    videoDurationSelector.classList.remove('active');
+                }
+                
+                // Reset generate script button
+                generateScriptBtn.disabled = true;
             }
-
+            
             // Handles saving new content from the modal
             function saveNewContent() {
                 if (!createContentForm.checkValidity()) {
                     createContentForm.reportValidity();
                     return;
                 }
-
                 const title = document.getElementById('modalContentTitle').value;
                 const description = document.getElementById('modalContentDescription').value;
                 const date = document.getElementById('scheduleDate').value;
                 const time = document.getElementById('scheduleTime').value;
                 const platform = document.getElementById('platform').value;
                 const creditsRequired = parseInt(document.getElementById('creditsRequired').value);
-
+                
                 // Mock credit check
                 if (currentCredits < creditsRequired) {
                     showSuccessMessage('Not enough credits to create this content!', 'danger');
                     return;
                 }
                 currentCredits -= creditsRequired; // Deduct credits
-
+                
                 const newId = allContent.length > 0 ? Math.max(...allContent.map(c => c.id)) + 1 : 1;
                 const newContent = {
                     id: newId,
@@ -1429,7 +1441,6 @@
                     platform: platform,
                     platformName: platform.charAt(0).toUpperCase() + platform.slice(1),
                 };
-
                 allContent.push(newContent);
                 applyFilterAndRender(); // Re-filter and render content
                 updateContentStats();
@@ -1437,7 +1448,7 @@
                 showSuccessMessage('Content created and scheduled successfully!');
                 closeCreateModal();
             }
-
+            
             // Handles editing existing content
             function editContent(id) {
                 const contentToEdit = allContent.find(c => c.id === id);
@@ -1449,19 +1460,28 @@
                     // Time might need proper parsing if not stored as "HH:MM"
                     document.getElementById('scheduleTime').value = contentToEdit.time ? contentToEdit.time.slice(0,5) : '09:00'; // Assuming HH:MM or default
                     document.getElementById('platform').value = contentToEdit.platform;
-
+                    
                     // Set content type in modal
                     document.querySelectorAll('.content-type-modal-option').forEach(t => {
                         t.classList.remove('selected');
-                        if (t.dataset.type === contentToEdit.type || (contentToEdit.type === 'reel' && t.dataset.type === 'video')) { // Handle reel as video
+                        if (t.dataset.type === contentToEdit.type) {
                             t.classList.add('selected');
                             selectedModalContentType = t.dataset.type;
                         }
                     });
+                    
+                    // Show/hide video duration selector based on content type
+                    if (selectedModalContentType === 'video') {
+                        videoDurationSelector.classList.add('active');
+                    } else {
+                        videoDurationSelector.classList.remove('active');
+                    }
+                    
                     document.getElementById('creditsRequired').value = selectedModalContentType === 'video' ? 2 : 1; // Recalculate credits
-
+                    
                     // Open modal
                     createContentModal.classList.add('active');
+                    
                     // Change save button behavior to update
                     saveContentBtn.onclick = function() {
                         if (!createContentForm.checkValidity()) {
@@ -1476,7 +1496,6 @@
                         contentToEdit.platform = document.getElementById('platform').value;
                         contentToEdit.platformName = contentToEdit.platform.charAt(0).toUpperCase() + contentToEdit.platform.slice(1);
                         contentToEdit.type = selectedModalContentType; // Update content type if changed in modal
-
                         applyFilterAndRender();
                         showSuccessMessage('Content updated successfully!');
                         closeCreateModal();
@@ -1484,7 +1503,7 @@
                     };
                 }
             }
-
+            
             // Handles deleting content
             function deleteContent(id) {
                 if (confirm('Are you sure you want to delete this content? This action cannot be undone.')) {
@@ -1494,7 +1513,7 @@
                     showSuccessMessage('Content deleted successfully!');
                 }
             }
-
+            
             // Applies the current filter to content and re-renders
             function applyFilterAndRender() {
                 switch (currentFilter) {
@@ -1514,10 +1533,10 @@
                         filteredContent = allContent.filter(content => content.status === 'scheduled');
                         break;
                     case 'blog':
-                        filteredContent = allContent.filter(content => content.type === 'blog');
+                        filteredContent = allContent.filter(content => content.type === 'post');
                         break;
                     case 'video':
-                        filteredContent = allContent.filter(content => content.type === 'video' || content.type === 'reel');
+                        filteredContent = allContent.filter(content => content.type === 'video');
                         break;
                     case 'social':
                         filteredContent = allContent.filter(content => content.type === 'social');
@@ -1528,9 +1547,9 @@
                     default:
                         filteredContent = [...allContent];
                 }
-                renderContentTable(); // Changed function name
+                renderContentTable();
             }
-
+            
             // Updates the content statistics cards
             function updateContentStats() {
                 totalContentCount.textContent = allContent.length;
@@ -1538,18 +1557,15 @@
                 draftsContentCount.textContent = allContent.filter(c => c.status === 'draft').length;
                 scheduledContentCount.textContent = allContent.filter(c => c.status === 'scheduled').length;
             }
-
+            
             // Updates the credits display in the top bar
             function updateCreditsDisplay() {
                 currentCreditsDisplay.textContent = `${currentCredits}/${maxFreeCredits} Credits`;
-
                 const now = new Date();
                 const timeLeft = nextResetDate.getTime() - now.getTime(); // Time in milliseconds
-
                 const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-
                 let resetText = '';
                 if (timeLeft < 0) {
                     resetText = 'Credits reset!';
@@ -1564,7 +1580,7 @@
                 }
                 creditsResetTime.textContent = resetText;
             }
-
+            
             // Helper to get platform icon class
             function getPlatformIcon(platform) {
                 switch (platform) {
@@ -1578,14 +1594,14 @@
                     default: return 'fa-info-circle';
                 }
             }
-
+            
             // Helper to format date for display
             function formatDateForDisplay(dateString) {
                 const date = new Date(dateString);
                 const options = { month: 'short', day: 'numeric', year: 'numeric' };
                 return date.toLocaleDateString('en-US', options);
             }
-
+            
             // Helper to format date for input (YYYY-MM-DD)
             function formatDateForInput(date) {
                 const year = date.getFullYear();
@@ -1593,37 +1609,16 @@
                 const day = String(date.getDate()).padStart(2, '0');
                 return `${year}-${month}-${day}`;
             }
-
+            
             // General success message function
             function showSuccessMessage(messageText, type = 'success') {
                 const messageDiv = document.querySelector('.success-message');
                 messageDiv.textContent = messageText;
                 messageDiv.style.backgroundColor = type === 'success' ? '#28a745' : '#dc3545'; // Green for success, red for danger
                 messageDiv.style.display = 'block';
-
                 setTimeout(() => {
                     messageDiv.style.display = 'none';
                 }, 3000);
-            }
-
-            // Responsive Sidebar Toggle already implemented in previous versions
-            // but ensuring it's wired up if not present.
-            const existingMenuToggle = document.querySelector('.menu-toggle');
-            if (existingMenuToggle) {
-                existingMenuToggle.addEventListener('click', function() {
-                    document.querySelector('.sidebar').classList.toggle('active');
-                });
-            } else {
-                // If the button wasn't already in the HTML (from previous iteration removals), add it here
-                // This block should ideally not be needed if the previous Top Bar HTML was kept intact.
-                const newMenuToggle = document.createElement('button');
-                newMenuToggle.className = 'menu-toggle';
-                newMenuToggle.setAttribute('aria-label', 'Toggle sidebar');
-                newMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-                document.querySelector('.top-bar').prepend(newMenuToggle);
-                newMenuToggle.addEventListener('click', function() {
-                    document.querySelector('.sidebar').classList.toggle('active');
-                });
             }
         });
     </script>
