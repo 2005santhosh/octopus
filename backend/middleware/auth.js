@@ -10,7 +10,7 @@ const auth = async (req, res, next) => {
       return res.redirect('/index'); // Changed to redirect to /index
     }
     
-    const decoded = jwt.verify(token, process.env.jwtsecret);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id).select('-password');
     
     if (!user) {

@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/user');
 const auth = require('../middleware/auth');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 
 // Render signup page
 router.get('/signup', (req, res) => {
@@ -19,7 +20,7 @@ router.get('/index', (req, res, next) => {
   const token = req.cookies.token;
   if (token) {
     try {
-      const decoded = jwt.verify(token, process.env.jwtsecret);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       User.findById(decoded.id).select('-password').then(user => {
         if (user) {
           return res.redirect('/dashboard');
@@ -69,7 +70,6 @@ router.post('/signup', async (req, res) => {
     const token = user.generateAuthToken();
     
     res.cookie('token', token, {
-      //expires: new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production'
     });
@@ -108,7 +108,6 @@ router.post('/login', async (req, res) => {
     const token = user.generateAuthToken();
     
     res.cookie('token', token, {
-      //expires: new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production'
     });
@@ -120,6 +119,25 @@ router.post('/login', async (req, res) => {
     req.flash('error', 'An error occurred during login');
     return res.redirect('/login');
   }
+});
+
+// Google OAuth routes
+router.get('/auth/google', passport.authenticate('google', {
+  scope: ['profile', 'email']
+}));
+
+router.get('/auth/google/callback', passport.authenticate('google', {
+  failureRedirect: '/login',
+  failureFlash: 'Google authentication failed'
+}), (req, res) => {
+  // Generate JWT for Google-authenticated user
+  const token = req.user.generateAuthToken();
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production'
+  });
+  req.flash('success', 'Logged in with Google successfully!');
+  res.redirect('/dashboard');
 });
 
 // Dashboard route - protected by auth middleware
@@ -163,8 +181,10 @@ router.get('/settings', auth, (req, res) => {
 // Logout route
 router.get('/logout', (req, res) => {
   res.clearCookie('token');
-  req.flash('success', 'Logged out successfully!');
-  return res.redirect('/login');
+  req.logout(() => {
+    req.flash('success', 'Logged out successfully!');
+    res.redirect('/login');
+  });
 });
 
 module.exports = router;

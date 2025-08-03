@@ -5,14 +5,24 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport');
 
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+// Debug environment variables
+console.log({
+  PORT: process.env.PORT,
+  MONGO_URI: process.env.MONGO_URI,
+  JWT_SECRET: process.env.JWT_SECRET,
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET
+});
+
 // Validate environment variables
-if (!process.env.MONGO_URI || !process.env.jwtsecret) {
+if (!process.env.MONGO_URI || !process.env.JWT_SECRET || !process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
   console.error("FATAL ERROR: Missing required environment variables");
   process.exit(1);
 }
@@ -24,12 +34,17 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Session and flash setup
 app.use(session({
-  secret: process.env.jwtsecret,
+  secret: process.env.JWT_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 60000 }
+  cookie: { maxAge: 24 * 60 * 60 * 1000, secure: process.env.NODE_ENV === 'production' } // 1 day
 }));
 app.use(flash());
+
+// Passport initialization
+app.use(passport.initialize());
+app.use(passport.session());
+require('./passport'); // Load Google strategy
 
 // Middleware
 app.use(express.json());

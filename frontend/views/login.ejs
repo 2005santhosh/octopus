@@ -37,7 +37,7 @@
         }
         .auth-image {
             flex: 1;
-            background-image: url('/frontend/assets/octopus.png');
+            background-image: url('../assets/octopus.png');
             background-size: cover;
             background-position: center;
             position: relative;
@@ -273,7 +273,7 @@
 
         <div class="social-login">
           <p><span>Or sign in with</span></p>
-          <a href="#" class="google-btn" id="google-signin">
+          <a href="/auth/google" class="google-btn">
             <i class="fab fa-google"></i>
             Sign in with Google
           </a>
@@ -296,29 +296,6 @@
         icon.classList.remove('fa-eye');
         icon.classList.add('fa-eye-slash');
       }
-    });
-
-    // Google sign-in button handler
-    document.getElementById('google-signin').addEventListener('click', (e) => {
-      e.preventDefault();
-      const message = 'Redirecting to Google authentication...';
-      const infoMessage = document.createElement('div');
-      infoMessage.style.position = 'fixed';
-      infoMessage.style.top = '20px';
-      infoMessage.style.left = '50%';
-      infoMessage.style.transform = 'translateX(-50%)';
-      infoMessage.style.backgroundColor = '#4285f4';
-      infoMessage.style.color = 'white';
-      infoMessage.style.padding = '15px 30px';
-      infoMessage.style.borderRadius = '8px';
-      infoMessage.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-      infoMessage.style.zIndex = '1001';
-      infoMessage.textContent = message;
-      document.body.appendChild(infoMessage);
-      setTimeout(() => {
-        infoMessage.remove();
-        // window.location.href = '/auth/google';
-      }, 3000);
     });
   </script>
 </body>

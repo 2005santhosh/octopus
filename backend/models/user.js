@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Name is required'],
+    required: [function() { return !this.googleId; }, 'Name is required for non-Google users'],
     trim: true,
     minlength: [2, 'Name must be at least 2 characters'],
     maxlength: [50, 'Name cannot exceed 50 characters']
@@ -20,8 +20,13 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
+    required: [function() { return !this.googleId; }, 'Password is required for non-Google users'],
     select: false
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true // Allows null values for users not using Google
   },
   isVerified: {
     type: Boolean,
@@ -50,7 +55,7 @@ const userSchema = new mongoose.Schema({
 
 // Hash password before saving
 userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password') || !this.password) return next();
   try {
     const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
@@ -62,6 +67,7 @@ userSchema.pre('save', async function(next) {
 
 // Compare password method
 userSchema.methods.comparePassword = async function(candidatePassword) {
+  if (!this.password) return false; // Google users have no password
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
@@ -69,12 +75,12 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 userSchema.methods.generateAuthToken = function() {
   return jwt.sign(
     { id: this._id, email: this.email },
-    process.env.jwtsecret,
+    process.env.JWT_SECRET, // Changed to match environment variable naming convention
     { expiresIn: '2h' }
   );
 };
 
-// Update updatedAt timestamp on save
+// Update updatedAt timestamp on save (handled by timestamps option, but kept for clarity)
 userSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
