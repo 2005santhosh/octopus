@@ -41,7 +41,7 @@
 git clone https://github.com/yourusername/octopus.git
 cd octopus
 
-# Install Node.js dependencies
+# Install Node.js dependencies (includes concurrently for running multiple servers)
 npm install
 
 # Setup Python AI environment
