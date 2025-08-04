@@ -21,26 +21,22 @@
             --neutral-text: #383d41;
             --highlight-bg: #e0f0ff;
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         body {
             background-color: #f8f9fa;
             color: #333;
             overflow-x: hidden;
         }
-
         /* Dashboard Layout */
         .dashboard-container {
             display: flex;
             min-height: 100vh;
         }
-
         /* Sidebar */
         .sidebar {
             width: 250px;
@@ -53,29 +49,24 @@
             z-index: 1000;
             transition: transform 0.3s;
         }
-
         .sidebar-logo {
             display: flex;
             align-items: center;
             padding: 0 20px 30px;
             border-bottom: 1px solid #eee;
         }
-
         .sidebar-logo i {
             font-size: 24px;
             color: var(--primary-color);
             margin-right: 10px;
         }
-
         .sidebar-logo h2 {
             font-size: 24px;
             color: var(--primary-color);
         }
-
         .sidebar-menu {
             padding: 20px 0;
         }
-
         .menu-item {
             display: flex;
             align-items: center;
@@ -85,20 +76,17 @@
             transition: all 0.3s;
             border-left: 3px solid transparent;
         }
-
         .menu-item:hover, .menu-item.active {
             background-color: #f0f7ff;
             color: var(--primary-color);
             border-left-color: var(--primary-color);
         }
-
         .menu-item i {
             margin-right: 15px;
             font-size: 18px;
             width: 20px;
             text-align: center;
         }
-
         /* Main Content */
         .main-content {
             flex: 1;
@@ -107,7 +95,6 @@
             flex-direction: column;
             transition: margin-left 0.3s;
         }
-
         /* Top Bar */
         .top-bar {
             background-color: #ffffff;
@@ -120,7 +107,6 @@
             top: 0;
             z-index: 900;
         }
-
         .menu-toggle {
             display: none;
             background: none;
@@ -129,13 +115,11 @@
             color: #666;
             cursor: pointer;
         }
-
         .search-bar {
             flex: 1;
             max-width: 500px;
             position: relative;
         }
-
         .search-bar input {
             width: 100%;
             padding: 10px 15px 10px 40px;
@@ -144,12 +128,10 @@
             font-size: 14px;
             transition: border-color 0.3s;
         }
-
         .search-bar input:focus {
             outline: none;
             border-color: var(--primary-color);
         }
-
         .search-bar i {
             position: absolute;
             left: 15px;
@@ -157,12 +139,10 @@
             transform: translateY(-50%);
             color: #999;
         }
-
         .top-bar-actions {
             display: flex;
             align-items: center;
         }
-
         .notification-btn {
             position: relative;
             background: none;
@@ -173,11 +153,9 @@
             cursor: pointer;
             transition: color 0.3s;
         }
-
         .notification-btn:hover {
             color: var(--primary-color);
         }
-
         .notification-badge {
             position: absolute;
             top: -5px;
@@ -192,24 +170,20 @@
             justify-content: center;
             align-items: center;
         }
-
         .user-profile {
             display: flex;
             align-items: center;
             cursor: pointer;
         }
-
         .user-profile img {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             margin-right: 10px;
         }
-
         .user-profile span {
             font-weight: 500;
         }
-
         /* Credits Display (Top Bar) */
         .credits-display {
             background-color: #f0f7ff;
@@ -219,45 +193,37 @@
             align-items: center;
             margin-right: 20px;
         }
-
         .credits-icon {
             color: var(--primary-color);
             margin-right: 8px;
         }
-
         .credits-text {
             font-weight: 500;
             color: var(--primary-color);
         }
-
         .credits-reset {
             font-size: 12px;
             color: #666;
             margin-left: 5px;
         }
-
         /* Page Content (General for all content pages) */
         .page-content {
             padding: 30px;
             flex: 1;
         }
-
         .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
         }
-
         .page-title h1 {
             font-size: 28px;
             margin-bottom: 5px;
         }
-
         .page-title p {
             color: #666;
         }
-
         /* General Button Styles (re-used across pages) */
         .btn {
             padding: 10px 20px;
@@ -268,39 +234,32 @@
             border: none;
             font-size: 14px;
         }
-
         .btn-primary {
             background-color: var(--primary-color);
             color: white;
         }
-
         .btn-primary:hover {
             background-color: var(--primary-hover);
         }
-
         .btn-danger {
             background-color: var(--danger-color);
             color: white;
         }
-
         .btn-danger:hover {
             background-color: var(--danger-hover);
         }
-
         /* Settings Page Specific Styles */
         .settings-grid {
             display: grid;
             grid-template-columns: 1fr 2fr; /* Nav on left, content on right */
             gap: 30px;
         }
-
         .settings-nav {
             background-color: #ffffff;
             border-radius: 10px;
             padding: 20px 0;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
-
         .settings-nav-item {
             display: flex;
             align-items: center;
@@ -310,36 +269,30 @@
             transition: all 0.3s;
             border-left: 3px solid transparent;
         }
-
         .settings-nav-item:hover,
         .settings-nav-item.active {
             background-color: #f0f7ff;
             color: var(--primary-color);
             border-left-color: var(--primary-color);
         }
-
         .settings-nav-item i {
             margin-right: 10px;
             font-size: 16px;
             width: 20px; /* Align icons */
             text-align: center;
         }
-
         .settings-content {
             background-color: #ffffff;
             border-radius: 10px;
             padding: 30px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
-
         .settings-section {
             display: none; /* Hidden by default */
         }
-
         .settings-section.active {
             display: block;
         }
-
         .settings-section h2 {
             font-size: 24px;
             font-weight: 600;
@@ -348,18 +301,15 @@
             border-bottom: 1px solid #eee;
             padding-bottom: 15px;
         }
-
         .form-group {
             margin-bottom: 20px;
         }
-
         .form-label {
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
             color: #333;
         }
-
         .form-input, .form-select, .form-textarea {
             width: 100%;
             padding: 10px 15px;
@@ -368,22 +318,44 @@
             font-size: 15px;
             transition: border-color 0.3s, box-shadow 0.3s;
         }
-
         .form-input:focus, .form-select:focus, .form-textarea:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.2);
         }
-
         .form-action-buttons {
             margin-top: 30px;
             text-align: right;
         }
-
         .form-action-buttons .btn {
             margin-left: 10px;
         }
-
+        /* Logout Button in Form */
+        .logout-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            color: var(--danger-color);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-hover);
+        }
+        .logout-btn i {
+            margin-right: 8px;
+        }
         /* Specific for Profile Avatar */
         .profile-avatar-upload {
             display: flex;
@@ -413,7 +385,6 @@
         .profile-avatar-upload input[type="file"] {
             display: none;
         }
-
         /* Notification Toggles */
         .notification-item {
             display: flex;
@@ -435,13 +406,11 @@
             width: 45px;
             height: 25px;
         }
-
         .switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
-
         .slider {
             position: absolute;
             cursor: pointer;
@@ -453,7 +422,6 @@
             transition: .4s;
             border-radius: 25px;
         }
-
         .slider:before {
             position: absolute;
             content: "";
@@ -465,15 +433,12 @@
             transition: .4s;
             border-radius: 50%;
         }
-
         input:checked + .slider {
             background-color: var(--primary-color);
         }
-
         input:checked + .slider:before {
             transform: translateX(18px);
         }
-
         /* Integrations List */
         .integration-item {
             display: flex;
@@ -517,7 +482,6 @@
         .integration-item .action-link:hover {
             color: var(--primary-hover);
         }
-
         /* Billing/Subscription */
         .billing-card {
             border: 1px solid #eee;
@@ -548,7 +512,6 @@
         .billing-card .btn-link:hover {
             text-decoration: underline;
         }
-
         /* Data & Privacy */
         .data-privacy-actions .danger-zone {
             border: 1px solid var(--danger-color);
@@ -567,7 +530,6 @@
             margin-bottom: 15px;
         }
 
-
         /* Success message styling */
         .success-message {
             position: fixed;
@@ -581,7 +543,6 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             z-index: 9999; /* Highest z-index for messages */
         }
-
         /* Responsive Design */
         @media (max-width: 992px) {
             .settings-grid {
@@ -604,25 +565,20 @@
                  border-bottom-color: var(--primary-color);
             }
         }
-
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
             }
-
             .sidebar.active {
                 transform: translateX(0);
             }
-
             .main-content {
                 margin-left: 0;
             }
-
             .menu-toggle {
                 display: block;
                 margin-right: 20px;
             }
-
             .page-header {
                 flex-direction: column;
                 align-items: flex-start;
@@ -634,7 +590,6 @@
             .page-title p {
                 font-size: 15px;
             }
-
             .credits-display {
                 display: none;
             }
@@ -742,7 +697,6 @@
                         <p>Manage your account preferences and application settings.</p>
                     </div>
                 </div>
-
                 <div class="settings-grid">
                     <div class="settings-nav">
                         <a href="#general" class="settings-nav-item active" data-section="general">
@@ -761,7 +715,6 @@
                             <i class="fas fa-shield-alt" aria-hidden="true"></i> Data & Privacy
                         </a>
                     </div>
-
                     <div class="settings-content">
                         <div id="general" class="settings-section active">
                             <h2>General Account Settings</h2>
@@ -781,17 +734,19 @@
                                     <label class="form-label" for="userEmail">Email Address</label>
                                     <input type="email" class="form-input" id="userEmail" value="sarah.johnson@example.com">
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="userPassword">Password</label>
-                                    <input type="password" class="form-input" id="userPassword" placeholder="********">
-                                    <small style="color: #666; margin-top: 5px; display: block;">Leave blank to keep current password.</small>
+                                
+                                <div class="logout-section">
+                                    <button type="button" class="logout-btn" id="logoutBtn">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Logout
+                                    </button>
                                 </div>
+                                
                                 <div class="form-action-buttons">
                                     <button type="submit" class="btn btn-primary">Save Changes</button>
                                 </div>
                             </form>
                         </div>
-
                         <div id="notifications" class="settings-section">
                             <h2>Notification Preferences</h2>
                             <div class="notification-item">
@@ -826,7 +781,6 @@
                                 <button type="button" class="btn btn-primary">Save Notification Settings</button>
                             </div>
                         </div>
-
                         <div id="integrations" class="settings-section">
                             <h2>Connected Integrations</h2>
                             <p style="color: #666; margin-bottom: 20px;">Manage connections to your social media platforms and other services.</p>
@@ -860,7 +814,6 @@
                                 <a href="social_accounts.html" class="btn btn-primary">Go to Social Accounts</a>
                             </div>
                         </div>
-
                         <div id="billing" class="settings-section">
                             <h2>Billing & Subscription</h2>
                             <div class="billing-card">
@@ -879,7 +832,6 @@
                                 <button type="button" class="btn btn-primary">View Billing History</button>
                             </div>
                         </div>
-
                         <div id="data-privacy" class="settings-section">
                             <h2>Data & Privacy</h2>
                             <div class="form-group">
@@ -901,50 +853,39 @@
             </div>
         </div>
     </div>
-
     <div class="success-message" style="display: none;"></div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Mock Credit Data (for top bar and billing section)
             let currentCredits = 3;
             const maxFreeCredits = 3;
             const nextResetDate = new Date('2025-08-01T00:00:00'); // Set next reset to August 1, 2025
-
             const currentCreditsDisplay = document.getElementById('currentCreditsDisplay');
             const creditsResetTime = document.getElementById('creditsResetTime');
             const billingCreditsDisplay = document.getElementById('billingCreditsDisplay'); // For billing section
-
             // --- Settings Navigation Logic ---
             const settingsNavItems = document.querySelectorAll('.settings-nav-item');
             const settingsSections = document.querySelectorAll('.settings-section');
-
             settingsNavItems.forEach(item => {
                 item.addEventListener('click', function(event) {
                     event.preventDefault(); // Prevent default anchor link behavior
                     const targetSectionId = this.dataset.section;
-
                     // Remove active class from all nav items and sections
                     settingsNavItems.forEach(nav => nav.classList.remove('active'));
                     settingsSections.forEach(section => section.classList.remove('active'));
-
                     // Add active class to clicked nav item
                     this.classList.add('active');
-
                     // Show the corresponding section
                     document.getElementById(targetSectionId).classList.add('active');
                 });
             });
-
             // Activate the default 'General' section on page load
             document.getElementById('general').classList.add('active');
             document.querySelector('.settings-nav-item[data-section="general"]').classList.add('active');
 
-
             // --- General Settings: Avatar Upload Preview ---
             const avatarUpload = document.getElementById('avatarUpload');
             const profileAvatarPreview = document.getElementById('profileAvatarPreview');
-
             avatarUpload.addEventListener('change', function() {
                 const file = this.files[0];
                 if (file) {
@@ -955,19 +896,16 @@
                     reader.readAsDataURL(file);
                 }
             });
-
             // --- General Settings: Save Changes (Mock) ---
             document.querySelector('#general form').addEventListener('submit', function(event) {
                 event.preventDefault();
                 // In a real app, send data to backend via AJAX
                 showSuccessMessage('General settings saved successfully!');
             });
-
             // --- Notifications: Save Settings (Mock) ---
             document.querySelector('#notifications .btn-primary').addEventListener('click', function() {
                 showSuccessMessage('Notification preferences updated!');
             });
-
             // --- Data & Privacy: Mock Actions ---
             document.querySelector('#data-privacy .btn-primary').addEventListener('click', function() {
                 showSuccessMessage('Data export request initiated. You will receive an email shortly.');
@@ -983,19 +921,15 @@
                     // In a real app, this would log out the user and initiate backend deletion process
                 }
             });
-
             // --- Update Credits Display (for top bar and billing) ---
             function updateCreditsDisplay() {
                 currentCreditsDisplay.textContent = `${currentCredits}/${maxFreeCredits} Credits`;
                 billingCreditsDisplay.textContent = `${currentCredits}/${maxFreeCredits}`; // Update billing section
-
                 const now = new Date();
                 const timeLeft = nextResetDate.getTime() - now.getTime(); // Time in milliseconds
-
                 const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-
                 let resetText = '';
                 if (timeLeft < 0) {
                     resetText = 'Credits reset!';
@@ -1010,25 +944,33 @@
                 }
                 creditsResetTime.textContent = resetText;
             }
-
             // Update display initially and every minute (for countdown)
             updateCreditsDisplay();
             setInterval(updateCreditsDisplay, 60000); // Update every minute
-
             // --- General Success Message Function ---
             function showSuccessMessage(messageText) {
                 const messageDiv = document.querySelector('.success-message');
                 messageDiv.textContent = messageText;
                 messageDiv.style.display = 'block';
-
                 setTimeout(() => {
                     messageDiv.style.display = 'none';
                 }, 3000);
             }
-
             // Sidebar toggle
             document.querySelector('.menu-toggle').addEventListener('click', function() {
                 document.querySelector('.sidebar').classList.toggle('active');
+            });
+            
+            // Logout button functionality
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    showSuccessMessage('Logging out...');
+                    // In a real app, this would redirect to the login page after a short delay
+                    setTimeout(() => {
+                        // Redirect to login page
+                        window.location.href = './login';
+                    }, 1500);
+                }
             });
         });
     </script>
