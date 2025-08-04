@@ -60,13 +60,6 @@ npm run dev:full
 - **Main App**: http://localhost:8080
 - **AI API Health**: http://localhost:5001/api/health
 
-## 🧠 AI Model Details
-
-### **Machine Learning Architecture**
-- **Model Type**: Support Vector Machine (SVM) Ensemble
-- **Accuracy**: ~34.7% (3-class classification)
-- **Features**: TF-IDF text vectorization + numerical engagement metrics
-- **Training Data**: 5000+ viral social media trends
 
 ### **Supported Platforms & Regions**
 - **Platforms**: TikTok, Instagram, YouTube, Twitter
@@ -128,9 +121,6 @@ npm run ai:server
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
