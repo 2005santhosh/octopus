@@ -124,24 +124,30 @@ Starts only the AI suggestions API
 
 ### Common Issues
 
-1. **"Cannot find module 'axios'"**
+1. **"'concurrently' is not recognized as an internal or external command"**
+   ```bash
+   npm install
+   # This installs all dependencies including concurrently
+   ```
+
+2. **"Cannot find module 'axios'"**
    ```bash
    npm install axios
    ```
 
-2. **AI Server Not Starting**
+3. **AI Server Not Starting**
    ```bash
    cd ai/Trending_Content_Suggestions
    python setup.py
    ```
 
-3. **Model Not Found**
+4. **Model Not Found**
    ```bash
    cd ai/Trending_Content_Suggestions
    python advanced_model.py
    ```
 
-4. **MongoDB Connection Issues**
+5. **MongoDB Connection Issues**
    - Check your `.env` file
    - Verify MongoDB Atlas connection string
    - Ensure network access is allowed
