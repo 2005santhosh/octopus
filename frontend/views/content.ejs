@@ -984,13 +984,19 @@
                             <span>Video</span>
                         </div>
                     </div>
-                    <div class="ai-suggestion-box">
+                    <div class="ai-suggestion-box" id="aiSuggestionBox">
                         <div class="ai-suggestion-header">
                             <i class="fas fa-lightbulb"></i>
                             <span>AI Suggestion</span>
+                            <div class="ai-loading" id="aiLoading" style="display: none; margin-left: 10px;">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
                         </div>
-                        <div class="ai-suggestion-text">
-                            Based on your audience engagement, we suggest creating content about "10 Tips for Effective Content Marketing" which has a 78% engagement prediction.
+                        <div class="ai-suggestion-text" id="aiSuggestionText">
+                            Loading trending content suggestions...
+                        </div>
+                        <div class="ai-suggestions-list" id="aiSuggestionsList" style="display: none; margin-top: 10px;">
+                            <!-- Dynamic suggestions will be loaded here -->
                         </div>
                     </div>
                     <form id="createContentForm">
@@ -1095,7 +1101,49 @@
             const videoDurationSelector = document.getElementById('videoDurationSelector');
             const videoDurationOptions = document.getElementById('videoDurationOptions');
             
-            // --- Sample Content Data ---
+        // --- Fetch AI Suggestions ---
+        async function fetchAISuggestions() {
+            const aiLoading = document.getElementById('aiLoading');
+            const aiSuggestionText = document.getElementById('aiSuggestionText');
+            const aiSuggestionsList = document.getElementById('aiSuggestionsList');
+            aiLoading.style.display = 'inline';
+            aiSuggestionsList.style.display = 'none';
+            aiSuggestionText.textContent = 'Loading trending content suggestions...';
+
+            try {
+                const response = await fetch('/api/trending-suggestions?count=5', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    aiLoading.style.display = 'none';
+                    aiSuggestionsList.style.display = 'block';
+                    aiSuggestionsList.innerHTML = '';
+                    
+                    data.suggestions.forEach(suggestion => {
+                        const suggestionDiv = document.createElement('div');
+                        suggestionDiv.innerHTML = `<strong>${suggestion.title}</strong>: ${suggestion.description}`;
+                        aiSuggestionsList.appendChild(suggestionDiv);
+                    });
+                } else {
+                    aiSuggestionText.textContent = 'Failed to load suggestions. Please try again.';
+                }
+
+            } catch (error) {
+                aiSuggestionText.textContent = 'Error loading suggestions.';
+            }
+        }
+
+        // Fetch suggestions when the modal opens
+        createContentBtn.addEventListener('click', fetchAISuggestions);
+        createButton.addEventListener('click', fetchAISuggestions);
+
+        // --- Sample Content Data ---
             let allContent = [
                 {
                     id: 1,
