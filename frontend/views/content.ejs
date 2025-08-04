@@ -606,6 +606,7 @@
         .ai-suggestion-header {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             margin-bottom: 10px;
         }
         .ai-suggestion-header i {
@@ -615,6 +616,27 @@
         .ai-suggestion-header span {
             font-weight: 600;
             color: var(--primary-color);
+        }
+        .ai-refresh-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        .ai-refresh-btn:hover {
+            background-color: var(--highlight-bg);
+            transform: rotate(180deg);
+        }
+        .ai-refresh-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
         .ai-suggestion-text {
             font-size: 14px;
@@ -813,43 +835,39 @@
                 <h2>OCTOPUS</h2>
             </div>
             <div class="sidebar-menu">
-                <a href="dashboard.html" class="menu-item">
+                <a href="/dashboard" class="menu-item">
                     <i class="fas fa-home"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="content.html" class="menu-item active">
+                <a href="/content" class="menu-item active">
                     <i class="fas fa-file-alt"></i>
                     <span>Content</span>
                 </a>
-                <a href="analytics.html" class="menu-item">
+                <a href="/analytics" class="menu-item">
                     <i class="fas fa-chart-line"></i>
                     <span>Analytics</span>
                 </a>
-                <a href="gallery.html" class="menu-item">
+                <a href="/gallery" class="menu-item">
                     <i class="fas fa-images"></i>
                     <span>Gallery</span>
                 </a>
-                <a href="calendar.html" class="menu-item">
+                <a href="/calendar" class="menu-item">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Calendar</span>
                 </a>
-                <a href="social_accounts.html" class="menu-item">
+                <a href="/social-accounts" class="menu-item">
                     <i class="fas fa-share-alt"></i>
                     <span>Social Accounts</span>
                 </a>
-                <a href="team.html" class="menu-item">
-                    <i class="fas fa-users"></i>
-                    <span>Team</span>
-                </a>
-                <a href="credits.html" class="menu-item">
+                <a href="/credits" class="menu-item">
                     <i class="fas fa-coins"></i>
                     <span>Credits</span>
                 </a>
-                <a href="pricing.html" class="menu-item">
+                <a href="/pricing" class="menu-item">
                     <i class="fas fa-tag"></i>
                     <span>Pricing</span>
                 </a>
-                <a href="settings.html" class="menu-item">
+                <a href="/settings" class="menu-item">
                     <i class="fas fa-cog"></i>
                     <span>Settings</span>
                 </a>
@@ -988,13 +1006,24 @@
                             <span>Video</span>
                         </div>
                     </div>
-                    <div class="ai-suggestion-box">
+                    <div class="ai-suggestion-box" id="aiSuggestionBox">
                         <div class="ai-suggestion-header">
-                            <i class="fas fa-lightbulb"></i>
-                            <span>AI Suggestion</span>
+                            <div style="display: flex; align-items: center;">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>AI Suggestion</span>
+                                <div class="ai-loading" id="aiLoading" style="display: none; margin-left: 10px;">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                </div>
+                            </div>
+                            <button class="ai-refresh-btn" id="aiRefreshBtn" title="Refresh AI Suggestions">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
                         </div>
-                        <div class="ai-suggestion-text">
-                            Based on your audience engagement, we suggest creating content about "10 Tips for Effective Content Marketing" which has a 78% engagement prediction.
+                        <div class="ai-suggestion-text" id="aiSuggestionText">
+                            Loading trending content suggestions...
+                        </div>
+                        <div class="ai-suggestions-list" id="aiSuggestionsList" style="display: none; margin-top: 10px;">
+                            <!-- Dynamic suggestions will be loaded here -->
                         </div>
                     </div>
                     <form id="createContentForm">
@@ -1098,8 +1127,71 @@
             const modalContentDescription = document.getElementById('modalContentDescription');
             const videoDurationSelector = document.getElementById('videoDurationSelector');
             const videoDurationOptions = document.getElementById('videoDurationOptions');
+            const aiRefreshBtn = document.getElementById('aiRefreshBtn');
             
-            // --- Sample Content Data ---
+        // --- Fetch AI Suggestions ---
+        async function fetchAISuggestions(isRefresh = false) {
+            const aiLoading = document.getElementById('aiLoading');
+            const aiSuggestionText = document.getElementById('aiSuggestionText');
+            const aiSuggestionsList = document.getElementById('aiSuggestionsList');
+            
+            // Disable refresh button during loading
+            aiRefreshBtn.disabled = true;
+            aiLoading.style.display = 'inline';
+            aiSuggestionsList.style.display = 'none';
+            
+            if (isRefresh) {
+                aiSuggestionText.textContent = 'Refreshing trending content suggestions...';
+            } else {
+                aiSuggestionText.textContent = 'Loading trending content suggestions...';
+            }
+
+            try {
+                const response = await fetch('/api/trending-suggestions?count=5', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    aiLoading.style.display = 'none';
+                    aiSuggestionsList.style.display = 'block';
+                    aiSuggestionsList.innerHTML = '';
+                    
+                    data.suggestions.forEach(suggestion => {
+                        const suggestionDiv = document.createElement('div');
+                        suggestionDiv.innerHTML = `<strong>${suggestion.title}</strong>: ${suggestion.description}`;
+                        aiSuggestionsList.appendChild(suggestionDiv);
+                    });
+                    
+                    if (isRefresh) {
+                        showSuccessMessage('AI suggestions refreshed successfully!');
+                    }
+                } else {
+                    aiLoading.style.display = 'none';
+                    aiSuggestionText.textContent = 'Failed to load suggestions. Please try again.';
+                }
+
+            } catch (error) {
+                aiLoading.style.display = 'none';
+                aiSuggestionText.textContent = 'Error loading suggestions.';
+            } finally {
+                // Re-enable refresh button
+                aiRefreshBtn.disabled = false;
+            }
+        }
+
+        // Fetch suggestions when the modal opens
+        createContentBtn.addEventListener('click', () => fetchAISuggestions(false));
+        createButton.addEventListener('click', () => fetchAISuggestions(false));
+        
+        // Add refresh button functionality
+        aiRefreshBtn.addEventListener('click', () => fetchAISuggestions(true));
+
+        // --- Sample Content Data ---
             let allContent = [
                 {
                     id: 1,
