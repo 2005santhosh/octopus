@@ -606,6 +606,7 @@
         .ai-suggestion-header {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             margin-bottom: 10px;
         }
         .ai-suggestion-header i {
@@ -615,6 +616,27 @@
         .ai-suggestion-header span {
             font-weight: 600;
             color: var(--primary-color);
+        }
+        .ai-refresh-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        .ai-refresh-btn:hover {
+            background-color: var(--highlight-bg);
+            transform: rotate(180deg);
+        }
+        .ai-refresh-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
         .ai-suggestion-text {
             font-size: 14px;
@@ -986,8 +1008,21 @@
                     </div>
                     <div class="ai-suggestion-box">
                         <div class="ai-suggestion-header">
+<<<<<<< HEAD
                             <i class="fas fa-lightbulb"></i>
                             <span>AI Suggestion</span>
+=======
+                            <div style="display: flex; align-items: center;">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>AI Suggestion</span>
+                                <div class="ai-loading" id="aiLoading" style="display: none; margin-left: 10px;">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                </div>
+                            </div>
+                            <button class="ai-refresh-btn" id="aiRefreshBtn" title="Refresh AI Suggestions">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+>>>>>>> 5297cd7 (Added refresh button to AI Suggestions)
                         </div>
                         <div class="ai-suggestion-text">
                             Based on your audience engagement, we suggest creating content about "10 Tips for Effective Content Marketing" which has a 78% engagement prediction.
@@ -1094,8 +1129,75 @@
             const modalContentDescription = document.getElementById('modalContentDescription');
             const videoDurationSelector = document.getElementById('videoDurationSelector');
             const videoDurationOptions = document.getElementById('videoDurationOptions');
+            const aiRefreshBtn = document.getElementById('aiRefreshBtn');
             
+<<<<<<< HEAD
             // --- Sample Content Data ---
+=======
+        // --- Fetch AI Suggestions ---
+        async function fetchAISuggestions(isRefresh = false) {
+            const aiLoading = document.getElementById('aiLoading');
+            const aiSuggestionText = document.getElementById('aiSuggestionText');
+            const aiSuggestionsList = document.getElementById('aiSuggestionsList');
+            
+            // Disable refresh button during loading
+            aiRefreshBtn.disabled = true;
+            aiLoading.style.display = 'inline';
+            aiSuggestionsList.style.display = 'none';
+            
+            if (isRefresh) {
+                aiSuggestionText.textContent = 'Refreshing trending content suggestions...';
+            } else {
+                aiSuggestionText.textContent = 'Loading trending content suggestions...';
+            }
+
+            try {
+                const response = await fetch('/api/trending-suggestions?count=5', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    aiLoading.style.display = 'none';
+                    aiSuggestionsList.style.display = 'block';
+                    aiSuggestionsList.innerHTML = '';
+                    
+                    data.suggestions.forEach(suggestion => {
+                        const suggestionDiv = document.createElement('div');
+                        suggestionDiv.innerHTML = `<strong>${suggestion.title}</strong>: ${suggestion.description}`;
+                        aiSuggestionsList.appendChild(suggestionDiv);
+                    });
+                    
+                    if (isRefresh) {
+                        showSuccessMessage('AI suggestions refreshed successfully!');
+                    }
+                } else {
+                    aiLoading.style.display = 'none';
+                    aiSuggestionText.textContent = 'Failed to load suggestions. Please try again.';
+                }
+
+            } catch (error) {
+                aiLoading.style.display = 'none';
+                aiSuggestionText.textContent = 'Error loading suggestions.';
+            } finally {
+                // Re-enable refresh button
+                aiRefreshBtn.disabled = false;
+            }
+        }
+
+        // Fetch suggestions when the modal opens
+        createContentBtn.addEventListener('click', () => fetchAISuggestions(false));
+        createButton.addEventListener('click', () => fetchAISuggestions(false));
+        
+        // Add refresh button functionality
+        aiRefreshBtn.addEventListener('click', () => fetchAISuggestions(true));
+
+        // --- Sample Content Data ---
+>>>>>>> 5297cd7 (Added refresh button to AI Suggestions)
             let allContent = [
                 {
                     id: 1,
