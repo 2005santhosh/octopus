@@ -1,11 +1,12 @@
-const dotenv = require('dotenv');
-const path = require('path');
 const express = require('express');
+const path = require('path');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
+const dotenv = require('dotenv');
+const fs = require('fs');
 
 dotenv.config({ path: path.join(__dirname, '.env') });
 
@@ -27,10 +28,25 @@ if (!process.env.MONGO_URI || !process.env.JWT_SECRET || !process.env.GOOGLE_CLI
   process.exit(1);
 }
 
+// Create uploads directory if it doesn't exist
+const publicDir = 'D:\\OneDrive\\Desktop\\projects\\octopus\\public';
+const uploadsDir = path.join(publicDir, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log(`📁 Created uploads directory at ${uploadsDir}`);
+}
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MONGODB CONNECTED SUCCESSFULLY"))
   .catch(err => console.error("❌ MONGODB CONNECTION FAILED:", err.message));
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use('/uploads', express.static(uploadsDir)); // Serve uploads from the correct absolute path
+app.use(express.static(publicDir)); // Serve frontend static files from the public folder
 
 // Session and flash setup
 app.use(session({
@@ -46,21 +62,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 require('./passport'); // Load Google strategy
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '../frontend')));
-
 // Make flash messages available in templates
 app.use((req, res, next) => {
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
+  res.locals.messages = [...res.locals.success, ...res.locals.error];
   next();
 });
 
 // View engine setup
-app.set('views', path.join(__dirname, '../frontend/views'));
+app.set('views', 'D:\\OneDrive\\Desktop\\projects\\octopus\\frontend\\views'); // Absolute path to views
 app.set('view engine', 'ejs');
 
 // Routes
@@ -70,6 +81,12 @@ app.use('/', userRoutes);
 // Home route
 app.get("/", (req, res) => {
   return res.render('index.ejs');
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err.stack);
+  res.status(500).json({ message: 'Internal server error. Please try again.' });
 });
 
 // Start server

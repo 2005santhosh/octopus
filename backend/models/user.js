@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema({
     unique: true,
     sparse: true // Allows null values for users not using Google
   },
+  profileImage: {
+    type: String,
+    default: '' // Default to empty string if no profile image is set
+  },
   isVerified: {
     type: Boolean,
     default: false
@@ -75,7 +79,7 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 userSchema.methods.generateAuthToken = function() {
   return jwt.sign(
     { id: this._id, email: this.email },
-    process.env.JWT_SECRET, // Changed to match environment variable naming convention
+    process.env.JWT_SECRET,
     { expiresIn: '2h' }
   );
 };

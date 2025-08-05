@@ -571,8 +571,8 @@
                         <span class="notification-badge">3</span>
                     </button>
                     <div class="user-profile">
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User profile image">
-                        <span>Sarah Johnson</span>
+                        <img src="<%= user.profileImage || 'https://randomuser.me/api/portraits/women/44.jpg' %>" alt="User">
+                        <span><%= user.name %></span>
                     </div>
                 </div>
             </div>

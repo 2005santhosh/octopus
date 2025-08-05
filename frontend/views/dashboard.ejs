@@ -19,13 +19,11 @@
             overflow-x: hidden;
         }
 
-        /* Dashboard Layout */
         .dashboard-container {
             display: flex;
             min-height: 100vh;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 250px;
             background-color: #ffffff;
@@ -82,7 +80,6 @@
             text-align: center;
         }
 
-        /* Main Content */
         .main-content {
             flex: 1;
             margin-left: 250px;
@@ -90,7 +87,6 @@
             flex-direction: column;
         }
 
-        /* Top Bar */
         .top-bar {
             background-color: #ffffff;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -183,7 +179,6 @@
             font-weight: 500;
         }
 
-        /* Credits Display */
         .credits-display {
             background-color: #f0f7ff;
             border-radius: 20px;
@@ -209,7 +204,6 @@
             margin-left: 5px;
         }
 
-        /* Dashboard Content */
         .dashboard-content {
             padding: 30px;
             flex: 1;
@@ -228,7 +222,6 @@
             color: #666;
         }
 
-        /* Stats Cards */
         .stats-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -307,7 +300,6 @@
             color: #dc3545;
         }
 
-        /* Dashboard Sections */
         .dashboard-sections {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -346,7 +338,6 @@
             color: #0750a5;
         }
 
-        /* Recent Content */
         .content-list {
             display: flex;
             flex-direction: column;
@@ -411,7 +402,6 @@
             color: #0c5460;
         }
 
-        /* Quick Actions */
         .quick-actions {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -445,7 +435,6 @@
             font-weight: 500;
         }
 
-        /* Pricing Section */
         .pricing-plans {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -550,7 +539,6 @@
             background-color: #0969da;
         }
 
-        /* Analytics Chart */
         .chart-container {
             height: 250px;
             position: relative;
@@ -598,7 +586,6 @@
             flex: 1;
         }
 
-        /* Create Button */
         .create-button {
             position: fixed;
             bottom: 30px;
@@ -621,7 +608,6 @@
             transform: scale(1.1);
         }
 
-        /* Credit Usage */
         .credit-usage {
             background-color: #ffffff;
             border-radius: 10px;
@@ -705,7 +691,6 @@
             background-color: #0750a5;
         }
 
-        /* Social Accounts */
         .social-accounts {
             background-color: #ffffff;
             border-radius: 10px;
@@ -829,7 +814,6 @@
             margin-bottom: 5px;
         }
 
-        /* Responsive Design */
         @media (max-width: 992px) {
             .dashboard-sections {
                 grid-template-columns: 1fr;
@@ -888,7 +872,6 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-logo">
                 <i class="fas fa-robot"></i>
@@ -934,9 +917,7 @@
             </div>
         </div>
 
-        <!-- Main Content -->
         <div class="main-content">
-            <!-- Top Bar -->
             <div class="top-bar">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
@@ -945,28 +926,33 @@
                 <div class="top-bar-actions">
                     <div class="credits-display">
                         <i class="fas fa-coins credits-icon"></i>
-                        <span class="credits-text">3/3 Credits</span>
-                        <span class="credits-reset">Resets in 5h</span>
+                        <span class="credits-text" id="creditsText">3/3 Credits</span>
+                        <span class="credits-reset" id="creditsReset">Resets in 9h 14m</span>
                     </div>
                     <button class="notification-btn">
                         <i class="fas fa-bell"></i>
                         <span class="notification-badge">3</span>
                     </button>
-                    <div class="user-profile">
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User">
-                        <span>Sarah Johnson</span>
-                    </div>
+                    <% if (user && user.name && user.profileImage) { %>
+                        <div class="user-profile" onclick="window.location.href='/settings'">
+                            <img src="<%= user.profileImage %>?v=<%= Date.now() %>" alt="User">
+                            <span><%= user.name %></span>
+                        </div>
+                    <% } else { %>
+                        <div class="user-profile" onclick="window.location.href='/settings'">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg?v=<%= Date.now() %>" alt="Default User">
+                            <span>Guest</span>
+                        </div>
+                    <% } %>
                 </div>
             </div>
 
-            <!-- Dashboard Content -->
             <div class="dashboard-content">
                 <div class="dashboard-header">
-                    <h1>Welcome back, Sarah!</h1>
+                    <h1>Welcome back, <%= user.name || 'Guest' %>!</h1>
                     <p>Here's what's happening with your content today.</p>
                 </div>
 
-                <!-- Credit Usage -->
                 <div class="credit-usage">
                     <div class="credit-header">
                         <div class="section-title">Your Credits</div>
@@ -982,14 +968,13 @@
                         <div class="credit-bar"></div>
                     </div>
                     <div class="credit-actions">
-                        <div class="credit-reset">
-                            Next reset: <strong>Today at 11:59 PM UTC</strong>
+                        <div class="credit-reset" id="creditResetText">
+                            Next reset: <strong>Tuesday, August 05, 2025 at 05:29 AM IST</strong>
                         </div>
                         <button class="buy-credits">Buy More Credits</button>
                     </div>
                 </div>
 
-                <!-- Social Accounts -->
                 <div class="social-accounts">
                     <div class="section-header">
                         <div class="section-title">Connected Social Accounts</div>
@@ -1002,7 +987,7 @@
                             </div>
                             <div class="social-details">
                                 <div class="social-name">Facebook</div>
-                                <div class="social-status">Connected as Sarah Johnson</div>
+                                <div class="social-status">Connected as <%= user.name || 'Guest' %></div>
                             </div>
                             <button class="social-action disconnect">Disconnect</button>
                         </div>
@@ -1012,7 +997,7 @@
                             </div>
                             <div class="social-details">
                                 <div class="social-name">Twitter</div>
-                                <div class="social-status">Connected as @sarahj</div>
+                                <div class="social-status">Connected as @<%= (user.name || 'Guest').replace(/\s+/g, '').toLowerCase() %></div>
                             </div>
                             <button class="social-action disconnect">Disconnect</button>
                         </div>
@@ -1022,7 +1007,7 @@
                             </div>
                             <div class="social-details">
                                 <div class="social-name">Instagram</div>
-                                <div class="social-status">Connected as @sarahjohnson</div>
+                                <div class="social-status">Connected as @<%= (user.name || 'Guest').replace(/\s+/g, '').toLowerCase() %></div>
                             </div>
                             <button class="social-action disconnect">Disconnect</button>
                         </div>
@@ -1032,7 +1017,7 @@
                             </div>
                             <div class="social-details">
                                 <div class="social-name">LinkedIn</div>
-                                <div class="social-status">Connected as Sarah Johnson</div>
+                                <div class="social-status">Connected as <%= user.name || 'Guest' %></div>
                             </div>
                             <button class="social-action disconnect">Disconnect</button>
                         </div>
@@ -1042,7 +1027,7 @@
                             </div>
                             <div class="social-details">
                                 <div class="social-name">YouTube</div>
-                                <div class="social-status">Connected as Sarah's Channel</div>
+                                <div class="social-status">Connected as <%= user.name || 'Guest' %>'s Channel</div>
                             </div>
                             <button class="social-action disconnect">Disconnect</button>
                         </div>
@@ -1055,7 +1040,6 @@
                     </div>
                 </div>
 
-                <!-- Stats Cards -->
                 <div class="stats-cards">
                     <div class="stat-card">
                         <div class="stat-card-header">
@@ -1085,7 +1069,7 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-card-header">
-                            <div class="stat-card-title">Total visitings</div>
+                            <div class="stat-card-title">Total Visitings</div>
                             <div class="stat-card-icon purple">
                                 <i class="fas fa-eye"></i>
                             </div>
@@ -1111,9 +1095,7 @@
                     </div>
                 </div>
 
-                <!-- Dashboard Sections -->
                 <div class="dashboard-sections">
-                    <!-- Recent Content -->
                     <div class="section-card">
                         <div class="section-header">
                             <div class="section-title">Recent Content</div>
@@ -1173,7 +1155,6 @@
                         </div>
                     </div>
 
-                    <!-- Quick Actions -->
                     <div class="section-card">
                         <div class="section-header">
                             <div class="section-title">Quick Actions</div>
@@ -1199,7 +1180,6 @@
                     </div>
                 </div>
 
-                <!-- Analytics Chart -->
                 <div class="section-card">
                     <div class="section-header">
                         <div class="section-title">Content Performance</div>
@@ -1244,13 +1224,11 @@
         </div>
     </div>
 
-    <!-- Create Button -->
     <button class="create-button">
         <i class="fas fa-plus"></i>
     </button>
 
     <script>
-        // Show notification message
         function showMessage(text, bgColor) {
             const message = document.createElement('div');
             message.style.position = 'fixed';
@@ -1270,7 +1248,6 @@
             }, 3000);
         }
 
-        // Toggle sidebar on mobile
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.querySelector('.sidebar');
             const logo = document.querySelector('.sidebar-logo');
@@ -1279,7 +1256,6 @@
                 sidebar.classList.toggle('active');
             });
 
-            // Menu item navigation
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -1292,7 +1268,6 @@
                 });
             });
 
-            // Quick action navigation
             document.querySelectorAll('.quick-action').forEach(action => {
                 action.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -1305,10 +1280,9 @@
                 });
             });
 
-            // Create button functionality
             const createButton = document.querySelector('.create-button');
             createButton.addEventListener('click', function() {
-                const credits = 3; // This would be fetched from the server in a real app
+                const credits = 3;
                 if (credits <= 0) {
                     showMessage('You have no credits left. Please upgrade your plan or wait for daily reset.', '#dc3545');
                 } else {
@@ -1316,13 +1290,11 @@
                 }
             });
 
-            // Notification button
             const notificationBtn = document.querySelector('.notification-btn');
             notificationBtn.addEventListener('click', function() {
                 showMessage('Opening notifications...', '#0969da');
             });
 
-            // Buy credits button
             const buyCreditsBtn = document.querySelector('.buy-credits');
             buyCreditsBtn.addEventListener('click', function() {
                 showMessage('Redirecting to pricing page...', '#0969da');
@@ -1331,7 +1303,6 @@
                 }, 1000);
             });
 
-            // Social account disconnect buttons
             document.querySelectorAll('.social-action.disconnect').forEach(button => {
                 button.addEventListener('click', function() {
                     const socialName = this.closest('.social-item').querySelector('.social-name').textContent;
@@ -1339,15 +1310,27 @@
                 });
             });
 
-            // Add social account button
-            const addSocialBtn = document.querySelector('.add-social');
-            addSocialBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                showMessage('Opening social account connection...', '#0969da');
-                setTimeout(() => {
-                    window.location.href = this.getAttribute('href');
-                }, 1000);
-            });
+            // Add dynamic credit reset timer
+            function updateCreditTimer() {
+                const now = new Date();
+                const nextReset = new Date('2025-08-05T00:00:00Z'); // Midnight UTC
+                const timeLeft = nextReset - now + (330 * 60 * 1000); // Adjust for IST (UTC+5:30)
+
+                if (timeLeft > 0) {
+                    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    document.getElementById('creditsText').textContent = `3/3 Credits`;
+                    document.getElementById('creditsReset').textContent = `Resets in ${hours}h ${minutes}m`;
+                    document.getElementById('creditResetText').textContent = `Next reset: <strong>Tuesday, August 05, 2025 at 05:29 AM IST</strong>`;
+                } else {
+                    document.getElementById('creditsText').textContent = `3/3 Credits`;
+                    document.getElementById('creditsReset').textContent = `Resets now`;
+                    document.getElementById('creditResetText').textContent = `Next reset: <strong>Tuesday, August 05, 2025 at 05:29 AM IST</strong>`;
+                }
+            }
+
+            updateCreditTimer();
+            setInterval(updateCreditTimer, 60000); // Update every minute
         });
     </script>
 </body>
