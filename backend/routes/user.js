@@ -3,7 +3,11 @@ const router = express.Router();
 const User = require('../models/user');
 const auth = require('../middleware/auth');
 const jwt = require('jsonwebtoken');
+//<<<<<<< HEAD
 const passport = require('passport');
+//=======
+const aiSuggestionsService = require('../services/aiSuggestions');
+//>>>>>>> ed30379a1beb4117df626875d21e0a638fd1e9cd
 
 // Render signup page
 router.get('/signup', (req, res) => {
@@ -176,6 +180,43 @@ router.get('/pricing', auth, (req, res) => {
 
 router.get('/settings', auth, (req, res) => {
   return res.render('settings', { messages: res.locals.messages, user: req.user });
+});
+
+// API Routes for AI Suggestions
+router.get('/api/trending-suggestions', auth, async (req, res) => {
+  try {
+    const count = parseInt(req.query.count) || 5;
+    const suggestions = await aiSuggestionsService.getTrendingSuggestions(count);
+    
+    return res.json({
+      success: true,
+      suggestions: suggestions.suggestions,
+      fallback: suggestions.fallback || false
+    });
+  } catch (error) {
+    console.error('Error fetching AI suggestions:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to fetch trending suggestions'
+    });
+  }
+});
+
+router.post('/api/predict-trend', auth, async (req, res) => {
+  try {
+    const { hashtag, content_type, platform, region } = req.body;
+    const prediction = await aiSuggestionsService.predictTrendPotential(
+      hashtag, content_type, platform, region
+    );
+    
+    return res.json(prediction);
+  } catch (error) {
+    console.error('Error predicting trend:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to predict trend potential'
+    });
+  }
 });
 
 // Logout route
