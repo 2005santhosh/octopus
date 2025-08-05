@@ -1010,7 +1010,7 @@
                         <div class="ai-suggestion-header">
                             <div style="display: flex; align-items: center;">
                                 <i class="fas fa-lightbulb"></i>
-                                <span>AI Suggestion</span>
+                                <span>AI Suggestions</span>
                                 <div class="ai-loading" id="aiLoading" style="display: none; margin-left: 10px;">
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </div>
@@ -1020,7 +1020,7 @@
                             </button>
                         </div>
                         <div class="ai-suggestion-text" id="aiSuggestionText">
-                            Loading trending content suggestions...
+                            <!-- AI suggestions will appear here -->
                         </div>
                         <div class="ai-suggestions-list" id="aiSuggestionsList" style="display: none; margin-top: 10px;">
                             <!-- Dynamic suggestions will be loaded here -->
@@ -1141,13 +1141,13 @@
             aiSuggestionsList.style.display = 'none';
             
             if (isRefresh) {
-                aiSuggestionText.textContent = 'Refreshing trending content suggestions...';
+                aiSuggestionText.textContent = '';
             } else {
-                aiSuggestionText.textContent = 'Loading trending content suggestions...';
+                aiSuggestionText.textContent = '';
             }
 
             try {
-                const response = await fetch('/api/trending-suggestions?count=5', {
+                const response = await fetch('/api/trending-suggestions?count=3', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
