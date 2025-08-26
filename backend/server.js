@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
 
-dotenv.config({ path: path.join(__dirname, '.env') });
+dotenv.config({ path: path.join(__dirname, '.env'), silent: true });
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -19,8 +19,8 @@ if (!process.env.MONGO_URI || !process.env.jwtsecret) {
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MONGODB CONNECTED SUCCESSFULLY"))
-  .catch(err => console.error("❌ MONGODB CONNECTION FAILED:", err.message));
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch(err => console.error("❌ MongoDB Connection Failed:", err.message));
 
 // Session and flash setup
 app.use(session({
@@ -59,5 +59,5 @@ app.get("/", (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server started at port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });

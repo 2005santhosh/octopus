@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "start": "node backend/server.js",
-    "dev": "nodemon backend/server.js",
-    "dev:full": "concurrently \"python ai/Trending_Content_Suggestions/start_ai_server.py\" \"nodemon backend/server.js\"",
+    "start": "node --no-deprecation backend/server.js",
+    "dev": "nodemon --quiet",
+    "dev:full": "concurrently --kill-others-on-fail \"python ai/Trending_Content_Suggestions/start_ai_server.py\" \"nodemon --quiet\"",
     "ai:train": "cd ai/Trending_Content_Suggestions && python advanced_model.py",
     "ai:server": "cd ai/Trending_Content_Suggestions && python api_server.py"
   },
