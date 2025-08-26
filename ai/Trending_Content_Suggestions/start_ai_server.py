@@ -25,15 +25,13 @@ def check_dependencies():
 
 def install_dependencies():
     """Install required dependencies"""
-    print("Installing AI model dependencies...")
     try:
         subprocess.check_call([
             sys.executable, "-m", "pip", "install", 
             "flask", "flask-cors", "scikit-learn", "pandas", "numpy", "joblib"
-        ])
+        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return True
     except subprocess.CalledProcessError:
-        print("Failed to install dependencies")
         return False
 
 def start_ai_server():
@@ -42,19 +40,16 @@ def start_ai_server():
     api_script = current_dir / "api_server.py"
     
     if not api_script.exists():
-        print("AI API server script not found")
         return None
     
     try:
         # Start the Flask server as a subprocess
         process = subprocess.Popen([
             sys.executable, str(api_script)
-        ], cwd=str(current_dir))
+        ], cwd=str(current_dir), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         
-        print(f"AI API server started with PID: {process.pid}")
         return process
     except Exception as e:
-        print(f"Failed to start AI server: {e}")
         return None
 
 def wait_for_server(max_attempts=30):
@@ -65,23 +60,25 @@ def wait_for_server(max_attempts=30):
     for attempt in range(max_attempts):
         try:
             urllib.request.urlopen('http://localhost:5001/api/health', timeout=1)
-            print("AI API server is ready!")
             return True
         except urllib.error.URLError:
             time.sleep(1)
     
-    print("AI API server failed to start properly")
     return False
 
 def main():
     """Main startup function"""
-    print("Starting Trending Content Suggestions AI...")
-    
     # Check and install dependencies if needed
     if not check_dependencies():
         if not install_dependencies():
-            print("Failed to install required dependencies")
             return False
+    
+    # Setup basic model if needed
+    try:
+        import setup_model
+        setup_model.create_basic_model()
+    except:
+        pass
     
     # Start the AI server
     process = start_ai_server()
@@ -90,7 +87,6 @@ def main():
     
     # Wait for server to be ready
     if wait_for_server():
-        print("Trending Content Suggestions AI is ready!")
         return True
     else:
         process.terminate()

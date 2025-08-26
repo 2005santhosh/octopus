@@ -11,10 +11,8 @@ class AITrendingSuggestionsService {
         try {
             const response = await axios.get(`${this.baseURL}/health`, { timeout: 5000 });
             this.isConnected = response.data.status === 'healthy';
-            console.log('AI Suggestions Service:', this.isConnected ? 'Connected' : 'Disconnected');
         } catch (error) {
             this.isConnected = false;
-            console.log('AI Suggestions Service: Not available');
         }
     }
 
@@ -37,8 +35,6 @@ class AITrendingSuggestionsService {
                 throw new Error('API returned unsuccessful response');
             }
         } catch (error) {
-            console.error('Error fetching AI suggestions:', error.message);
-            
             // Fallback suggestions if AI service is unavailable
             return {
                 success: false,
@@ -69,8 +65,6 @@ class AITrendingSuggestionsService {
                 throw new Error('Prediction API returned unsuccessful response');
             }
         } catch (error) {
-            console.error('Error predicting trend potential:', error.message);
-            
             // Fallback prediction
             return {
                 success: false,
