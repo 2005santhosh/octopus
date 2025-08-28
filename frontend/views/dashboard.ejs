@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OCTOPUS - Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -196,12 +197,6 @@
         .credits-text {
             font-weight: 500;
             color: #0969da;
-        }
-
-        .credits-reset {
-            font-size: 12px;
-            color: #666;
-            margin-left: 5px;
         }
 
         .dashboard-content {
@@ -544,48 +539,6 @@
             position: relative;
         }
 
-        .chart-bars {
-            display: flex;
-            align-items: flex-end;
-            height: 200px;
-            gap: 15px;
-            padding-top: 20px;
-        }
-
-        .chart-bar {
-            flex: 1;
-            background-color: #0969da;
-            border-radius: 5px 5px 0 0;
-            position: relative;
-            transition: all 0.3s;
-        }
-
-        .chart-bar:hover {
-            opacity: 0.8;
-        }
-
-        .chart-bar-value {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .chart-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-
-        .chart-label {
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-            flex: 1;
-        }
-
         .create-button {
             position: fixed;
             bottom: 30px;
@@ -658,21 +611,11 @@
             height: 100%;
             background-color: #0969da;
             border-radius: 5px;
-            width: 100%;
         }
 
         .credit-actions {
             display: flex;
-            justify-content: space-between;
-        }
-
-        .credit-reset {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .credit-reset strong {
-            color: #0969da;
+            justify-content: flex-end;
         }
 
         .buy-credits {
@@ -708,7 +651,7 @@
         .social-item {
             display: flex;
             align-items: center;
-            padding: 0px;
+            padding: 10px;
             border-radius: 8px;
             border: 1px solid #eee;
             transition: all 0.3s;
@@ -750,10 +693,6 @@
 
         .social-icon.youtube {
             background-color: #FF0000;
-        }
-
-        .social-icon.tiktok {
-            background-color: #000000;
         }
 
         .social-details {
@@ -812,6 +751,26 @@
         .add-social i {
             font-size: 24px;
             margin-bottom: 5px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            color: white;
+        }
+
+        .notification.success {
+            background-color: #28a745;
+        }
+
+        .notification.error {
+            background-color: #dc3545;
         }
 
         @media (max-width: 992px) {
@@ -926,24 +885,16 @@
                 <div class="top-bar-actions">
                     <div class="credits-display">
                         <i class="fas fa-coins credits-icon"></i>
-                        <span class="credits-text" id="creditsText">3/3 Credits</span>
-                        <span class="credits-reset" id="creditsReset">Resets in 9h 14m</span>
+                        <span class="credits-text" id="creditsText">5/5 Credits</span>
                     </div>
                     <button class="notification-btn">
                         <i class="fas fa-bell"></i>
                         <span class="notification-badge">3</span>
                     </button>
-                    <% if (user && user.name && user.profileImage) { %>
-                        <div class="user-profile" onclick="window.location.href='/settings'">
-                            <img src="<%= user.profileImage %>?v=<%= Date.now() %>" alt="User">
-                            <span><%= user.name %></span>
-                        </div>
-                    <% } else { %>
-                        <div class="user-profile" onclick="window.location.href='/settings'">
-                            <img src="https://randomuser.me/api/portraits/women/44.jpg?v=<%= Date.now() %>" alt="Default User">
-                            <span>Guest</span>
-                        </div>
-                    <% } %>
+                    <div class="user-profile" onclick="window.location.href='/settings'">
+                        <img src="<%= user.profileImage || 'https://randomuser.me/api/portraits/women/44.jpg' %>?v=<%= Date.now() %>" alt="User">
+                        <span><%= user.name || 'Guest' %></span>
+                    </div>
                 </div>
             </div>
 
@@ -953,25 +904,33 @@
                     <p>Here's what's happening with your content today.</p>
                 </div>
 
+                <% if (messages && messages.success) { %>
+                    <% messages.success.forEach(function(message) { %>
+                        <div class="notification success"><%= message %></div>
+                    <% }); %>
+                <% } %>
+                <% if (messages && messages.error) { %>
+                    <% messages.error.forEach(function(message) { %>
+                        <div class="notification error"><%= message %></div>
+                    <% }); %>
+                <% } %>
+
                 <div class="credit-usage">
                     <div class="credit-header">
-                        <div class="section-title">Your Credits</div>
+                        <div class="credit-title">Your Credits</div>
                     </div>
                     <div class="credit-info">
-                        <div class="credit-number">3/3</div>
+                        <div class="credit-number" id="creditNumber">5/5</div>
                         <div class="credit-details">
-                            You have 3 credits available today to generate content videos.<br>
-                            Credits reset every day at midnight UTC.
+                            You have <span id="creditCount">5</span> free credits available to generate content videos.<br>
+                            Once used, upgrade to premium subscription for more.
                         </div>
                     </div>
                     <div class="credit-bar-container">
-                        <div class="credit-bar"></div>
+                        <div class="credit-bar" id="creditBar" style="width: 100%"></div>
                     </div>
-                    <div class="credit-actions">
-                        <div class="credit-reset" id="creditResetText">
-                            Next reset: <strong>Tuesday, August 05, 2025 at 05:29 AM IST</strong>
-                        </div>
-                        <button class="buy-credits">Buy More Credits</button>
+                    <div class="credit-actions" onclick="window.location.href='/pricing'">
+                        <button class="buy-credits">Buy Premium Subscription </button>
                     </div>
                 </div>
 
@@ -980,63 +939,8 @@
                         <div class="section-title">Connected Social Accounts</div>
                         <a href="/social-accounts" class="section-action">Manage All</a>
                     </div>
-                    <div class="social-list">
-                        <div class="social-item">
-                            <div class="social-icon facebook">
-                                <i class="fab fa-facebook-f"></i>
-                            </div>
-                            <div class="social-details">
-                                <div class="social-name">Facebook</div>
-                                <div class="social-status">Connected as <%= user.name || 'Guest' %></div>
-                            </div>
-                            <button class="social-action disconnect">Disconnect</button>
-                        </div>
-                        <div class="social-item">
-                            <div class="social-icon twitter">
-                                <i class="fab fa-twitter"></i>
-                            </div>
-                            <div class="social-details">
-                                <div class="social-name">Twitter</div>
-                                <div class="social-status">Connected as @<%= (user.name || 'Guest').replace(/\s+/g, '').toLowerCase() %></div>
-                            </div>
-                            <button class="social-action disconnect">Disconnect</button>
-                        </div>
-                        <div class="social-item">
-                            <div class="social-icon instagram">
-                                <i class="fab fa-instagram"></i>
-                            </div>
-                            <div class="social-details">
-                                <div class="social-name">Instagram</div>
-                                <div class="social-status">Connected as @<%= (user.name || 'Guest').replace(/\s+/g, '').toLowerCase() %></div>
-                            </div>
-                            <button class="social-action disconnect">Disconnect</button>
-                        </div>
-                        <div class="social-item">
-                            <div class="social-icon linkedin">
-                                <i class="fab fa-linkedin-in"></i>
-                            </div>
-                            <div class="social-details">
-                                <div class="social-name">LinkedIn</div>
-                                <div class="social-status">Connected as <%= user.name || 'Guest' %></div>
-                            </div>
-                            <button class="social-action disconnect">Disconnect</button>
-                        </div>
-                        <div class="social-item">
-                            <div class="social-icon youtube">
-                                <i class="fab fa-youtube"></i>
-                            </div>
-                            <div class="social-details">
-                                <div class="social-name">YouTube</div>
-                                <div class="social-status">Connected as <%= user.name || 'Guest' %>'s Channel</div>
-                            </div>
-                            <button class="social-action disconnect">Disconnect</button>
-                        </div>
-                        <a href="/social-accounts" class="add-social">
-                            <div>
-                                <i class="fas fa-plus"></i>
-                                <div>Add Account</div>
-                            </div>
-                        </a>
+                    <div class="social-list" id="socialList">
+                        <!-- Dynamically populated by JavaScript -->
                     </div>
                 </div>
 
@@ -1160,7 +1064,7 @@
                             <div class="section-title">Quick Actions</div>
                         </div>
                         <div class="quick-actions">
-                            <a href="/content" class="quick-action">
+                            <a href="/content" class="quick-action" data-requires-credits>
                                 <i class="fas fa-plus"></i>
                                 <span>Create Content</span>
                             </a>
@@ -1186,85 +1090,225 @@
                         <a href="/analytics" class="section-action">View Report</a>
                     </div>
                     <div class="chart-container">
-                        <div class="chart-bars">
-                            <div class="chart-bar" style="height: 70%;">
-                                <div class="chart-bar-value">70</div>
-                            </div>
-                            <div class="chart-bar" style="height: 85%;">
-                                <div class="chart-bar-value">85</div>
-                            </div>
-                            <div class="chart-bar" style="height: 60%;">
-                                <div class="chart-bar-value">60</div>
-                            </div>
-                            <div class="chart-bar" style="height: 90%;">
-                                <div class="chart-bar-value">90</div>
-                            </div>
-                            <div class="chart-bar" style="height: 75%;">
-                                <div class="chart-bar-value">75</div>
-                            </div>
-                            <div class="chart-bar" style="height: 95%;">
-                                <div class="chart-bar-value">95</div>
-                            </div>
-                            <div class="chart-bar" style="height: 80%;">
-                                <div class="chart-bar-value">80</div>
-                            </div>
-                        </div>
-                        <div class="chart-labels">
-                            <div class="chart-label">Mon</div>
-                            <div class="chart-label">Tue</div>
-                            <div class="chart-label">Wed</div>
-                            <div class="chart-label">Thu</div>
-                            <div class="chart-label">Fri</div>
-                            <div class="chart-label">Sat</div>
-                            <div class="chart-label">Sun</div>
-                        </div>
+                        <canvas id="contentPerformanceChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <button class="create-button">
+    <button class="create-button" data-requires-credits>
         <i class="fas fa-plus"></i>
     </button>
 
     <script>
-        function showMessage(text, bgColor) {
+        function showMessage(text, type) {
             const message = document.createElement('div');
-            message.style.position = 'fixed';
-            message.style.top = '20px';
-            message.style.left = '50%';
-            message.style.transform = 'translateX(-50%)';
-            message.style.backgroundColor = bgColor;
-            message.style.color = 'white';
-            message.style.padding = '15px 30px';
-            message.style.borderRadius = '5px';
-            message.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-            message.style.zIndex = '1001';
+            message.className = `notification ${type}`;
             message.textContent = text;
             document.body.appendChild(message);
-            setTimeout(() => {
-                message.remove();
-            }, 3000);
+            setTimeout(() => message.remove(), 3000);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.querySelector('.sidebar');
             const logo = document.querySelector('.sidebar-logo');
-            
-            logo.addEventListener('click', function() {
-                sidebar.classList.toggle('active');
-            });
+            let credits = localStorage.getItem('credits') ? parseInt(localStorage.getItem('credits')) : 5;
+            if (isNaN(credits)) credits = 5;
+            const maxCredits = 5;
+
+            let connectedAccounts;
+            try {
+                connectedAccounts = <%- JSON.stringify(connectedAccounts || {
+                    facebook: false,
+                    twitter: false,
+                    instagram: false,
+                    linkedin: false,
+                    youtube: false
+                }) %>;
+            } catch (e) {
+                console.error('Error parsing connectedAccounts:', e);
+                connectedAccounts = {
+                    facebook: false,
+                    twitter: false,
+                    instagram: false,
+                    linkedin: false,
+                    youtube: false
+                };
+            }
+
+            const userName = '<%= user.name || "Guest" %>';
+
+            function updateCreditDisplay() {
+                const creditsText = document.getElementById('creditsText');
+                const creditNumber = document.getElementById('creditNumber');
+                const creditCount = document.getElementById('creditCount');
+                const creditBar = document.getElementById('creditBar');
+
+                if (creditsText && creditNumber && creditCount && creditBar) {
+                    creditsText.textContent = `${credits}/${maxCredits} Credits`;
+                    creditNumber.textContent = `${credits}/${maxCredits}`;
+                    creditCount.textContent = credits;
+                    const percentage = (credits / maxCredits) * 100;
+                    creditBar.style.width = `${percentage}%`;
+                } else {
+                    console.error('Credit display elements not found');
+                }
+            }
+
+            function useCredit() {
+                if (credits > 0) {
+                    credits--;
+                    localStorage.setItem('credits', credits);
+                    updateCreditDisplay();
+                    return true;
+                }
+                return false;
+            }
+
+            function updateSocialList() {
+                const socialList = document.getElementById('socialList');
+                if (!socialList) {
+                    console.error('socialList element not found');
+                    showMessage('Error loading social accounts section.', 'error');
+                    return;
+                }
+                socialList.innerHTML = '';
+
+                const platforms = [
+                    { name: 'Facebook', icon: 'facebook-f', class: 'facebook', connected: connectedAccounts.facebook, status: `Connected as ${userName}` },
+                    { name: 'Twitter', icon: 'twitter', class: 'twitter', connected: connectedAccounts.twitter, status: `Connected as @${userName.replace(/\s+/g, '').toLowerCase()}` },
+                    { name: 'Instagram', icon: 'instagram', class: 'instagram', connected: connectedAccounts.instagram, status: `Connected as @${userName.replace(/\s+/g, '').toLowerCase()}` },
+                    { name: 'LinkedIn', icon: 'linkedin-in', class: 'linkedin', connected: connectedAccounts.linkedin, status: `Connected as ${userName}` },
+                    { name: 'YouTube', icon: 'youtube', class: 'youtube', connected: connectedAccounts.youtube, status: `Connected as ${userName}'s Channel` }
+                ];
+
+                const hasConnectedAccounts = platforms.some(platform => platform.connected);
+
+                if (hasConnectedAccounts) {
+                    platforms.forEach(platform => {
+                        if (platform.connected) {
+                            socialList.innerHTML += `
+                                <div class="social-item">
+                                    <div class="social-icon ${platform.class}">
+                                        <i class="fab fa-${platform.icon}"></i>
+                                    </div>
+                                    <div class="social-details">
+                                        <div class="social-name">${platform.name}</div>
+                                        <div class="social-status">${platform.status}</div>
+                                    </div>
+                                    <button class="social-action disconnect" data-platform="${platform.name.toLowerCase()}">Disconnect</button>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+
+                socialList.innerHTML += `
+                    <a href="/social-accounts" class="add-social" id="addSocialButton">
+                        <div>
+                            <i class="fas fa-plus"></i>
+                            <div>Add Account</div>
+                        </div>
+                    </a>
+                `;
+
+                attachDisconnectListeners();
+            }
+
+            function attachDisconnectListeners() {
+                document.querySelectorAll('.social-action.disconnect').forEach(button => {
+                    button.addEventListener('click', async function() {
+                        const platform = this.getAttribute('data-platform');
+                        try {
+                            const response = await fetch('/social-accounts/disconnect', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ platform })
+                            });
+                            if (response.ok) {
+                                showMessage(`${platform.charAt(0).toUpperCase() + platform.slice(1)} disconnected successfully!`, 'success');
+                                connectedAccounts[platform] = false;
+                                updateSocialList();
+                            } else {
+                                const errorData = await response.json();
+                                showMessage(`Error disconnecting ${platform}: ${errorData.message || 'Unknown error'}`, 'error');
+                            }
+                        } catch (error) {
+                            showMessage(`Error disconnecting ${platform}: ${error.message}`, 'error');
+                        }
+                    });
+                });
+            }
+
+            const ctx = document.getElementById('contentPerformanceChart')?.getContext('2d');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Content Performance',
+                            data: [70, 85, 60, 90, 75, 95, 80],
+                            backgroundColor: '#0969da',
+                            borderColor: '#0750a5',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Performance Score'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Day'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `Score: ${context.parsed.y}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                console.warn('Chart canvas not found');
+            }
+
+            updateSocialList();
+            updateCreditDisplay();
+
+            if (logo && sidebar) {
+                logo.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                });
+            } else {
+                console.warn('Sidebar or logo element not found');
+            }
 
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
                     const href = this.getAttribute('href');
                     const actionText = this.querySelector('span').textContent;
-                    showMessage(`Navigating to ${actionText}...`, '#0969da');
-                    setTimeout(() => {
-                        window.location.href = href;
-                    }, 1000);
+                    showMessage(`Navigating to ${actionText}...`, 'success');
+                    setTimeout(() => window.location.href = href, 1000);
                 });
             });
 
@@ -1273,65 +1317,71 @@
                     e.preventDefault();
                     const href = this.getAttribute('href');
                     const actionText = this.querySelector('span').textContent;
-                    showMessage(`Opening ${actionText}...`, '#0969da');
-                    setTimeout(() => {
-                        window.location.href = href;
-                    }, 1000);
+
+                    if (this.hasAttribute('data-requires-credits')) {
+                        if (credits > 0) {
+                            if (useCredit()) {
+                                showMessage(`Opening ${actionText}...`, 'success');
+                                setTimeout(() => window.location.href = href, 1000);
+                            }
+                        } else {
+                            showMessage('No credits left. Please upgrade to premium subscription.', 'error');
+                            setTimeout(() => window.location.href = '/pricing', 2000);
+                        }
+                    } else {
+                        showMessage(`Opening ${actionText}...`, 'success');
+                        setTimeout(() => window.location.href = href, 1000);
+                    }
                 });
             });
 
             const createButton = document.querySelector('.create-button');
-            createButton.addEventListener('click', function() {
-                const credits = 3;
-                if (credits <= 0) {
-                    showMessage('You have no credits left. Please upgrade your plan or wait for daily reset.', '#dc3545');
-                } else {
-                    showMessage('Opening content creation tools...', '#0969da');
-                }
-            });
-
-            const notificationBtn = document.querySelector('.notification-btn');
-            notificationBtn.addEventListener('click', function() {
-                showMessage('Opening notifications...', '#0969da');
-            });
-
-            const buyCreditsBtn = document.querySelector('.buy-credits');
-            buyCreditsBtn.addEventListener('click', function() {
-                showMessage('Redirecting to pricing page...', '#0969da');
-                setTimeout(() => {
-                    window.location.href = '/pricing';
-                }, 1000);
-            });
-
-            document.querySelectorAll('.social-action.disconnect').forEach(button => {
-                button.addEventListener('click', function() {
-                    const socialName = this.closest('.social-item').querySelector('.social-name').textContent;
-                    showMessage(`Disconnecting ${socialName} account...`, '#dc3545');
+            if (createButton) {
+                createButton.addEventListener('click', function() {
+                    if (credits > 0) {
+                        if (useCredit()) {
+                            showMessage('Opening content creation tools...', 'success');
+                        }
+                    } else {
+                        showMessage('No credits left. Please upgrade to premium subscription.', 'error');
+                        setTimeout(() => window.location.href = '/pricing', 2000);
+                    }
                 });
-            });
-
-            // Add dynamic credit reset timer
-            function updateCreditTimer() {
-                const now = new Date();
-                const nextReset = new Date('2025-08-05T00:00:00Z'); // Midnight UTC
-                const timeLeft = nextReset - now + (330 * 60 * 1000); // Adjust for IST (UTC+5:30)
-
-                if (timeLeft > 0) {
-                    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                    document.getElementById('creditsText').textContent = `3/3 Credits`;
-                    document.getElementById('creditsReset').textContent = `Resets in ${hours}h ${minutes}m`;
-                    document.getElementById('creditResetText').textContent = `Next reset: <strong>Tuesday, August 05, 2025 at 05:29 AM IST</strong>`;
-                } else {
-                    document.getElementById('creditsText').textContent = `3/3 Credits`;
-                    document.getElementById('creditsReset').textContent = `Resets now`;
-                    document.getElementById('creditResetText').textContent = `Next reset: <strong>Tuesday, August 05, 2025 at 05:29 AM IST</strong>`;
-                }
             }
 
-            updateCreditTimer();
-            setInterval(updateCreditTimer, 60000); // Update every minute
+            const notificationBtn = document.querySelector('.notification-btn');
+            if (notificationBtn) {
+                notificationBtn.addEventListener('click', function() {
+                    showMessage('Opening notifications...', 'success');
+                });
+            }
+
+            const buyCreditsBtn = document.querySelector('.buy-credits');
+            if (buyCreditsBtn) {
+                buyCreditsBtn.addEventListener('click', function() {
+                    showMessage('Redirecting to pricing page...', 'success');
+                    setTimeout(() => window.location.href = '/pricing', 1000);
+                });
+            }
         });
+
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId: '{your-app-id}',
+                cookie: true,
+                xfbml: true,
+                version: '{api-version}'
+            });
+            FB.AppEvents.logPageView();
+        };
+
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
     </script>
 </body>
 </html>

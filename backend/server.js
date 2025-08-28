@@ -19,18 +19,33 @@ console.log({
   MONGO_URI: process.env.MONGO_URI,
   JWT_SECRET: process.env.JWT_SECRET,
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  FACEBOOK_CLIENT_ID: process.env.FACEBOOK_CLIENT_ID,
+  FACEBOOK_CLIENT_SECRET: process.env.FACEBOOK_CLIENT_SECRET,
+  TWITTER_API_KEY: process.env.TWITTER_API_KEY,
+  TWITTER_API_SECRET: process.env.TWITTER_API_SECRET,
+  LINKEDIN_CLIENT_ID: process.env.LINKEDIN_CLIENT_ID,
+  LINKEDIN_CLIENT_SECRET: process.env.LINKEDIN_CLIENT_SECRET
 });
 
 // Validate environment variables
-if (!process.env.MONGO_URI || !process.env.JWT_SECRET || !process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+if (!process.env.MONGO_URI || 
+    !process.env.JWT_SECRET || 
+    !process.env.GOOGLE_CLIENT_ID || 
+    !process.env.GOOGLE_CLIENT_SECRET ||
+    !process.env.FACEBOOK_CLIENT_ID || 
+    !process.env.FACEBOOK_CLIENT_SECRET ||
+    !process.env.TWITTER_API_KEY || 
+    !process.env.TWITTER_API_SECRET ||
+    !process.env.LINKEDIN_CLIENT_ID || 
+    !process.env.LINKEDIN_CLIENT_SECRET) {
   console.error("FATAL ERROR: Missing required environment variables");
   process.exit(1);
 }
 
 // Create uploads directory if it doesn't exist
 const publicDir = 'D:\\OneDrive\\Desktop\\projects\\octopus\\public';
-const uploadsDir = path.join(publicDir, 'uploads');
+const uploadsDir = path.join(publicDir, 'Uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
   console.log(`📁 Created uploads directory at ${uploadsDir}`);
@@ -45,22 +60,32 @@ mongoose.connect(process.env.MONGO_URI)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use('/uploads', express.static(uploadsDir)); // Serve uploads from the correct absolute path
-app.use(express.static(publicDir)); // Serve frontend static files from the public folder
+app.use('/Uploads', express.static(uploadsDir));
+app.use(express.static(publicDir));
 
 // Session and flash setup
 app.use(session({
   secret: process.env.JWT_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 24 * 60 * 60 * 1000, secure: process.env.NODE_ENV === 'production' } // 1 day
+  cookie: { 
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'strict'
+  }
 }));
 app.use(flash());
 
 // Passport initialization
+
+
+// Passport config
+require('./config/passport')(passport);
+
 app.use(passport.initialize());
 app.use(passport.session());
-require('./passport'); // Load Google strategy
+
 
 // Make flash messages available in templates
 app.use((req, res, next) => {
@@ -71,7 +96,7 @@ app.use((req, res, next) => {
 });
 
 // View engine setup
-app.set('views', 'D:\\OneDrive\\Desktop\\projects\\octopus\\frontend\\views'); // Absolute path to views
+app.set('views', 'D:\\OneDrive\\Desktop\\projects\\octopus\\frontend\\views');
 app.set('view engine', 'ejs');
 
 // Routes
