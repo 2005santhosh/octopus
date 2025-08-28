@@ -36,7 +36,6 @@ class TrendingSuggestionsAPI:
         latest_file = os.path.join(model_dir, "latest_model.txt")
         
         if not os.path.exists(latest_file):
-            print("No trained model found. Please train a model first.")
             return False
         
         try:
@@ -52,11 +51,9 @@ class TrendingSuggestionsAPI:
             self.label_encoder = joblib.load(os.path.join(model_dir, label_encoder_file))
             self.scaler = joblib.load(os.path.join(model_dir, scaler_file))
             
-            print(f"Loaded model: {model_file}")
             return True
             
         except Exception as e:
-            print(f"Error loading model: {e}")
             return False
     
     def predict_trending_potential(self, hashtag, content_type, platform, region):
@@ -107,7 +104,6 @@ class TrendingSuggestionsAPI:
             return float(proba[2])  # High engagement probability
             
         except Exception as e:
-            print(f"Prediction error: {e}")
             return random.random()  # Fallback
     
     def generate_trending_suggestions(self, num_suggestions=10):
@@ -236,6 +232,4 @@ def health_check():
     })
 
 if __name__ == '__main__':
-    print("Starting Trending Content Suggestions API...")
-    print("Model loaded:", api.model is not None)
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(debug=False, host='0.0.0.0', port=5001, use_reloader=False)

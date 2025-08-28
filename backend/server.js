@@ -8,7 +8,7 @@ const passport = require('passport');
 const dotenv = require('dotenv');
 const fs = require('fs');
 
-dotenv.config({ path: path.join(__dirname, '.env') });
+dotenv.config({ path: path.join(__dirname, '.env'), silent: true });
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -53,8 +53,8 @@ if (!fs.existsSync(uploadsDir)) {
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MONGODB CONNECTED SUCCESSFULLY"))
-  .catch(err => console.error("❌ MONGODB CONNECTION FAILED:", err.message));
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch(err => console.error("❌ MongoDB Connection Failed:", err.message));
 
 // Middleware
 app.use(express.json());
@@ -116,5 +116,5 @@ app.use((err, req, res, next) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server started at port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
