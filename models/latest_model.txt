@@ -1,4 +1,0 @@
-basic_model_20250101_000000.pkl
-vectorizer_20250101_000000.pkl
-label_encoder_20250101_000000.pkl
-scaler_20250101_000000.pkl
