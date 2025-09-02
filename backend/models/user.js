@@ -1,14 +1,17 @@
+// models/user.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const SocialAccountSchema = new mongoose.Schema(
   {
-    id: String,
-    accessToken: String,
-    accessTokenSecret: String, // used by Twitter (X) OAuth1
-    email: String,
-    username: String,
+    id: { type: String, required: false },
+    accessToken: { type: String, required: false },
+    accessTokenSecret: { type: String, required: false },
+    refreshToken: { type: String, required: false },
+    email: { type: String, required: false },
+    username: { type: String, required: false },
+    profile: { type: Object, required: false },
   },
   { _id: false }
 );
@@ -40,12 +43,12 @@ const userSchema = new mongoose.Schema(
       default: '',
     },
     socialAccounts: {
-      google: SocialAccountSchema,
-      facebook: SocialAccountSchema,
-      twitter: SocialAccountSchema,
-      instagram: SocialAccountSchema,
-      linkedin: SocialAccountSchema,
-      youtube: SocialAccountSchema,
+      google: { type: SocialAccountSchema, default: null },
+      facebook: { type: SocialAccountSchema, default: null },
+      twitter: { type: SocialAccountSchema, default: null },
+      instagram: { type: SocialAccountSchema, default: null },
+      linkedin: { type: SocialAccountSchema, default: null },
+      youtube: { type: SocialAccountSchema, default: null },
     },
     isVerified: { type: Boolean, default: false },
     verificationToken: String,

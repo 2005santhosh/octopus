@@ -1,54 +1,108 @@
+// passport.js
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
 const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 const YouTubeStrategy = require('passport-youtube-v3').Strategy;
-const InstagramStrategy = require('passport-instagram').Strategy;
+const InstagramGraphStrategy = require('passport-instagram-graph').Strategy;
+const mongoose = require('mongoose');
 const User = require('../models/user');
 
 // Serialize / Deserialize
-passport.serializeUser((user, done) => done(null, user.id));
+passport.serializeUser((user, done) => {
+  console.log('🔍 Serializing user:', user.id);
+  done(null, user.id);
+});
+
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await User.findById(id);
+    await ensureDbConnection();
+    if (mongoose.connection.readyState !== 1) {
+      return done(new Error('Database not connected'), null);
+    }
+    const user = await User.findById(id).maxTimeMS(30000);
+    if (!user) {
+      return done(new Error('User not found'), null);
+    }
+    console.log('🔍 Deserialized user:', id);
     done(null, user);
   } catch (err) {
-    console.error('Deserialize error:', err);
+    console.error('❌ Deserialize error:', err.message);
     done(err, null);
   }
 });
 
-// Helper: link provider to current user
-async function linkProviderToUser(userId, providerKey, payload) {
-  try {
-    const user = await User.findById(userId);
-    if (!user) {
-      throw new Error('User not found');
+// Helper: Check MongoDB connection with retry
+async function ensureDbConnection(retries = 5) {
+  let attempt = 0;
+  while (attempt < retries) {
+    if (mongoose.connection.readyState === 1) {
+      return;
     }
-    user.socialAccounts = user.socialAccounts || {};
-    user.socialAccounts[providerKey] = {
-      id: payload.id,
-      accessToken: payload.accessToken,
-      accessTokenSecret: payload.accessTokenSecret || undefined,
-      email: payload.email || undefined,
-      username: payload.username || undefined,
-    };
-    await user.save();
-    console.log(`Linked ${providerKey} for user ${userId}:`, user.socialAccounts[providerKey]);
-    return user;
-  } catch (err) {
-    console.error(`Error linking ${providerKey} for user ${userId}:`, err);
-    throw err;
+    console.log(`🔄 Retrying DB connection (attempt ${attempt + 1}/${retries})...`);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    attempt++;
   }
+  throw new Error('MongoDB connection not established after retries');
 }
 
-// Helper: login mode — find existing by provider or email
-async function findExistingForLogin(providerKey, profileId, emailMaybe) {
-  let user =
-    (await User.findOne({ [`socialAccounts.${providerKey}.id`]: profileId })) ||
-    (emailMaybe ? await User.findOne({ email: emailMaybe }) : null);
-  return user;
+// Helper: Link provider to existing user or create new user
+async function linkOrCreateUser(providerKey, payload) {
+  try {
+    await ensureDbConnection();
+    console.log(`🔍 Processing ${providerKey} for user ${payload.id}`);
+    console.log(`🔍 Payload:`, JSON.stringify(payload, null, 2));
+
+    let user = await User.findOne({ [`socialAccounts.${providerKey}.id`]: payload.id }).maxTimeMS(30000);
+
+    if (!user && payload.email) {
+      user = await User.findOne({ email: payload.email }).maxTimeMS(30000);
+    }
+
+    if (!user) {
+      console.log(`🔍 Creating new user for ${providerKey}`);
+      user = new User({
+        name: payload.username || payload.email?.split('@')[0] || `User_${providerKey}_${payload.id}`,
+        email: payload.email || `${providerKey}_${payload.id}@example.com`,
+        password: require('crypto').randomBytes(16).toString('hex'),
+        socialAccounts: {
+          [providerKey]: {
+            id: payload.id,
+            accessToken: payload.accessToken,
+            accessTokenSecret: payload.accessTokenSecret,
+            refreshToken: payload.refreshToken,
+            email: payload.email,
+            username: payload.username,
+            profile: payload.profile,
+          },
+        },
+        profileImage: payload.profile?.picture || payload.profile?.profilePicture || '',
+      });
+    } else {
+      console.log(`🔍 Linking ${providerKey} to existing user ${user._id}`);
+      user.socialAccounts = user.socialAccounts || {};
+      user.socialAccounts[providerKey] = {
+        id: payload.id,
+        accessToken: payload.accessToken,
+        accessTokenSecret: payload.accessTokenSecret,
+        refreshToken: payload.refreshToken,
+        email: payload.email,
+        username: payload.username,
+        profile: payload.profile,
+      };
+      if (!user.profileImage && (payload.profile?.picture || payload.profile?.profilePicture)) {
+        user.profileImage = payload.profile.picture || payload.profile.profilePicture;
+      }
+    }
+
+    await user.save();
+    console.log(`✅ Processed ${providerKey} for user ${user._id}`);
+    return user;
+  } catch (err) {
+    console.error(`❌ Error processing ${providerKey}:`, err.message);
+    throw err;
+  }
 }
 
 // GOOGLE
@@ -58,32 +112,26 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:8080/auth/google/callback',
+      callbackURL: process.env.NODE_ENV === 'production'
+        ? 'https://your-actual-domain.com/auth/google/callback'
+        : 'http://localhost:8080/auth/google/callback',
       passReqToCallback: true,
     },
     async (req, accessToken, refreshToken, profile, done) => {
       try {
-        const email = profile.emails?.[0]?.value;
-        if (req.user) {
-          const user = await linkProviderToUser(req.user._id, 'google', {
-            id: profile.id,
-            accessToken,
-            email,
-          });
-          return done(null, user);
-        }
-        const existing = await findExistingForLogin('google', profile.id, email);
-        if (!existing) {
-          return done(null, false, { message: 'No account found. Please sign up and then connect Google.' });
-        }
-        if (!existing.profileImage && profile._json?.picture) {
-          existing.profileImage = profile._json.picture;
-          await existing.save();
-        }
-        return done(null, existing);
+        const payload = {
+          id: profile.id,
+          accessToken,
+          refreshToken,
+          email: profile.emails?.[0]?.value,
+          username: profile.displayName,
+          profile: profile._json,
+        };
+        const user = await linkOrCreateUser('google', payload);
+        return done(null, user);
       } catch (err) {
-        console.error('Google Strategy error:', err);
-        return done(err, null);
+        console.error('❌ Google Strategy error:', err.message);
+        return done(null, false, { message: `Google authentication failed: ${err.message}` });
       }
     }
   )
@@ -96,30 +144,27 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: 'http://localhost:8080/auth/facebook/callback',
+      callbackURL: process.env.NODE_ENV === 'production'
+        ? 'https://your-actual-domain.com/auth/facebook/callback'
+        : 'http://localhost:8080/auth/facebook/callback',
       profileFields: ['id', 'displayName', 'emails', 'photos'],
       passReqToCallback: true,
     },
     async (req, accessToken, refreshToken, profile, done) => {
       try {
-        const email = profile.emails?.[0]?.value;
-        if (req.user) {
-          const user = await linkProviderToUser(req.user._id, 'facebook', {
-            id: profile.id,
-            accessToken,
-            email,
-            username: profile.displayName,
-          });
-          return done(null, user);
-        }
-        const existing = await findExistingForLogin('facebook', profile.id, email);
-        if (!existing) {
-          return done(null, false, { message: 'No account found. Please login first, then connect Facebook.' });
-        }
-        return done(null, existing);
+        const payload = {
+          id: profile.id,
+          accessToken,
+          refreshToken,
+          email: profile.emails?.[0]?.value,
+          username: profile.displayName,
+          profile: profile._json,
+        };
+        const user = await linkOrCreateUser('facebook', payload);
+        return done(null, user);
       } catch (err) {
-        console.error('Facebook Strategy error:', err);
-        return done(err, null);
+        console.error('❌ Facebook Strategy error:', err.message);
+        return done(null, false, { message: `Facebook authentication failed: ${err.message}` });
       }
     }
   )
@@ -128,32 +173,30 @@ passport.use(
 // INSTAGRAM
 passport.use(
   'instagram',
-  new InstagramStrategy(
+  new InstagramGraphStrategy(
     {
       clientID: process.env.INSTAGRAM_CLIENT_ID,
       clientSecret: process.env.INSTAGRAM_CLIENT_SECRET,
-      callbackURL: 'http://localhost:8080/auth/instagram/callback',
+      callbackURL: process.env.NODE_ENV === 'production'
+        ? 'https://your-actual-domain.com/auth/instagram/callback'
+        : 'http://localhost:8080/auth/instagram/callback',
       passReqToCallback: true,
+      scope: ['user_profile', 'user_media'],
     },
     async (req, accessToken, refreshToken, profile, done) => {
       try {
-        const username = profile.username;
-        if (req.user) {
-          const user = await linkProviderToUser(req.user._id, 'instagram', {
-            id: profile.id,
-            accessToken,
-            username,
-          });
-          return done(null, user);
-        }
-        const existing = await findExistingForLogin('instagram', profile.id, null);
-        if (!existing) {
-          return done(null, false, { message: 'No account found. Please login first, then connect Instagram.' });
-        }
-        return done(null, existing);
+        const payload = {
+          id: profile.id,
+          accessToken,
+          refreshToken,
+          username: profile.username,
+          profile: profile._json,
+        };
+        const user = await linkOrCreateUser('instagram', payload);
+        return done(null, user);
       } catch (err) {
-        console.error('Instagram Strategy error:', err);
-        return done(err, null);
+        console.error('❌ Instagram Strategy error:', err.message);
+        return done(null, false, { message: `Instagram authentication failed: ${err.message}` });
       }
     }
   )
@@ -166,33 +209,28 @@ passport.use(
     {
       consumerKey: process.env.TWITTER_API_KEY,
       consumerSecret: process.env.TWITTER_API_SECRET,
-      callbackURL: 'http://localhost:8080/auth/twitter/callback',
+      callbackURL: process.env.NODE_ENV === 'production'
+        ? 'https://your-actual-domain.com/auth/twitter/callback'
+        : 'http://localhost:8080/auth/twitter/callback',
       includeEmail: true,
       userProfileURL: 'https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true',
       passReqToCallback: true,
     },
     async (req, token, tokenSecret, profile, done) => {
       try {
-        const email = profile.emails?.[0]?.value;
-        const username = profile.username;
-        if (req.user) {
-          const user = await linkProviderToUser(req.user._id, 'twitter', {
-            id: profile.id,
-            accessToken: token,
-            accessTokenSecret: tokenSecret,
-            username,
-            email,
-          });
-          return done(null, user);
-        }
-        const existing = await findExistingForLogin('twitter', profile.id, email);
-        if (!existing) {
-          return done(null, false, { message: 'No account found. Please login first, then connect Twitter.' });
-        }
-        return done(null, existing);
+        const payload = {
+          id: profile.id,
+          accessToken: token,
+          accessTokenSecret: tokenSecret,
+          email: profile.emails?.[0]?.value,
+          username: profile.username,
+          profile: profile._json,
+        };
+        const user = await linkOrCreateUser('twitter', payload);
+        return done(null, user);
       } catch (err) {
-        console.error('Twitter Strategy error:', err);
-        return done(err, null);
+        console.error('❌ Twitter Strategy error:', err.message);
+        return done(null, false, { message: `Twitter authentication failed: ${err.message}` });
       }
     }
   )
@@ -205,30 +243,34 @@ passport.use(
     {
       clientID: process.env.LINKEDIN_CLIENT_ID,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
-      callbackURL: 'http://localhost:8080/auth/linkedin/callback',
-      scope: ['r_liteprofile', 'r_emailaddress', 'w_member_social'],
+      callbackURL: process.env.NODE_ENV === 'production'
+        ? 'https://your-actual-domain.com/auth/linkedin/callback'
+        : 'http://localhost:8080/auth/linkedin/callback',
+      scope: ['profile', 'email', 'openid'], // Updated scopes for LinkedIn v2 API
       passReqToCallback: true,
     },
     async (req, accessToken, refreshToken, profile, done) => {
       try {
-        const email = profile.emails?.[0]?.value;
-        if (req.user) {
-          const user = await linkProviderToUser(req.user._id, 'linkedin', {
-            id: profile.id,
-            accessToken,
-            email,
-            username: profile.displayName,
-          });
-          return done(null, user);
-        }
-        const existing = await findExistingForLogin('linkedin', profile.id, email);
-        if (!existing) {
-          return done(null, false, { message: 'No account found. Please login first, then connect LinkedIn.' });
-        }
-        return done(null, existing);
+        console.log('🔍 LinkedIn OAuth profile:', JSON.stringify(profile, null, 2));
+        console.log('🔍 LinkedIn accessToken:', accessToken);
+        console.log('🔍 LinkedIn refreshToken:', refreshToken);
+        console.log('🔍 req.user:', req.user ? req.user._id : 'none');
+
+        const payload = {
+          id: profile.id,
+          accessToken,
+          refreshToken,
+          email: profile.emails?.[0]?.value || profile._json?.emailAddress,
+          username: profile.displayName || profile._json?.localizedFirstName + ' ' + profile._json?.localizedLastName,
+          profile: profile._json,
+        };
+        console.log('🔍 LinkedIn payload:', JSON.stringify(payload, null, 2));
+
+        const user = await linkOrCreateUser('linkedin', payload);
+        return done(null, user);
       } catch (err) {
-        console.error('LinkedIn Strategy error:', err);
-        return done(err, null);
+        console.error('❌ LinkedIn Strategy error:', err.message);
+        return done(null, false, { message: `LinkedIn authentication failed: ${err.message}` });
       }
     }
   )
@@ -241,7 +283,9 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:8080/auth/youtube/callback',
+      callbackURL: process.env.NODE_ENV === 'production'
+        ? 'https://your-actual-domain.com/auth/youtube/callback'
+        : 'http://localhost:8080/auth/youtube/callback',
       scope: [
         'https://www.googleapis.com/auth/youtube.readonly',
         'https://www.googleapis.com/auth/userinfo.profile',
@@ -251,29 +295,22 @@ passport.use(
     },
     async (req, accessToken, refreshToken, profile, done) => {
       try {
-        const email = profile._json?.email;
-        if (req.user) {
-          const user = await linkProviderToUser(req.user._id, 'youtube', {
-            id: profile.id,
-            accessToken,
-            email,
-            username: profile._json?.name,
-          });
-          return done(null, user);
-        }
-        const existing = await findExistingForLogin('youtube', profile.id, email);
-        if (!existing) {
-          return done(null, false, { message: 'No account found. Please login first, then connect YouTube.' });
-        }
-        return done(null, existing);
+        const payload = {
+          id: profile.id,
+          accessToken,
+          refreshToken,
+          email: profile._json?.email,
+          username: profile._json?.name,
+          profile: profile._json,
+        };
+        const user = await linkOrCreateUser('youtube', payload);
+        return done(null, user);
       } catch (err) {
-        console.error('YouTube Strategy error:', err);
-        return done(err, null);
+        console.error('❌ YouTube Strategy error:', err.message);
+        return done(null, false, { message: `YouTube authentication failed: ${err.message}` });
       }
     }
   )
 );
 
-module.exports = function () {
-  return passport;
-};
+module.exports = passport;

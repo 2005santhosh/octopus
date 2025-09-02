@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* Existing CSS remains unchanged */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        /* ... (rest of the existing CSS) */
+    </style>
+</head>
+ <style>
         * {
             margin: 0;
             padding: 0;
@@ -828,7 +839,6 @@
             }
         }
     </style>
-</head>
 <body>
     <div class="dashboard-container">
         <div class="sidebar">
@@ -1005,57 +1015,8 @@
                             <div class="section-title">Recent Content</div>
                             <a href="/content" class="section-action">View All</a>
                         </div>
-                        <div class="content-list">
-                            <div class="content-item">
-                                <div class="content-icon">
-                                    <i class="fas fa-file-alt"></i>
-                                </div>
-                                <div class="content-details">
-                                    <div class="content-title">10 Tips for Effective Content Marketing</div>
-                                    <div class="content-meta">Blog Post • 2 hours ago</div>
-                                </div>
-                                <div class="content-status published">Published</div>
-                            </div>
-                            <div class="content-item">
-                                <div class="content-icon">
-                                    <i class="fab fa-youtube"></i>
-                                </div>
-                                <div class="content-details">
-                                    <div class="content-title">How to Use AI for Content Creation</div>
-                                    <div class="content-meta">Video • Yesterday</div>
-                                </div>
-                                <div class="content-status published">Published</div>
-                            </div>
-                            <div class="content-item">
-                                <div class="content-icon">
-                                    <i class="fab fa-twitter"></i>
-                                </div>
-                                <div class="content-details">
-                                    <div class="content-title">Weekly Content Roundup</div>
-                                    <div class="content-meta">Social Media • 2 days ago</div>
-                                </div>
-                                <div class="content-status published">Published</div>
-                            </div>
-                            <div class="content-item">
-                                <div class="content-icon">
-                                    <i class="fas fa-file-alt"></i>
-                                </div>
-                                <div class="content-details">
-                                    <div class="content-title">The Future of AI in Marketing</div>
-                                    <div class="content-meta">Blog Post • 3 days ago</div>
-                                </div>
-                                <div class="content-status draft">Draft</div>
-                            </div>
-                            <div class="content-item">
-                                <div class="content-icon">
-                                    <i class="fas fa-envelope"></i>
-                                </div>
-                                <div class="content-details">
-                                    <div class="content-title">Monthly Newsletter - June</div>
-                                    <div class="content-meta">Email • Scheduled</div>
-                                </div>
-                                <div class="content-status scheduled">Scheduled</div>
-                            </div>
+                        <div class="content-list" id="recentContentList">
+                            <!-- Dynamically populated by JavaScript -->
                         </div>
                     </div>
 
@@ -1166,6 +1127,96 @@
                 return false;
             }
 
+            // Function to map content type to FontAwesome icon
+            function getContentIcon(type) {
+                const iconMap = {
+                    'Blog Post': 'fas fa-file-alt',
+                    'Video': 'fab fa-youtube',
+                    'Social Media': 'fab fa-twitter',
+                    'Email': 'fas fa-envelope'
+                };
+                return iconMap[type] || 'fas fa-file-alt';
+            }
+
+            // Function to map status to CSS class
+            function getStatusClass(status) {
+                const statusMap = {
+                    'Published': 'published',
+                    'Draft': 'draft',
+                    'Scheduled': 'scheduled'
+                };
+                return statusMap[status] || 'draft';
+            }
+
+            // Function to format date
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+                if (diffHours < 24) {
+                    return diffHours <= 1 ? `${diffHours} hour ago` : `${diffHours} hours ago`;
+                } else if (diffDays < 7) {
+                    return diffDays === 1 ? 'Yesterday' : `${diffDays} days ago`;
+                } else {
+                    return date.toLocaleDateString();
+                }
+            }
+
+            // Function to fetch and render recent content
+            async function updateRecentContent() {
+                const contentList = document.getElementById('recentContentList');
+                if (!contentList) {
+                    console.error('recentContentList element not found');
+                    showMessage('Error loading recent content section.', 'error');
+                    return;
+                }
+                contentList.innerHTML = '';
+
+                try {
+                    const response = await fetch('/api/content', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1]}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const contents = await response.json();
+
+                    if (contents.length === 0) {
+                        contentList.innerHTML = '<div class="content-item">No recent content available.</div>';
+                        return;
+                    }
+
+                    contents.forEach(content => {
+                        const formattedDate = formatDate(content.date);
+                        contentList.innerHTML += `
+                            <div class="content-item">
+                                <div class="content-icon">
+                                    <i class="${getContentIcon(content.type)}"></i>
+                                </div>
+                                <div class="content-details">
+                                    <div class="content-title">${content.title}</div>
+                                    <div class="content-meta">${content.type} • ${formattedDate}</div>
+                                </div>
+                                <div class="content-status ${getStatusClass(content.status)}">${content.status}</div>
+                            </div>
+                        `;
+                    });
+                } catch (error) {
+                    console.error('Error fetching recent content:', error);
+                    showMessage('Failed to load recent content.', 'error');
+                    contentList.innerHTML = '<div class="content-item">Error loading content.</div>';
+                }
+            }
+
             function updateSocialList() {
                 const socialList = document.getElementById('socialList');
                 if (!socialList) {
@@ -1223,7 +1274,10 @@
                         try {
                             const response = await fetch('/social-accounts/disconnect', {
                                 method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1]}`
+                                },
                                 body: JSON.stringify({ platform })
                             });
                             if (response.ok) {
@@ -1293,6 +1347,7 @@
 
             updateSocialList();
             updateCreditDisplay();
+            updateRecentContent(); // Call to fetch and render content
 
             if (logo && sidebar) {
                 logo.addEventListener('click', function() {
@@ -1313,7 +1368,7 @@
             });
 
             document.querySelectorAll('.quick-action').forEach(action => {
-                action.addEventListener('click', function(e) {
+                action.addEventListener('click', async function(e) {
                     e.preventDefault();
                     const href = this.getAttribute('href');
                     const actionText = this.querySelector('span').textContent;
@@ -1322,6 +1377,32 @@
                         if (credits > 0) {
                             if (useCredit()) {
                                 showMessage(`Opening ${actionText}...`, 'success');
+                                // Optionally create content when clicking "Create Content"
+                                if (href === '/content') {
+                                    try {
+                                        const response = await fetch('/api/content', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'Authorization': `Bearer ${document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1]}`
+                                            },
+                                            body: JSON.stringify({
+                                                title: 'New Content',
+                                                type: 'Blog Post',
+                                                status: 'Draft',
+                                                date: new Date().toISOString()
+                                            })
+                                        });
+                                        if (response.ok) {
+                                            showMessage('Content created successfully!', 'success');
+                                            updateRecentContent(); // Refresh content list
+                                        } else {
+                                            showMessage('Failed to create content.', 'error');
+                                        }
+                                    } catch (error) {
+                                        showMessage('Error creating content.', 'error');
+                                    }
+                                }
                                 setTimeout(() => window.location.href = href, 1000);
                             }
                         } else {
@@ -1337,10 +1418,32 @@
 
             const createButton = document.querySelector('.create-button');
             if (createButton) {
-                createButton.addEventListener('click', function() {
+                createButton.addEventListener('click', async function() {
                     if (credits > 0) {
                         if (useCredit()) {
-                            showMessage('Opening content creation tools...', 'success');
+                            try {
+                                const response = await fetch('/api/content', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1]}`
+                                    },
+                                    body: JSON.stringify({
+                                        title: 'New Content',
+                                        type: 'Blog Post',
+                                        status: 'Draft',
+                                        date: new Date().toISOString()
+                                    })
+                                });
+                                if (response.ok) {
+                                    showMessage('Content created successfully!', 'success');
+                                    updateRecentContent(); // Refresh content list
+                                } else {
+                                    showMessage('Failed to create content.', 'error');
+                                }
+                            } catch (error) {
+                                showMessage('Error creating content.', 'error');
+                            }
                         }
                     } else {
                         showMessage('No credits left. Please upgrade to premium subscription.', 'error');
@@ -1367,10 +1470,10 @@
 
         window.fbAsyncInit = function() {
             FB.init({
-                appId: '{your-app-id}',
+                appId: '{1428310028461982}',
                 cookie: true,
                 xfbml: true,
-                version: '{api-version}'
+                version: '{v18.0}'
             });
             FB.AppEvents.logPageView();
         };

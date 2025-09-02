@@ -1,3 +1,4 @@
+// server.js
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -8,7 +9,7 @@ const passport = require('passport');
 const dotenv = require('dotenv');
 const fs = require('fs');
 
-dotenv.config({ path: path.join(__dirname, '.env'), silent: true });
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -16,34 +17,38 @@ const PORT = process.env.PORT || 8080;
 // Debug environment variables
 console.log({
   PORT: process.env.PORT,
-  MONGO_URI: process.env.MONGO_URI,
-  JWT_SECRET: process.env.JWT_SECRET,
-  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-  FACEBOOK_CLIENT_ID: process.env.FACEBOOK_CLIENT_ID,
-  FACEBOOK_CLIENT_SECRET: process.env.FACEBOOK_CLIENT_SECRET,
-  TWITTER_API_KEY: process.env.TWITTER_API_KEY,
-  TWITTER_API_SECRET: process.env.TWITTER_API_SECRET,
-  LINKEDIN_CLIENT_ID: process.env.LINKEDIN_CLIENT_ID,
-  LINKEDIN_CLIENT_SECRET: process.env.LINKEDIN_CLIENT_SECRET
+  MONGO_URI: process.env.MONGO_URI ? 'Set' : 'Missing',
+  JWT_SECRET: process.env.JWT_SECRET ? 'Set' : 'Missing',
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ? 'Set' : 'Missing',
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET ? 'Set' : 'Missing',
+  FACEBOOK_CLIENT_ID: process.env.FACEBOOK_CLIENT_ID ? 'Set' : 'Missing',
+  FACEBOOK_CLIENT_SECRET: process.env.FACEBOOK_CLIENT_SECRET ? 'Set' : 'Missing',
+  TWITTER_API_KEY: process.env.TWITTER_API_KEY ? 'Set' : 'Missing',
+  TWITTER_API_SECRET: process.env.TWITTER_API_SECRET ? 'Set' : 'Missing',
+  LINKEDIN_CLIENT_ID: process.env.LINKEDIN_CLIENT_ID ? 'Set' : 'Missing',
+  LINKEDIN_CLIENT_SECRET: process.env.LINKEDIN_CLIENT_SECRET ? 'Set' : 'Missing',
+  INSTAGRAM_CLIENT_ID: process.env.INSTAGRAM_CLIENT_ID ? 'Set' : 'Missing',
+  INSTAGRAM_CLIENT_SECRET: process.env.INSTAGRAM_CLIENT_SECRET ? 'Set' : 'Missing',
 });
 
 // Validate environment variables
-if (!process.env.MONGO_URI || 
-    !process.env.JWT_SECRET || 
-    !process.env.GOOGLE_CLIENT_ID || 
+if (!process.env.MONGO_URI ||
+    !process.env.JWT_SECRET ||
+    !process.env.GOOGLE_CLIENT_ID ||
     !process.env.GOOGLE_CLIENT_SECRET ||
-    !process.env.FACEBOOK_CLIENT_ID || 
+    !process.env.FACEBOOK_CLIENT_ID ||
     !process.env.FACEBOOK_CLIENT_SECRET ||
-    !process.env.TWITTER_API_KEY || 
+    !process.env.TWITTER_API_KEY ||
     !process.env.TWITTER_API_SECRET ||
-    !process.env.LINKEDIN_CLIENT_ID || 
-    !process.env.LINKEDIN_CLIENT_SECRET) {
-  console.error("FATAL ERROR: Missing required environment variables");
+    !process.env.LINKEDIN_CLIENT_ID ||
+    !process.env.LINKEDIN_CLIENT_SECRET ||
+    !process.env.INSTAGRAM_CLIENT_ID ||
+    !process.env.INSTAGRAM_CLIENT_SECRET) {
+  console.error('FATAL ERROR: Missing required environment variables');
   process.exit(1);
 }
 
-// Create uploads directory if it doesn't exist
+// Create uploads directory
 const publicDir = 'D:\\OneDrive\\Desktop\\projects\\octopus\\public';
 const uploadsDir = path.join(publicDir, 'Uploads');
 if (!fs.existsSync(uploadsDir)) {
@@ -53,8 +58,11 @@ if (!fs.existsSync(uploadsDir)) {
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch(err => console.error("❌ MongoDB Connection Failed:", err.message));
+  .then(() => console.log('✅ MongoDB connected successfully'))
+  .catch(err => {
+    console.error('❌ MongoDB connection failed:', err.message);
+    process.exit(1);
+  });
 
 // Middleware
 app.use(express.json());
@@ -68,7 +76,7 @@ app.use(session({
   secret: process.env.JWT_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { 
+  cookie: {
     maxAge: 24 * 60 * 60 * 1000, // 1 day
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
@@ -78,14 +86,10 @@ app.use(session({
 app.use(flash());
 
 // Passport initialization
-
-
-// Passport config
-require('./config/passport')(passport);
-
 app.use(passport.initialize());
 app.use(passport.session());
-
+console.log('🔍 Passport initialized');
+require('./config/passport');
 
 // Make flash messages available in templates
 app.use((req, res, next) => {
@@ -104,17 +108,17 @@ const userRoutes = require('./routes/user');
 app.use('/', userRoutes);
 
 // Home route
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   return res.render('index.ejs');
 });
 
 // Global error handler
 app.use((err, req, res, next) => {
   console.error('Server Error:', err.stack);
-  res.status(500).json({ message: 'Internal server error. Please try again.' });
+  req.flash('error', 'Internal server error. Please try again.');
+  res.redirect('/index');
 });
 
-// Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server started at port ${PORT}`);
 });

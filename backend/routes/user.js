@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const Content = require('../models/content'); // Import the new Content model
 const auth = require('../middleware/auth');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
@@ -10,7 +11,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Multer config
+// Multer config (unchanged)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = 'D:\\OneDrive\\Desktop\\projects\\octopus\\public\\Uploads\\';
@@ -19,7 +20,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     cb(null, `${req.user._id}-${Date.now()}${path.extname(file.originalname)}`);
-  },
+  }
 });
 
 const upload = multer({
@@ -31,10 +32,10 @@ const upload = multer({
     const mimetype = filetypes.test(file.mimetype);
     if (extname && mimetype) return cb(null, true);
     cb(new Error('Only JPEG/PNG images are allowed'));
-  },
+  }
 });
 
-// Public routes
+// ===== Public routes =====
 router.get('/signup', (req, res) => res.render('signup', { messages: req.flash() }));
 router.get('/login', (req, res) => res.render('login', { messages: req.flash() }));
 
@@ -43,18 +44,15 @@ router.get('/index', (req, res) => {
   if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      User.findById(decoded.id)
-        .select('-password')
-        .then((user) => {
-          if (user) return res.redirect('/dashboard');
-          res.clearCookie('token');
-          return res.render('index', { messages: req.flash() });
-        })
-        .catch((err) => {
-          console.error('Index error:', err);
-          res.clearCookie('token');
-          return res.render('index', { messages: req.flash() });
-        });
+      User.findById(decoded.id).select('-password').then(user => {
+        if (user) return res.redirect('/dashboard');
+        res.clearCookie('token');
+        return res.render('index', { messages: req.flash() });
+      }).catch(err => {
+        console.error('Index error:', err);
+        res.clearCookie('token');
+        return res.render('index', { messages: req.flash() });
+      });
     } catch (err) {
       console.error('Index token error:', err);
       res.clearCookie('token');
@@ -63,175 +61,168 @@ router.get('/index', (req, res) => {
   } else return res.render('index', { messages: req.flash() });
 });
 
-// Signup/Login (local)
-router.post(
-  '/signup',
-  [
-    check('name', 'Name is required').notEmpty(),
-    check('email', 'Please include a valid email').isEmail(),
-    check('password', 'Password must be at least 6 characters').isLength({ min: 6 }),
-    check('confirmPassword', 'Passwords must match').custom((val, { req }) => val === req.body.password),
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      req.flash('error', errors.array().map((e) => e.msg).join(', '));
+// ===== Signup/Login =====
+router.post('/signup', [
+  check('name', 'Name is required').notEmpty(),
+  check('email', 'Please include a valid email').isEmail(),
+  check('password', 'Password must be at least 6 characters').isLength({ min: 6 }),
+  check('confirmPassword', 'Passwords must match').custom((val, { req }) => val === req.body.password)
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    req.flash('error', errors.array().map(e => e.msg).join(', '));
+    return res.redirect('/signup');
+  }
+  try {
+    const existingUser = await User.findOne({ email: req.body.email });
+    if (existingUser) {
+      req.flash('error', 'User with this email already exists');
       return res.redirect('/signup');
     }
-    try {
-      const existingUser = await User.findOne({ email: req.body.email });
-      if (existingUser) {
-        req.flash('error', 'User with this email already exists');
-        return res.redirect('/signup');
-      }
 
-      const user = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        socialAccounts: {},
-      });
+    const user = new User({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      socialAccounts: { facebook: null, twitter: null, instagram: null, linkedin: null, youtube: null }
+    });
 
-      await user.save();
-      req.flash('success', 'Account created successfully! You can now log in.');
-      return res.redirect('/login');
-    } catch (err) {
-      console.error('Signup error:', err);
-      req.flash('error', 'An error occurred during signup');
-      return res.redirect('/signup');
-    }
+    await user.save();
+    const token = user.generateAuthToken();
+    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    req.flash('success', 'Account created successfully!');
+    return res.redirect('/dashboard');
+  } catch (err) {
+    console.error('Signup error:', err);
+    req.flash('error', 'An error occurred during signup');
+    return res.redirect('/signup');
   }
-);
+});
 
-router.post(
-  '/login',
-  [check('email', 'Please include a valid email').isEmail(), check('password', 'Password is required').exists()],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      req.flash('error', errors.array().map((e) => e.msg).join(', '));
-      return res.redirect('/login');
-    }
-    try {
-      const user = await User.findOne({ email: req.body.email }).select('+password');
-      if (!user) {
-        req.flash('error', "User doesn't exist");
-        return res.redirect('/login');
-      }
-      const isMatch = await user.comparePassword(req.body.password);
-      if (!isMatch) {
-        req.flash('error', 'Invalid credentials');
-        return res.redirect('/login');
-      }
-
-      const token = user.generateAuthToken();
-      res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
-      req.flash('success', 'Login successful!');
-      return res.redirect('/dashboard');
-    } catch (err) {
-      console.error('Login error:', err);
-      req.flash('error', 'An error occurred during login');
-      return res.redirect('/login');
-    }
+router.post('/login', [
+  check('email', 'Please include a valid email').isEmail(),
+  check('password', 'Password is required').exists()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    req.flash('error', errors.array().map(e => e.msg).join(', '));
+    return res.redirect('/login');
   }
-);
+  try {
+    const user = await User.findOne({ email: req.body.email }).select('+password');
+    if (!user) {
+      req.flash('error', "User doesn't exist");
+      return res.redirect('/login');
+    }
+    const isMatch = await user.comparePassword(req.body.password);
+    if (!isMatch) {
+      req.flash('error', 'Invalid credentials');
+      return res.redirect('/login');
+    }
 
-// Social OAuth
-router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-router.get(
-  '/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login', failureFlash: true }),
-  async (req, res) => {
-    if (req.user) {
-      const token = req.user.generateAuthToken();
-      res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
-      res.render('oauth-callback', { platform: 'Google', success: true });
+    const token = user.generateAuthToken();
+    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    req.flash('success', 'Login successful!');
+    return res.redirect('/dashboard');
+  } catch (err) {
+    console.error('Login error:', err);
+    req.flash('error', 'An error occurred during login');
+    return res.redirect('/login');
+  }
+});
+
+// ===== Social OAuth =====
+const socialAuthOptions = {
+  google: { scope: ['profile', 'email'] },
+  facebook: { scope: ['public_profile', 'email', 'user_posts'] },
+  twitter: {},
+  instagram: { scope: ['user_profile', 'user_media'] },
+  linkedin: { scope: ['profile', 'email', 'openid'] },
+  youtube: { scope: ['https://www.googleapis.com/auth/youtube.readonly', 'https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'] }
+};
+
+Object.keys(socialAuthOptions).forEach(platform => {
+  router.get(`/auth/${platform}`, (req, res, next) => {
+    if (req.isAuthenticated()) {
+      auth(req, res, () => passport.authenticate(platform, socialAuthOptions[platform])(req, res, next));
     } else {
-      req.flash('error', 'Google authentication failed');
-      res.redirect('/login');
+      passport.authenticate(platform, socialAuthOptions[platform])(req, res, next);
     }
-  }
-);
+  });
 
-router.get('/auth/facebook', auth, passport.authenticate('facebook', { scope: ['public_profile', 'email'] }));
-router.get(
-  '/auth/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: '/social-accounts', failureFlash: true }),
-  async (req, res) => {
-    const token = req.user.generateAuthToken();
-    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
-    res.render('oauth-callback', { platform: 'Facebook', success: true });
-  }
-);
+  router.get(`/auth/${platform}/callback`, 
+    passport.authenticate(platform, { failureRedirect: '/login', failureFlash: true }),
+    async (req, res) => {
+      try {
+        console.log(`${platform} callback triggered, user:`, JSON.stringify(req.user, null, 2));
+        if (!req.user) {
+          throw new Error('No user returned from authentication');
+        }
+        const token = req.user.generateAuthToken();
+        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+        req.flash('success', `${platform.charAt(0).toUpperCase() + platform.slice(1)} ${req.isAuthenticated() ? 'connected' : 'login'} successful!`);
+        res.redirect('/dashboard');
+      } catch (err) {
+        console.error(`${platform} callback error:`, err.message);
+        req.flash('error', `Error with ${platform} ${req.isAuthenticated() ? 'connection' : 'login'}: ${err.message}`);
+        res.redirect('/login');
+      }
+    }
+  );
+});
 
-router.get('/auth/twitter', auth, passport.authenticate('twitter'));
-router.get(
-  '/auth/twitter/callback',
-  passport.authenticate('twitter', { failureRedirect: '/social-accounts', failureFlash: true }),
-  async (req, res) => {
-    const token = req.user.generateAuthToken();
-    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
-    res.render('oauth-callback', { platform: 'Twitter', success: true });
+// ===== Content Routes =====
+router.get('/api/content', auth, async (req, res) => {
+  try {
+    const contents = await Content.find({ userId: req.user._id })
+      .sort({ date: -1 }) // Sort by date descending
+      .limit(5); // Limit to 5 most recent
+    return res.json(contents);
+  } catch (err) {
+    console.error('Error fetching content:', err);
+    return res.status(500).json({ success: false, error: 'Failed to fetch content' });
   }
-);
+});
 
-router.get('/auth/instagram', auth, passport.authenticate('instagram'));
-router.get(
-  '/auth/instagram/callback',
-  passport.authenticate('instagram', { failureRedirect: '/social-accounts', failureFlash: true }),
-  async (req, res) => {
-    const token = req.user.generateAuthToken();
-    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
-    res.render('oauth-callback', { platform: 'Instagram', success: true });
+router.post('/api/content', auth, [
+  check('title', 'Title is required').notEmpty(),
+  check('type', 'Content type is required').isIn(['Blog Post', 'Video', 'Social Media', 'Email']),
+  check('status', 'Status is required').isIn(['Published', 'Draft', 'Scheduled']),
+  check('date', 'Date must be a valid date').optional().isISO8601()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array().map(e => e.msg).join(', ') });
   }
-);
 
-router.get('/auth/linkedin', auth, passport.authenticate('linkedin', { scope: ['r_liteprofile', 'r_emailaddress', 'w_member_social'] }));
-router.get(
-  '/auth/linkedin/callback',
-  passport.authenticate('linkedin', { failureRedirect: '/social-accounts', failureFlash: true }),
-  async (req, res) => {
-    const token = req.user.generateAuthToken();
-    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
-    res.render('oauth-callback', { platform: 'LinkedIn', success: true });
+  try {
+    const { title, type, status, date, contentData } = req.body;
+    const content = new Content({
+      userId: req.user._id,
+      title,
+      type,
+      status,
+      date: date || Date.now(),
+      contentData: contentData || {}
+    });
+    await content.save();
+    return res.json({ success: true, content });
+  } catch (err) {
+    console.error('Error creating content:', err);
+    return res.status(500).json({ success: false, error: 'Failed to create content' });
   }
-);
+});
 
-router.get(
-  '/auth/youtube',
-  auth,
-  (req, res, next) => {
-    console.log('👉 Redirecting to Google with callback:', 'http://localhost:8080/auth/youtube/callback');
-    next();
-  },
-  passport.authenticate('youtube', {
-    scope: [
-      'https://www.googleapis.com/auth/youtube.readonly',
-      'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/userinfo.email',
-    ],
-  })
-);
-router.get(
-  '/auth/youtube/callback',
-  passport.authenticate('youtube', { failureRedirect: '/social-accounts', failureFlash: true }),
-  async (req, res) => {
-    const token = req.user.generateAuthToken();
-    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
-    res.render('oauth-callback', { platform: 'YouTube', success: true });
-  }
-);
-
-// Dashboard & other routes
+// ===== Dashboard & other routes =====
 function renderWithConnectedAccounts(req, res, view) {
   const connectedAccounts = {
-    google: !!req.user.socialAccounts?.google,
-    facebook: !!req.user.socialAccounts?.facebook,
-    twitter: !!req.user.socialAccounts?.twitter,
-    instagram: !!req.user.socialAccounts?.instagram,
-    linkedin: !!req.user.socialAccounts?.linkedin,
-    youtube: !!req.user.socialAccounts?.youtube,
+    facebook: !!req.user.socialAccounts?.facebook?.id,
+    twitter: !!req.user.socialAccounts?.twitter?.id,
+    instagram: !!req.user.socialAccounts?.instagram?.id,
+    linkedin: !!req.user.socialAccounts?.linkedin?.id,
+    youtube: !!req.user.socialAccounts?.youtube?.id
   };
+  console.log('Rendering with connectedAccounts:', connectedAccounts);
   return res.render(view, { messages: req.flash(), user: req.user, connectedAccounts });
 }
 
@@ -246,98 +237,64 @@ router.get('/pricing', auth, (req, res) => res.render('pricing', { messages: req
 router.get('/settings', auth, (req, res) => res.render('settings', { messages: req.flash(), user: req.user }));
 
 // Settings update route
-router.post(
-  '/settings',
-  auth,
-  upload.single('profileImage'),
-  [
-    check('name', 'Name must be at least 2 characters').isLength({ min: 2 }),
-    check('email', 'Please include a valid email').isEmail(),
-    check('password', 'Password must be at least 6 characters if provided').optional({ checkFalsy: true }).isLength({ min: 6 }),
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ message: errors.array().map((e) => e.msg).join(', ') });
+router.post('/settings', auth, upload.single('profileImage'), [
+  check('name', 'Name must be at least 2 characters').isLength({ min: 2 }),
+  check('email', 'Please include a valid email').isEmail(),
+  check('password', 'Password must be at least 6 characters if provided').optional({ checkFalsy: true }).isLength({ min: 6 })
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ message: errors.array().map(e => e.msg).join(', ') });
 
-    try {
-      const { name, email, password } = req.body;
-      const user = await User.findById(req.user._id).select('+password');
-      if (!user) return res.status(404).json({ message: 'User not found' });
+  try {
+    const { name, email, password } = req.body;
+    const user = await User.findById(req.user._id).select('+password');
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
-      if (email && email !== user.email) {
-        const existing = await User.findOne({ email });
-        if (existing) return res.status(400).json({ message: 'Email already in use' });
-      }
-
-      user.name = name || user.name;
-      user.email = email || user.email;
-      if (password) user.password = password;
-      if (req.file) user.profileImage = `/Uploads/${req.file.filename}`;
-
-      await user.save();
-      const token = user.generateAuthToken();
-      res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
-
-      return res.json({
-        message: 'Settings updated successfully',
-        profileImage: user.profileImage || 'https://randomuser.me/api/portraits/women/44.jpg',
-        name: user.name,
-        email: user.email,
-      });
-    } catch (err) {
-      console.error('Settings update error:', err);
-      return res.status(500).json({ message: 'Error saving settings. Please try again.' });
+    if (email && email !== user.email) {
+      const existing = await User.findOne({ email });
+      if (existing) return res.status(400).json({ message: 'Email already in use' });
     }
+
+    user.name = name || user.name;
+    user.email = email || user.email;
+    if (password) user.password = password;
+    if (req.file) user.profileImage = `/Uploads/${req.file.filename}`;
+
+    await user.save();
+    const token = user.generateAuthToken();
+    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
+
+    return res.json({ message: 'Settings updated successfully', profileImage: user.profileImage || 'https://randomuser.me/api/portraits/women/44.jpg', name: user.name, email: user.email });
+  } catch (err) {
+    console.error('Settings update error:', err);
+    return res.status(500).json({ message: 'Error saving settings. Please try again.' });
   }
-);
+});
 
 // Disconnect social account
 router.post('/social-accounts/disconnect', auth, async (req, res) => {
   try {
     const { platform } = req.body;
-    const validPlatforms = ['google', 'facebook', 'twitter', 'instagram', 'linkedin', 'youtube'];
+    const validPlatforms = ['facebook', 'twitter', 'instagram', 'linkedin', 'youtube'];
     if (!validPlatforms.includes(platform)) {
-      return res.status(400).json({ message: 'Invalid platform specified' });
+      req.flash('error', 'Invalid platform specified');
+      return res.redirect('/social-accounts');
     }
 
     const user = await User.findById(req.user._id);
-    if (!user.socialAccounts) user.socialAccounts = {};
-    user.socialAccounts[platform] = undefined;
+    user.socialAccounts[platform] = null;
     await user.save();
 
-    const token = user.generateAuthToken();
-    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
-
-    return res.json({ message: `${platform.charAt(0).toUpperCase() + platform.slice(1)} account disconnected successfully` });
+    req.flash('success', `${platform.charAt(0).toUpperCase() + platform.slice(1)} account disconnected successfully!`);
+    res.redirect('/social-accounts');
   } catch (err) {
     console.error('Disconnect social account error:', err);
-    return res.status(500).json({ message: `Error disconnecting ${req.body.platform} account` });
+    req.flash('error', `Error disconnecting ${req.body.platform} account`);
+    res.redirect('/social-accounts');
   }
 });
 
-// Fetch social accounts API endpoint
-router.get('/api/user/social-accounts', auth, async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    const connectedAccounts = {
-      google: !!user.socialAccounts?.google?.id,
-      facebook: !!user.socialAccounts?.facebook?.id,
-      twitter: !!user.socialAccounts?.twitter?.id,
-      instagram: !!user.socialAccounts?.instagram?.id,
-      linkedin: !!user.socialAccounts?.linkedin?.id,
-      youtube: !!user.socialAccounts?.youtube?.id,
-    };
-    return res.json({ success: true, connectedAccounts });
-  } catch (err) {
-    console.error('Error fetching social accounts:', err);
-    return res.status(500).json({ message: 'Error fetching social accounts' });
-  }
-});
-
-// AI Suggestions API
+// ===== AI Suggestions API =====
 router.get('/api/trending-suggestions', auth, async (req, res) => {
   try {
     const count = parseInt(req.query.count) || 5;
@@ -363,7 +320,7 @@ router.post('/api/predict-trend', auth, async (req, res) => {
 // Logout
 router.get('/logout', (req, res, next) => {
   res.clearCookie('token');
-  req.logout((err) => {
+  req.logout(err => {
     if (err) return next(err);
     req.flash('success', 'Logged out successfully!');
     res.redirect('/login');

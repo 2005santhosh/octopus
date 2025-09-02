@@ -2,18 +2,17 @@
 <html>
 <head>
   <title>OAuth Callback</title>
-  <script>
-    (function() {
-      if (window.opener) {
-        window.opener.postMessage({ platform: '<%= platform %>', connected: <%= success ? 'true' : 'false' %> }, '*');
-        setTimeout(() => window.close(), 500);
-      } else {
-        window.location.href = '/social-accounts';
-      }
-    })();
-  </script>
 </head>
 <body>
-  <p><%= success ? 'Connecting' : 'Failed to connect' %> <%= platform %>... You can close this window.</p>
+  <h1>Connected to <%= platform %> <%= success ? 'successfully' : 'failed' %>!</h1>
+  <p>You can close this window.</p>
+  <script>
+    if (window.opener) {
+      window.opener.postMessage({ platform: '<%= platform %>', connected: <%= success %> }, '*');
+      setTimeout(() => window.close(), 1000);
+    } else {
+      window.location.href = '/dashboard';
+    }
+  </script>
 </body>
 </html>

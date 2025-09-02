@@ -13,33 +13,27 @@
             --danger-hover: #c82333;
             --success-bg: #d4edda;
             --success-text: #155724;
-            --info-bg: #d1ecf1;
-            --info-text: #0c5460;
-            --warning-bg: #fff3cd;
-            --warning-text: #856404;
+            --error-bg: #f8d7da;
+            --error-text: #721c24;
             --neutral-bg: #e2e3e5;
             --neutral-text: #383d41;
             --highlight-bg: #e0f0ff;
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         body {
             background-color: #f8f9fa;
             color: #333;
             overflow-x: hidden;
         }
-
         .dashboard-container {
             display: flex;
             min-height: 100vh;
         }
-
         .sidebar {
             width: 250px;
             background-color: #ffffff;
@@ -51,29 +45,24 @@
             z-index: 1000;
             transition: transform 0.3s ease-in-out;
         }
-
         .sidebar-logo {
             display: flex;
             align-items: center;
             padding: 0 20px 30px;
             border-bottom: 1px solid #eee;
         }
-
         .sidebar-logo i {
             font-size: 24px;
             color: var(--primary-color);
             margin-right: 10px;
         }
-
         .sidebar-logo h2 {
             font-size: 24px;
             color: var(--primary-color);
         }
-
         .sidebar-menu {
             padding: 20px 0;
         }
-
         .menu-item {
             display: flex;
             align-items: center;
@@ -83,21 +72,18 @@
             transition: all 0.3s;
             border-left: 3px solid transparent;
         }
-
         .menu-item:hover,
         .menu-item.active {
             background-color: #f0f7ff;
             color: var(--primary-color);
             border-left-color: var(--primary-color);
         }
-
         .menu-item i {
             margin-right: 15px;
             font-size: 18px;
             width: 20px;
             text-align: center;
         }
-
         .main-content {
             flex: 1;
             margin-left: 250px;
@@ -105,7 +91,6 @@
             flex-direction: column;
             transition: margin-left 0.3s;
         }
-
         .top-bar {
             background-color: #ffffff;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -117,7 +102,6 @@
             top: 0;
             z-index: 900;
         }
-
         .menu-toggle {
             display: none;
             background: none;
@@ -126,13 +110,11 @@
             color: #666;
             cursor: pointer;
         }
-
         .search-bar {
             flex: 1;
             max-width: 500px;
             position: relative;
         }
-
         .search-bar input {
             width: 100%;
             padding: 10px 15px 10px 40px;
@@ -141,12 +123,10 @@
             font-size: 14px;
             transition: border-color 0.3s;
         }
-
         .search-bar input:focus {
             outline: none;
             border-color: var(--primary-color);
         }
-
         .search-bar i {
             position: absolute;
             left: 15px;
@@ -154,12 +134,10 @@
             transform: translateY(-50%);
             color: #999;
         }
-
         .top-bar-actions {
             display: flex;
             align-items: center;
         }
-
         .notification-btn {
             position: relative;
             background: none;
@@ -170,11 +148,9 @@
             cursor: pointer;
             transition: color 0.3s;
         }
-
         .notification-btn:hover {
             color: var(--primary-color);
         }
-
         .notification-badge {
             position: absolute;
             top: -5px;
@@ -189,24 +165,20 @@
             justify-content: center;
             align-items: center;
         }
-
         .user-profile {
             display: flex;
             align-items: center;
             cursor: pointer;
         }
-
         .user-profile img {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             margin-right: 10px;
         }
-
         .user-profile span {
             font-weight: 500;
         }
-
         .credits-display {
             background-color: #f0f7ff;
             border-radius: 20px;
@@ -215,38 +187,31 @@
             align-items: center;
             margin-right: 20px;
         }
-
         .credits-icon {
             color: var(--primary-color);
             margin-right: 8px;
         }
-
         .credits-text {
             font-weight: 500;
             color: var(--primary-color);
         }
-
         .page-content {
             padding: 30px;
             flex: 1;
         }
-
         .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
         }
-
         .page-title h1 {
             font-size: 28px;
             margin-bottom: 5px;
         }
-
         .page-title p {
             color: #666;
         }
-
         .btn {
             padding: 10px 20px;
             border-radius: 5px;
@@ -256,32 +221,26 @@
             border: none;
             font-size: 14px;
         }
-
         .btn-primary {
             background-color: var(--primary-color);
             color: white;
         }
-
         .btn-primary:hover {
             background-color: var(--primary-hover);
         }
-
         .btn-secondary {
             background-color: #f0f7ff;
             color: var(--primary-color);
             border: 1px solid var(--primary-color);
         }
-
         .btn-secondary:hover {
             background-color: #e0f0ff;
         }
-
         .social-accounts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
         }
-
         .social-card {
             background-color: #ffffff;
             border-radius: 10px;
@@ -294,13 +253,11 @@
             transition: all 0.3s;
             border: 1px solid #eee;
         }
-
         .social-card:hover {
             border-color: var(--primary-color);
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
-
         .social-icon-large {
             font-size: 48px;
             margin-bottom: 15px;
@@ -313,36 +270,37 @@
             color: white;
             transition: background-color 0.3s;
         }
-
         .social-card h3 {
             font-size: 20px;
             margin-bottom: 10px;
             color: #333;
         }
-
         .social-card p {
             font-size: 14px;
             color: #666;
             margin-bottom: 20px;
             min-height: 38px;
         }
-
         .social-card .btn {
             width: 100%;
             padding: 12px 0;
             font-size: 16px;
         }
-
         .social-card.facebook .social-icon-large { background-color: #4267B2; }
-        .social-card.twitter  .social-icon-large { background-color: #1DA1F2; }
-        .social-card.instagram .social-icon-large { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+        .social-card.twitter .social-icon-large { background: linear-gradient(135deg, #1DA1F2 0%, #0d8bd9 100%); }
+        .social-card.instagram .social-icon-large { 
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); 
+        }
         .social-card.linkedin .social-icon-large { background-color: #0077B5; }
-        .social-card.youtube  .social-icon-large { background-color: #FF0000; }
-        .social-card.google  .social-icon-large { background-color: #4285F4; }
-
-        .btn-disconnect { background-color: var(--danger-color); color: #fff; }
-        .btn-disconnect:hover { background-color: var(--danger-hover); }
-
+        .social-card.youtube .social-icon-large { background-color: #FF0000; }
+        .social-card.google .social-icon-large { background-color: #4285F4; }
+        .btn-disconnect {
+            background-color: var(--danger-color);
+            color: #fff;
+        }
+        .btn-disconnect:hover {
+            background-color: var(--danger-hover);
+        }
         .modal {
             display: none;
             position: fixed;
@@ -355,8 +313,9 @@
             justify-content: center;
             align-items: center;
         }
-        .modal.active { display: flex; }
-
+        .modal.active {
+            display: flex;
+        }
         .modal-content {
             background-color: white;
             border-radius: 10px;
@@ -366,9 +325,7 @@
             overflow-y: auto;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             position: relative;
-            z-index: 2001;
         }
-
         .modal-header {
             padding: 20px;
             border-bottom: 1px solid #eee;
@@ -376,54 +333,188 @@
             justify-content: space-between;
             align-items: center;
         }
-
-        .modal-title { font-size: 20px; font-weight: 600; }
-
-        .modal-close {
-            background: none; border: none; font-size: 24px; color: #999; cursor: pointer; transition: color 0.3s;
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
         }
-        .modal-close:hover { color: #333; }
-
-        .modal-body { padding: 20px; }
-        .modal-body .form-group { margin-bottom: 15px; }
-        .modal-body .form-label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: #555; }
-        .modal-body .form-input,
-        .modal-body .form-select { width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid #ddd; font-size: 14px; transition: border-color 0.3s, box-shadow 0.3s; }
-        .modal-body .form-input:focus,
-        .modal-body .form-select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(9, 105, 218, 0.2); }
-        .modal-body .form-info-text { font-size: 13px; color: #777; margin-top: 10px; line-height: 1.4; background-color: #f8f8f8; padding: 10px; border-radius: 5px; border: 1px solid #eee; }
-
-        .modal-footer { padding: 20px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 10px; }
-
-        .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 15px 30px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); z-index: 9999; color: white; }
-        .notification.success { background-color: #28a745; }
-        .notification.error { background-color: #dc3545; }
-
-        .credit-usage { background-color: #ffffff; border-radius: 10px; padding: 25px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); margin-bottom: 30px; }
-        .credit-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .credit-title { font-size: 18px; font-weight: 600; }
-        .credit-info { display: flex; align-items: center; margin-bottom: 15px; }
-        .credit-number { font-size: 36px; font-weight: 700; color: var(--primary-color); margin-right: 15px; }
-        .credit-details { font-size: 14px; color: #666; }
-        .credit-bar-container { background-color: #f0f7ff; height: 10px; border-radius: 5px; overflow: hidden; margin-bottom: 15px; }
-        .credit-bar { height: 100%; background-color: var(--primary-color); border-radius: 5px; }
-        .credit-actions { display: flex; justify-content: flex-end; }
-        .buy-credits { background-color: var(--primary-color); color: white; border: none; padding: 8px 15px; border-radius: 5px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-        .buy-credits:hover { background-color: var(--primary-hover); }
-
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .modal-close:hover {
+            color: #333;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .modal-body .form-group {
+            margin-bottom: 15px;
+        }
+        .modal-body .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #555;
+        }
+        .modal-body .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .modal-body .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(9, 105, 218, 0.2);
+        }
+        .modal-body .form-info-text {
+            font-size: 13px;
+            color: #777;
+            margin-top: 10px;
+            line-height: 1.4;
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #eee;
+        }
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            color: white;
+            font-size: 14px;
+            max-width: 80%;
+            text-align: center;
+        }
+        .notification.success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid var(--success-text);
+        }
+        .notification.error {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid var(--error-text);
+        }
+        .credit-usage {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        .credit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .credit-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .credit-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .credit-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-right: 15px;
+        }
+        .credit-details {
+            font-size: 14px;
+            color: #666;
+        }
+        .credit-bar-container {
+            background-color: #f0f7ff;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        .credit-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 5px;
+        }
+        .credit-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .buy-credits {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .buy-credits:hover {
+            background-color: var(--primary-hover);
+        }
         @media (max-width: 992px) {
-            .social-accounts-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+            .social-accounts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
         }
         @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.active { transform: translateX(0); }
-            .main-content { margin-left: 0; }
-            .menu-toggle { display: block; margin-right: 20px; }
-            .page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .credits-display { display: none; }
-            .social-accounts-grid { grid-template-columns: 1fr; }
-            .credit-info { flex-direction: column; align-items: flex-start; }
-            .credit-number { margin-right: 0; margin-bottom: 10px; }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .menu-toggle {
+                display: block;
+                margin-right: 20px;
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .credits-display {
+                display: none;
+            }
+            .social-accounts-grid {
+                grid-template-columns: 1fr;
+            }
+            .credit-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .credit-number {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
@@ -446,13 +537,12 @@
             <a href="/settings" class="menu-item"><i class="fas fa-cog" aria-hidden="true"></i><span>Settings</span></a>
         </div>
     </div>
-
     <div class="main-content">
         <div class="top-bar">
             <button class="menu-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
             <div class="search-bar">
                 <i class="fas fa-search" aria-hidden="true"></i>
-                <input type="text" placeholder="Search accounts..." aria-label="Search" />
+                <input type="text" placeholder="Search accounts..." aria-label="Search" id="searchInput" />
             </div>
             <div class="top-bar-actions">
                 <div class="credits-display">
@@ -469,19 +559,14 @@
                 </div>
             </div>
         </div>
-
         <div class="page-content">
-            <% if (messages && messages.success) { %>
-                <% messages.success.forEach(function(message) { %>
-                    <div class="notification success"><%= message %></div>
-                <% }); %>
+            <% if (messages && messages.length) { %>
+                <% messages.forEach(function(message) { %>
+                    <div class="notification <%= message.includes('Failed') || message.includes('Error') ? 'error' : 'success' %>">
+                        <%= message %>
+                    </div>
+                <% }) %>
             <% } %>
-            <% if (messages && messages.error) { %>
-                <% messages.error.forEach(function(message) { %>
-                    <div class="notification error"><%= message %></div>
-                <% }); %>
-            <% } %>
-
             <div class="credit-usage">
                 <div class="credit-header">
                     <div class="credit-title">Your Credits</div>
@@ -500,7 +585,6 @@
                     <button class="buy-credits">Buy Premium Subscription</button>
                 </div>
             </div>
-
             <div class="page-header">
                 <div class="page-title">
                     <h1>Social Accounts</h1>
@@ -510,12 +594,10 @@
                     <button class="btn btn-primary" id="addAccountBtn"><i class="fas fa-plus" aria-hidden="true"></i> Add New Account</button>
                 </div>
             </div>
-
             <div class="social-accounts-grid" id="socialAccountsGrid"></div>
         </div>
     </div>
 </div>
-
 <!-- Add Account Modal -->
 <div class="modal" id="addAccountModal" role="dialog" aria-modal="true" aria-labelledby="connectModalTitle">
     <div class="modal-content">
@@ -546,17 +628,15 @@
         </div>
     </div>
 </div>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const userName = '<%= (user && user.name) ? user.name : "Guest" %>';
         let credits = localStorage.getItem('credits') ? parseInt(localStorage.getItem('credits')) : 5;
         if (isNaN(credits)) credits = 5;
         const maxCredits = 5;
-
-        // Initialize from JWT if available
-        let token = document.cookie.split('; ').find(row => row.startsWith('token='));
-        let connectedAccounts = token ? JSON.parse(atob(token.split('.')[1])).socialAccounts : <%- JSON.stringify({
+        
+        // Initialize connected accounts from server data
+        let connectedAccounts = <%- JSON.stringify({
             google: !!(user && user.socialAccounts && user.socialAccounts.google),
             facebook: !!(user && user.socialAccounts && user.socialAccounts.facebook),
             twitter: !!(user && user.socialAccounts && user.socialAccounts.twitter),
@@ -564,7 +644,7 @@
             linkedin: !!(user && user.socialAccounts && user.socialAccounts.linkedin),
             youtube: !!(user && user.socialAccounts && user.socialAccounts.youtube)
         }) %>;
-
+        
         const socialAccountsGrid = document.getElementById('socialAccountsGrid');
         const addAccountBtn = document.getElementById('addAccountBtn');
         const addAccountModal = document.getElementById('addAccountModal');
@@ -576,13 +656,13 @@
         const sidebar = document.querySelector('.sidebar');
         const notificationBtn = document.querySelector('.notification-btn');
         const buyCreditsBtn = document.querySelector('.buy-credits');
-
+        const searchInput = document.querySelector('#searchInput');
+        
         function updateCreditDisplay() {
             const creditsText = document.getElementById('creditsText');
             const creditNumber = document.getElementById('creditNumber');
             const creditCount = document.getElementById('creditCount');
             const creditBar = document.getElementById('creditBar');
-
             if (creditsText && creditNumber && creditCount && creditBar) {
                 creditsText.textContent = `${credits}/${maxCredits} Credits`;
                 creditNumber.textContent = `${credits}/${maxCredits}`;
@@ -591,25 +671,15 @@
                 creditBar.style.width = `${percentage}%`;
             }
         }
-
-        function useCredit() {
-            if (credits > 0) {
-                credits--;
-                localStorage.setItem('credits', credits);
-                updateCreditDisplay();
-                return true;
-            }
-            return false;
-        }
-
+        
         function showMessage(text, type) {
             const message = document.createElement('div');
             message.className = `notification ${type}`;
             message.textContent = text;
             document.body.appendChild(message);
-            setTimeout(() => message.remove(), 3000);
+            setTimeout(() => message.remove(), 5000);
         }
-
+        
         function getPlatformIconClass(platform) {
             const icons = {
                 google: 'fab fa-google',
@@ -621,11 +691,11 @@
             };
             return icons[platform] || 'fas fa-question';
         }
-
+        
         function platformDisplayName(platform) {
             return platform.charAt(0).toUpperCase() + platform.slice(1);
         }
-
+        
         function platformConnectedText(platform) {
             switch (platform) {
                 case 'twitter':
@@ -637,8 +707,8 @@
                     return `Connected as ${userName}`;
             }
         }
-
-        async function fetchSocialAccounts(retries = 3, delay = 1000) {
+        
+        async function fetchSocialAccounts(retries = 3, delay = 2000) {
             for (let i = 0; i < retries; i++) {
                 try {
                     const response = await fetch('/api/user/social-accounts', {
@@ -648,48 +718,85 @@
                     });
                     if (response.ok) {
                         const data = await response.json();
-                        connectedAccounts = data.connectedAccounts;
+                        connectedAccounts = data.connectedAccounts || {};
+                        console.log('🔍 Fetched social accounts:', connectedAccounts);
                         renderSocialAccounts();
-                        return;
+                        return true;
                     }
-                    throw new Error(`HTTP ${response.status}`);
+                    throw new Error(`HTTP ${response.status}: ${await response.text()}`);
                 } catch (error) {
+                    console.error(`❌ Fetch social accounts attempt ${i + 1}/${retries}:`, error.message);
                     if (i === retries - 1) {
-                        showMessage('Error fetching social accounts: ' + error.message, 'error');
+                        showMessage('Failed to fetch social accounts. Please try again later.', 'error');
+                        return false;
                     }
                     await new Promise(resolve => setTimeout(resolve, delay));
                 }
             }
         }
-
+        
         function pollForSocialAccountUpdate(platform, oauthWindow) {
             const interval = setInterval(async () => {
                 if (oauthWindow.closed) {
                     clearInterval(interval);
-                    await fetchSocialAccounts();
-                    showMessage(`${platformDisplayName(platform)} connection status updated`, 'success');
+                    try {
+                        // Fetch the latest social accounts from the server
+                        const response = await fetch('/api/user/social-accounts', {
+                            method: 'GET',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include',
+                        });
+                        
+                        if (response.ok) {
+                            const data = await response.json();
+                            connectedAccounts = data.connectedAccounts || {};
+                            console.log('Updated connectedAccounts:', connectedAccounts);
+                            
+                            // Check if the platform is now connected
+                            if (connectedAccounts[platform]) {
+                                showMessage(`${platformDisplayName(platform)} connected successfully!`, 'success');
+                                // Re-render the social accounts grid with the updated state
+                                renderSocialAccounts();
+                            } else {
+                                showMessage(`Failed to connect ${platformDisplayName(platform)}. Please try again.`, 'error');
+                            }
+                        } else {
+                            throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                        }
+                    } catch (error) {
+                        console.error(`Error updating ${platformDisplayName(platform)} status:`, error);
+                        showMessage(`Error updating ${platformDisplayName(platform)} status: ${error.message}`, 'error');
+                    }
                 }
             }, 1000);
-            setTimeout(() => clearInterval(interval), 60000); // Stop polling after 60s
+            
+            // Set a timeout to stop polling
+            setTimeout(() => {
+                clearInterval(interval);
+                if (!oauthWindow.closed) {
+                    showMessage(`${platformDisplayName(platform)} connection may still be processing. Please check back later.`, 'error');
+                }
+            }, 60000); // Stop polling after 60s
         }
-
-        function renderSocialAccounts() {
+        
+        function renderSocialAccounts(searchTerm = '') {
             if (!socialAccountsGrid) {
                 console.error('socialAccountsGrid not found');
                 showMessage('Error loading social accounts.', 'error');
                 return;
             }
+            
             socialAccountsGrid.innerHTML = '';
-
             const platforms = ['google', 'facebook', 'twitter', 'instagram', 'linkedin', 'youtube'];
-
-            platforms.forEach((platform) => {
+            const filteredPlatforms = searchTerm
+                ? platforms.filter(platform => platform.toLowerCase().includes(searchTerm.toLowerCase()))
+                : platforms;
+            
+            filteredPlatforms.forEach((platform) => {
                 const iconClass = getPlatformIconClass(platform);
                 const isConnected = !!connectedAccounts[platform];
-
                 const card = document.createElement('div');
                 card.className = `social-card ${platform} ${isConnected ? 'connected' : ''}`;
-
                 card.innerHTML = `
                     <div class="social-icon-large"><i class="${iconClass}" aria-hidden="true"></i></div>
                     <h3>${platformDisplayName(platform)}</h3>
@@ -698,10 +805,10 @@
                         ? `<button class="btn btn-disconnect" data-platform="${platform}" aria-label="Disconnect ${platformDisplayName(platform)}"><i class="fas fa-unlink"></i> Disconnect</button>`
                         : `<button class="btn btn-primary btn-connect" data-platform="${platform}" aria-label="Connect ${platformDisplayName(platform)}"><i class="fas fa-link"></i> Connect</button>`}
                 `;
-
                 socialAccountsGrid.appendChild(card);
             });
-
+            
+            // Add event listeners for connect buttons
             socialAccountsGrid.querySelectorAll('.btn-connect').forEach((btn) => {
                 btn.addEventListener('click', () => {
                     const platform = btn.getAttribute('data-platform');
@@ -714,13 +821,13 @@
                     }
                 });
             });
-
+            
+            // Add event listeners for disconnect buttons
             socialAccountsGrid.querySelectorAll('.btn-disconnect').forEach((btn) => {
                 btn.addEventListener('click', async () => {
                     const platform = btn.getAttribute('data-platform');
                     const confirmDisconnect = confirm(`Are you sure you want to disconnect ${platformDisplayName(platform)}?`);
                     if (!confirmDisconnect) return;
-
                     try {
                         const response = await fetch('/social-accounts/disconnect', {
                             method: 'POST',
@@ -731,7 +838,7 @@
                         if (response.ok) {
                             showMessage(`${platformDisplayName(platform)} disconnected successfully!`, 'success');
                             connectedAccounts[platform] = false;
-                            renderSocialAccounts();
+                            renderSocialAccounts(searchTerm);
                         } else {
                             const err = await response.json().catch(() => ({}));
                             showMessage(`Error disconnecting ${platformDisplayName(platform)}: ${err.message || 'Unknown error'}`, 'error');
@@ -742,7 +849,8 @@
                 });
             });
         }
-
+        
+        // Modal event listeners
         if (addAccountBtn && addAccountModal && closeAddAccountModalBtn && cancelAddAccountBtn && connectAccountBtn) {
             addAccountBtn.addEventListener('click', () => addAccountModal.classList.add('active'));
             closeAddAccountModalBtn.addEventListener('click', () => addAccountModal.classList.remove('active'));
@@ -763,24 +871,35 @@
                 }
             });
         }
-
+        
+        // Mobile menu toggle
         if (menuToggle && sidebar) {
             menuToggle.addEventListener('click', () => {
                 sidebar.classList.toggle('active');
             });
         }
-
+        
+        // Notification button
         if (notificationBtn) {
             notificationBtn.addEventListener('click', () => showMessage('Opening notifications...', 'success'));
         }
-
+        
+        // Buy credits button
         if (buyCreditsBtn) {
             buyCreditsBtn.addEventListener('click', () => {
                 showMessage('Redirecting to pricing page...', 'success');
                 setTimeout(() => (window.location.href = '/pricing'), 1000);
             });
         }
-
+        
+        // Search functionality
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                renderSocialAccounts(searchInput.value);
+            });
+        }
+        
+        // Menu item navigation
         document.querySelectorAll('.menu-item').forEach((item) => {
             item.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -790,17 +909,10 @@
                 setTimeout(() => (window.location.href = href), 1000);
             });
         });
-
-        window.addEventListener('message', (event) => {
-            if (event.data.platform && event.data.connected) {
-                fetchSocialAccounts();
-                showMessage(`${platformDisplayName(event.data.platform)} connected successfully!`, 'success');
-            }
-        });
-
+        
+        // Initialize the page
         updateCreditDisplay();
         renderSocialAccounts();
-        // Initial fetch to ensure latest data
         fetchSocialAccounts();
     });
 </script>
