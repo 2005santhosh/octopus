@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OAuth Callback</title>
+</head>
+<body>
+  <h1>Connected to <%= platform %> <%= success ? 'successfully' : 'failed' %>!</h1>
+  <p>You can close this window.</p>
+  <script>
+    if (window.opener) {
+      window.opener.postMessage({ platform: '<%= platform %>', connected: <%= success %> }, '*');
+      setTimeout(() => window.close(), 1000);
+    } else {
+      window.location.href = '/dashboard';
+    }
+  </script>
+</body>
+</html>

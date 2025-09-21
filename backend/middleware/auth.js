@@ -1,0 +1,35 @@
+const jwt = require('jsonwebtoken');
+const User = require('../models/user');
+
+const auth = async (req, res, next) => {
+  try {
+    const token = req.cookies.token;
+
+    if (!token) {
+      req.flash('error', 'Authentication required');
+      return res.redirect('/index');
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select('-password');
+
+    if (!user) {
+      req.flash('error', 'User not found');
+      return res.redirect('/index');
+    }
+
+    req.user = user;
+    // Set userId for Passport OAuth callbacks
+    if (req._passport && req._passport.session) {
+      req._passport.session.user = user._id.toString();
+    }
+    next();
+  } catch (error) {
+    console.error('Auth error:', error);
+    req.flash('error', 'Invalid token');
+    res.clearCookie('token');
+    return res.redirect('/index');
+  }
+};
+
+module.exports = auth;
