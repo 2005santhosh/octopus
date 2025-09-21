@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
-const Content = require('../models/content'); // Import the new Content model
+const Content = require('../models/content');
 const auth = require('../middleware/auth');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
@@ -11,7 +11,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Multer config (unchanged)
+// Multer config for profile image uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = 'D:\\OneDrive\\Desktop\\projects\\octopus\\public\\Uploads\\';
@@ -35,7 +35,7 @@ const upload = multer({
   }
 });
 
-// ===== Public routes =====
+// Public routes
 router.get('/signup', (req, res) => res.render('signup', { messages: req.flash() }));
 router.get('/login', (req, res) => res.render('login', { messages: req.flash() }));
 
@@ -61,7 +61,7 @@ router.get('/index', (req, res) => {
   } else return res.render('index', { messages: req.flash() });
 });
 
-// ===== Signup/Login =====
+// Signup
 router.post('/signup', [
   check('name', 'Name is required').notEmpty(),
   check('email', 'Please include a valid email').isEmail(),
@@ -84,7 +84,9 @@ router.post('/signup', [
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
-      socialAccounts: { facebook: null, twitter: null, instagram: null, linkedin: null, youtube: null }
+      socialAccounts: { google: null, facebook: null, twitter: null, instagram: null, linkedin: null, youtube: null },
+      credits: 5,
+      initialCreditsGranted: true
     });
 
     await user.save();
@@ -99,6 +101,7 @@ router.post('/signup', [
   }
 });
 
+// Login
 router.post('/login', [
   check('email', 'Please include a valid email').isEmail(),
   check('password', 'Password is required').exists()
@@ -131,7 +134,7 @@ router.post('/login', [
   }
 });
 
-// ===== Social OAuth =====
+// Social OAuth
 const socialAuthOptions = {
   google: { scope: ['profile', 'email'] },
   facebook: { scope: ['public_profile', 'email', 'user_posts'] },
@@ -171,12 +174,11 @@ Object.keys(socialAuthOptions).forEach(platform => {
   );
 });
 
-// ===== Content Routes =====
+// Content Routes
 router.get('/api/content', auth, async (req, res) => {
   try {
     const contents = await Content.find({ userId: req.user._id })
-      .sort({ date: -1 }) // Sort by date descending
-      .limit(5); // Limit to 5 most recent
+      .sort({ date: -1 });
     return res.json(contents);
   } catch (err) {
     console.error('Error fetching content:', err);
@@ -186,9 +188,12 @@ router.get('/api/content', auth, async (req, res) => {
 
 router.post('/api/content', auth, [
   check('title', 'Title is required').notEmpty(),
-  check('type', 'Content type is required').isIn(['Blog Post', 'Video', 'Social Media', 'Email']),
-  check('status', 'Status is required').isIn(['Published', 'Draft', 'Scheduled']),
-  check('date', 'Date must be a valid date').optional().isISO8601()
+  check('type', 'Content type is required').isIn(['post', 'video', 'social', 'email']),
+  check('excerpt', 'Excerpt is required').notEmpty(),
+  check('date', 'Date must be a valid ISO date').isISO8601(),
+  check('status', 'Status is required').isIn(['published', 'draft', 'scheduled']),
+  check('platform', 'Platform is required').notEmpty(),
+  check('platformName', 'Platform name is required').notEmpty()
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -196,26 +201,148 @@ router.post('/api/content', auth, [
   }
 
   try {
-    const { title, type, status, date, contentData } = req.body;
+    const { title, type, excerpt, date, status, platform, platformName, contentData } = req.body;
+    const creditsRequired = type === 'video' ? 2 : 1;
+
+    const user = await User.findById(req.user._id);
+    if (user.credits < creditsRequired) {
+      return res.status(400).json({ success: false, error: 'Insufficient credits. Please purchase a premium pack.' });
+    }
+
     const content = new Content({
       userId: req.user._id,
       title,
       type,
+      excerpt,
+      date,
       status,
-      date: date || Date.now(),
+      platform,
+      platformName,
       contentData: contentData || {}
     });
+
     await content.save();
-    return res.json({ success: true, content });
+    user.credits -= creditsRequired;
+    await user.save();
+
+    return res.status(201).json({ success: true, content });
   } catch (err) {
     console.error('Error creating content:', err);
     return res.status(500).json({ success: false, error: 'Failed to create content' });
   }
 });
 
-// ===== Dashboard & other routes =====
+router.patch('/api/content/:id', auth, [
+  check('title', 'Title is required').optional().notEmpty(),
+  check('type', 'Content type is required').optional().isIn(['post', 'video', 'social', 'email']),
+  check('excerpt', 'Excerpt is required').optional().notEmpty(),
+  check('date', 'Date must be a valid ISO date').optional().isISO8601(),
+  check('status', 'Status is required').optional().isIn(['published', 'draft', 'scheduled']),
+  check('platform', 'Platform is required').optional().notEmpty(),
+  check('platformName', 'Platform name is required').optional().notEmpty()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array().map(e => e.msg).join(', ') });
+  }
+
+  try {
+    const content = await Content.findOne({ _id: req.params.id, userId: req.user._id });
+    if (!content) {
+      return res.status(404).json({ success: false, error: 'Content not found' });
+    }
+
+    Object.assign(content, req.body);
+    await content.save();
+    return res.json({ success: true, content });
+  } catch (err) {
+    console.error('Error updating content:', err);
+    return res.status(500).json({ success: false, error: 'Failed to update content' });
+  }
+});
+
+router.delete('/api/content/:id', auth, async (req, res) => {
+  try {
+    const content = await Content.findOneAndDelete({ _id: req.params.id, userId: req.user._id });
+    if (!content) {
+      return res.status(404).json({ success: false, error: 'Content not found' });
+    }
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('Error deleting content:', err);
+    return res.status(500).json({ success: false, error: 'Failed to delete content' });
+  }
+});
+
+// Credits Route
+router.get('/api/credits', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    return res.json({
+      success: true,
+      currentCredits: user.credits || 0,
+      maxFreeCredits: 5,
+      isPremium: user.isPremium || false
+    });
+  } catch (err) {
+    console.error('Error fetching credits:', err);
+    return res.status(500).json({ success: false, error: 'Failed to fetch credits' });
+  }
+});
+
+// Generate Script Route
+router.post('/api/generate-script', auth, [
+  check('description', 'Description is required').notEmpty(),
+  check('contentType', 'Content type is required').isIn(['post', 'video', 'social', 'email'])
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array().map(e => e.msg).join(', ') });
+  }
+
+  try {
+    const { description, contentType } = req.body;
+    // Mock implementation; replace with AI service (e.g., xAI Grok API)
+    const script = `Generated script for ${contentType}:\n\nIntroduction: ${description.slice(0, 50)}...\n\nMain Content: Expand on key points.\n\nConclusion: Call to action.`;
+    return res.json({ success: true, script });
+  } catch (err) {
+    console.error('Error generating script:', err);
+    return res.status(500).json({ success: false, error: 'Failed to generate script' });
+  }
+});
+
+// AI Suggestions API
+router.get('/api/trending-suggestions', auth, async (req, res) => {
+  try {
+    const count = parseInt(req.query.count) || 10;
+    const suggestions = await aiSuggestionsService.getTrendingSuggestions(count);
+    return res.json({
+      success: suggestions.success,
+      count: suggestions.suggestions.length,
+      suggestions: suggestions.suggestions,
+      fallback: suggestions.fallback || false
+    });
+  } catch (err) {
+    console.error('Error fetching AI suggestions:', err);
+    return res.status(500).json({ success: false, error: 'Failed to fetch trending suggestions' });
+  }
+});
+
+router.post('/api/predict-trend', auth, async (req, res) => {
+  try {
+    const { hashtag, content_type, platform, region } = req.body;
+    const prediction = await aiSuggestionsService.predictTrendPotential(hashtag, content_type, platform, region);
+    return res.json(prediction);
+  } catch (err) {
+    console.error('Error predicting trend:', err);
+    return res.status(500).json({ success: false, error: 'Failed to predict trend potential' });
+  }
+});
+
+// Dashboard & other routes
 function renderWithConnectedAccounts(req, res, view) {
   const connectedAccounts = {
+    google: !!req.user.socialAccounts?.google?.id,
     facebook: !!req.user.socialAccounts?.facebook?.id,
     twitter: !!req.user.socialAccounts?.twitter?.id,
     instagram: !!req.user.socialAccounts?.instagram?.id,
@@ -275,7 +402,7 @@ router.post('/settings', auth, upload.single('profileImage'), [
 router.post('/social-accounts/disconnect', auth, async (req, res) => {
   try {
     const { platform } = req.body;
-    const validPlatforms = ['facebook', 'twitter', 'instagram', 'linkedin', 'youtube'];
+    const validPlatforms = ['google', 'facebook', 'twitter', 'instagram', 'linkedin', 'youtube'];
     if (!validPlatforms.includes(platform)) {
       req.flash('error', 'Invalid platform specified');
       return res.redirect('/social-accounts');
@@ -291,29 +418,6 @@ router.post('/social-accounts/disconnect', auth, async (req, res) => {
     console.error('Disconnect social account error:', err);
     req.flash('error', `Error disconnecting ${req.body.platform} account`);
     res.redirect('/social-accounts');
-  }
-});
-
-// ===== AI Suggestions API =====
-router.get('/api/trending-suggestions', auth, async (req, res) => {
-  try {
-    const count = parseInt(req.query.count) || 5;
-    const suggestions = await aiSuggestionsService.getTrendingSuggestions(count);
-    return res.json({ success: true, suggestions: suggestions.suggestions, fallback: suggestions.fallback || false });
-  } catch (err) {
-    console.error('Error fetching AI suggestions:', err);
-    return res.status(500).json({ success: false, error: 'Failed to fetch trending suggestions' });
-  }
-});
-
-router.post('/api/predict-trend', auth, async (req, res) => {
-  try {
-    const { hashtag, content_type, platform, region } = req.body;
-    const prediction = await aiSuggestionsService.predictTrendPotential(hashtag, content_type, platform, region);
-    return res.json(prediction);
-  } catch (err) {
-    console.error('Error predicting trend:', err);
-    return res.status(500).json({ success: false, error: 'Failed to predict trend potential' });
   }
 });
 

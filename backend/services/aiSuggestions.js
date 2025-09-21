@@ -35,7 +35,6 @@ class AITrendingSuggestionsService {
                 throw new Error('API returned unsuccessful response');
             }
         } catch (error) {
-            // Fallback suggestions if AI service is unavailable
             return {
                 success: false,
                 suggestions: this.getFallbackSuggestions(count),
@@ -44,7 +43,7 @@ class AITrendingSuggestionsService {
         }
     }
 
-    async predictTrendPotential(hashtag, contentType, platform, region) {
+    async predictTrendPotential(hashtag, content_type, platform, region) {
         if (!this.isConnected) {
             await this.checkConnection();
         }
@@ -52,7 +51,7 @@ class AITrendingSuggestionsService {
         try {
             const response = await axios.post(`${this.baseURL}/predict-trend`, {
                 hashtag,
-                content_type: contentType,
+                content_type,
                 platform,
                 region
             }, {
@@ -65,7 +64,6 @@ class AITrendingSuggestionsService {
                 throw new Error('Prediction API returned unsuccessful response');
             }
         } catch (error) {
-            // Fallback prediction
             return {
                 success: false,
                 trending_score: Math.floor(Math.random() * 100),
@@ -82,8 +80,8 @@ class AITrendingSuggestionsService {
                 id: 1,
                 title: "#Challenge Video Content",
                 hashtag: "#Challenge",
-                content_type: "Video",
-                platform: "TikTok",
+                content_type: "video",
+                platform: "tiktok",
                 region: "USA",
                 trending_score: 85.2,
                 description: "Create engaging video content featuring popular challenges",
@@ -91,21 +89,21 @@ class AITrendingSuggestionsService {
             },
             {
                 id: 2,
-                title: "#Dance Shorts Content",
+                title: "#Dance Video Content",
                 hashtag: "#Dance",
-                content_type: "Shorts",
-                platform: "YouTube",
+                content_type: "video",
+                platform: "youtube",
                 region: "USA",
                 trending_score: 78.9,
-                description: "Showcase trending dance moves in short format",
+                description: "Showcase trending dance moves in video format",
                 engagement_level: "High"
             },
             {
                 id: 3,
                 title: "#Education Post Content",
                 hashtag: "#Education",
-                content_type: "Post",
-                platform: "Instagram",
+                content_type: "post",
+                platform: "instagram",
                 region: "USA",
                 trending_score: 72.1,
                 description: "Share educational content that's currently popular",
@@ -113,32 +111,32 @@ class AITrendingSuggestionsService {
             },
             {
                 id: 4,
-                title: "#Gaming Live Stream Content",
+                title: "#Gaming Social Content",
                 hashtag: "#Gaming",
-                content_type: "Live Stream",
-                platform: "Twitch",
+                content_type: "social",
+                platform: "twitch",
                 region: "USA",
                 trending_score: 81.5,
-                description: "Create gaming-related live stream content",
+                description: "Create gaming-related social content",
                 engagement_level: "High"
             },
             {
                 id: 5,
-                title: "#Comedy Reel Content",
+                title: "#Comedy Social Content",
                 hashtag: "#Comedy",
-                content_type: "Reel",
-                platform: "Instagram",
+                content_type: "social",
+                platform: "instagram",
                 region: "USA",
                 trending_score: 74.3,
-                description: "Develop humorous reel content for maximum engagement",
+                description: "Develop humorous social content for maximum engagement",
                 engagement_level: "Medium"
             },
             {
                 id: 6,
                 title: "#Tech Video Content",
                 hashtag: "#Tech",
-                content_type: "Video",
-                platform: "YouTube",
+                content_type: "video",
+                platform: "youtube",
                 region: "USA",
                 trending_score: 69.7,
                 description: "Share technology insights through video content",
@@ -148,8 +146,8 @@ class AITrendingSuggestionsService {
                 id: 7,
                 title: "#Fashion Post Content",
                 hashtag: "#Fashion",
-                content_type: "Post",
-                platform: "Instagram",
+                content_type: "post",
+                platform: "instagram",
                 region: "USA",
                 trending_score: 76.8,
                 description: "Showcase fashion trends in post format",
@@ -157,21 +155,21 @@ class AITrendingSuggestionsService {
             },
             {
                 id: 8,
-                title: "#Fitness Shorts Content",
+                title: "#Fitness Video Content",
                 hashtag: "#Fitness",
-                content_type: "Shorts",
-                platform: "YouTube",
+                content_type: "video",
+                platform: "youtube",
                 region: "USA",
                 trending_score: 73.2,
-                description: "Create fitness-focused short content",
+                description: "Create fitness-focused video content",
                 engagement_level: "Medium"
             },
             {
                 id: 9,
                 title: "#Music Video Content",
                 hashtag: "#Music",
-                content_type: "Video",
-                platform: "TikTok",
+                content_type: "video",
+                platform: "tiktok",
                 region: "USA",
                 trending_score: 82.1,
                 description: "Feature trending music in your video content",
@@ -181,8 +179,8 @@ class AITrendingSuggestionsService {
                 id: 10,
                 title: "#Travel Post Content",
                 hashtag: "#Travel",
-                content_type: "Post",
-                platform: "Instagram",
+                content_type: "post",
+                platform: "instagram",
                 region: "USA",
                 trending_score: 71.5,
                 description: "Share travel experiences and destinations",

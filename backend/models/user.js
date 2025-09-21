@@ -1,4 +1,3 @@
-// models/user.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -40,7 +39,7 @@ const userSchema = new mongoose.Schema(
     },
     profileImage: {
       type: String,
-      default: '',
+      default: ''
     },
     socialAccounts: {
       google: { type: SocialAccountSchema, default: null },
@@ -54,6 +53,9 @@ const userSchema = new mongoose.Schema(
     verificationToken: String,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
+    credits: { type: Number, default: 0 },
+    initialCreditsGranted: { type: Boolean, default: false },
+    isPremium: { type: Boolean, default: false }
   },
   { timestamps: true }
 );
@@ -70,7 +72,7 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-// Compare password method
+// Compare password
 userSchema.methods.comparePassword = async function (candidatePassword) {
   if (!this.password) return false;
   return bcrypt.compare(candidatePassword, this.password);
@@ -82,12 +84,12 @@ userSchema.methods.generateAuthToken = function () {
     id: this._id,
     email: this.email,
     socialAccounts: {
-      google: !!this.socialAccounts?.google,
-      facebook: !!this.socialAccounts?.facebook,
-      twitter: !!this.socialAccounts?.twitter,
-      instagram: !!this.socialAccounts?.instagram,
-      linkedin: !!this.socialAccounts?.linkedin,
-      youtube: !!this.socialAccounts?.youtube,
+      google: !!this.socialAccounts?.google?.id,
+      facebook: !!this.socialAccounts?.facebook?.id,
+      twitter: !!this.socialAccounts?.twitter?.id,
+      instagram: !!this.socialAccounts?.instagram?.id,
+      linkedin: !!this.socialAccounts?.linkedin?.id,
+      youtube: !!this.socialAccounts?.youtube?.id,
     },
   };
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '2h' });

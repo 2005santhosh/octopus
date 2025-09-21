@@ -5,7 +5,7 @@ const contentSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: [true, 'User ID is required'],
       index: true
     },
     title: {
@@ -17,8 +17,14 @@ const contentSchema = new mongoose.Schema(
     type: {
       type: String,
       required: [true, 'Content type is required'],
-      enum: ['Post', 'Video'],
-      default: 'Post'
+      enum: ['post', 'video', 'social', 'email'],
+      default: 'post'
+    },
+    excerpt: {
+      type: String,
+      required: [true, 'Excerpt is required'],
+      trim: true,
+      maxlength: [150, 'Excerpt cannot exceed 150 characters']
     },
     date: {
       type: Date,
@@ -28,12 +34,27 @@ const contentSchema = new mongoose.Schema(
     status: {
       type: String,
       required: [true, 'Status is required'],
-      enum: ['Published', 'Draft', 'Scheduled'],
-      default: 'Draft'
+      enum: ['published', 'draft', 'scheduled'],
+      default: 'draft'
+    },
+    platform: {
+      type: String,
+      required: [true, 'Platform is required'],
+      enum: ['google', 'facebook', 'twitter', 'instagram', 'linkedin', 'youtube', 'email', 'website']
+    },
+    platformName: {
+      type: String,
+      required: [true, 'Platform name is required'],
+      trim: true
     },
     contentData: {
-      type: mongoose.Schema.Types.Mixed,
-      default: {}
+      description: { type: String },
+      aspectRatio: { type: String, enum: ['9:16', '16:9', '1:1', null] },
+      videoDuration: { type: String }
+    },
+    popular: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }

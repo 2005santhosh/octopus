@@ -365,7 +365,7 @@
             font-size: 24px;
             font-weight: 600;
         }
-        /* Content Table - FIXED STYLES */
+        /* Content Table */
         .content-table-container {
             background-color: white;
             border-radius: 10px;
@@ -395,7 +395,6 @@
         .content-table tr:hover {
             background-color: #f9f9f9;
         }
-        /* Specific cell styling for better presentation */
         .content-id {
             font-weight: bold;
             color: #999;
@@ -451,8 +450,6 @@
             background-color: #fcebeb;
             color: var(--danger-color);
         }
-
-        /* Content type badges */
         .content-type-badge {
             display: inline-block;
             padding: 5px 10px;
@@ -464,8 +461,6 @@
         .content-type-badge.video { background-color: var(--info-bg); color: var(--info-text); }
         .content-type-badge.social { background-color: var(--warning-bg); color: var(--warning-text); }
         .content-type-badge.email { background-color: var(--neutral-bg); color: var(--neutral-text); }
-
-        /* Status badges */
         .content-status-badge {
             padding: 5px 10px;
             border-radius: 15px;
@@ -485,8 +480,6 @@
             background-color: var(--info-bg);
             color: var(--info-text);
         }
-
-        /* Content Creation Modal */
         .modal {
             display: none;
             position: fixed;
@@ -642,41 +635,6 @@
             font-size: 14px;
             color: #666;
         }
-        .modal-footer {
-            padding: 20px;
-            border-top: 1px solid #eee;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-        .btn-cancel {
-            background-color: #f8f9fa;
-            color: #333;
-            border: 1px solid #ddd;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-cancel:hover {
-            background-color: #e9ecef;
-        }
-        .btn-save {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: none;
-        }
-        .btn-save:hover {
-            background-color: var(--primary-hover);
-        }
-
-        /* Generate Script Button */
         .generate-script-container {
             display: flex;
             margin-top: 10px;
@@ -703,8 +661,6 @@
         .generate-script-btn i {
             margin-right: 8px;
         }
-
-        /* Aspect Ratio Selector */
         .aspect-ratio-selector {
             margin-top: 15px;
         }
@@ -729,8 +685,6 @@
             background-color: var(--highlight-bg);
             color: var(--primary-color);
         }
-
-        /* Video Duration Selector */
         .video-duration-selector {
             margin-top: 15px;
             display: none;
@@ -759,8 +713,6 @@
             background-color: var(--highlight-bg);
             color: var(--primary-color);
         }
-
-        /* Success message styling */
         .success-message {
             position: fixed;
             top: 20px;
@@ -773,8 +725,6 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             z-index: 9999;
         }
-
-        /* Responsive Design */
         @media (max-width: 992px) {
             .content-table {
                 min-width: 700px;
@@ -885,14 +835,14 @@
                 <div class="top-bar-actions">
                     <div class="credits-display">
                         <i class="fas fa-coins credits-icon"></i>
-                        <span class="credits-text" id="currentCreditsDisplay">3/3 Credits</span>
-                        <span class="credits-reset" id="creditsResetTime">Resets in 5h</span>
+                        <span class="credits-text" id="currentCreditsDisplay">0/0 Credits</span>
+                        <span class="credits-reset" id="creditsResetTime">Resets soon</span>
                     </div>
                     <button class="notification-btn" aria-label="Notifications">
                         <i class="fas fa-bell"></i>
                         <span class="notification-badge">3</span>
                     </button>
-                     <div class="user-profile" onclick="window.location.href='/settings'">
+                    <div class="user-profile" onclick="window.location.href='/settings'">
                         <img src="<%= user.profileImage || 'https://randomuser.me/api/portraits/women/44.jpg' %>" alt="User">
                         <span><%= user.name %></span>
                     </div>
@@ -1041,8 +991,6 @@
                                 </button>
                             </div>
                         </div>
-                        
-                        <!-- Aspect Ratio Selector -->
                         <div class="form-group aspect-ratio-selector">
                             <label class="form-label">Aspect Ratio</label>
                             <div class="aspect-ratio-options">
@@ -1051,15 +999,11 @@
                                 <div class="aspect-ratio-option" data-ratio="1:1">1:1 (Instagram Posts)</div>
                             </div>
                         </div>
-                        
-                        <!-- Video Duration Selector (only for video content type) -->
                         <div class="form-group video-duration-selector" id="videoDurationSelector">
                             <label class="form-label">Video Duration</label>
                             <div class="video-duration-options" id="videoDurationOptions">
-                                <!-- Options will be populated based on aspect ratio selection -->
                             </div>
                         </div>
-                        
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="scheduleDate">Schedule Date</label>
@@ -1103,14 +1047,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             // --- Global Variables/Elements ---
             const today = new Date();
-            let currentCredits = 3; // Mock value for top bar
-            const maxFreeCredits = 3;
-            // Current time is Thursday, July 31, 2025 at 8:41:20 PM IST.
-            const nextResetDate = new Date('2025-08-01T00:00:00'); // Consistent reset date, corrected to current year + 1 month.
+            let currentCredits = 0;
+            let maxFreeCredits = 0;
+            let nextResetDate = null;
             const currentCreditsDisplay = document.getElementById('currentCreditsDisplay');
             const creditsResetTime = document.getElementById('creditsResetTime');
             const createContentBtn = document.getElementById('createContentBtn');
-            const createButton = document.getElementById('createButton'); // Floating + button
+            const createButton = document.getElementById('createButton');
             const createContentModal = document.getElementById('createContentModal');
             const closeModalBtn = document.getElementById('closeModalBtn');
             const cancelModalBtn = document.getElementById('cancelModalBtn');
@@ -1128,201 +1071,173 @@
             const videoDurationSelector = document.getElementById('videoDurationSelector');
             const videoDurationOptions = document.getElementById('videoDurationOptions');
             const aiRefreshBtn = document.getElementById('aiRefreshBtn');
-            
-        // --- Fetch AI Suggestions ---
-        async function fetchAISuggestions(isRefresh = false) {
             const aiLoading = document.getElementById('aiLoading');
             const aiSuggestionText = document.getElementById('aiSuggestionText');
             const aiSuggestionsList = document.getElementById('aiSuggestionsList');
-            
-            // Disable refresh button during loading
-            aiRefreshBtn.disabled = true;
-            aiLoading.style.display = 'inline';
-            aiSuggestionsList.style.display = 'none';
-            
-            if (isRefresh) {
-                aiSuggestionText.textContent = '';
-            } else {
-                aiSuggestionText.textContent = '';
-            }
-
-            try {
-                const response = await fetch('/api/trending-suggestions?count=3', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    aiLoading.style.display = 'none';
-                    aiSuggestionsList.style.display = 'block';
-                    aiSuggestionsList.innerHTML = '';
-                    
-                    data.suggestions.forEach(suggestion => {
-                        const suggestionDiv = document.createElement('div');
-                        suggestionDiv.innerHTML = `<strong>${suggestion.title}</strong>: ${suggestion.description}`;
-                        aiSuggestionsList.appendChild(suggestionDiv);
-                    });
-                    
-                    if (isRefresh) {
-                        showSuccessMessage('AI suggestions refreshed successfully!');
-                    }
-                } else {
-                    aiLoading.style.display = 'none';
-                    aiSuggestionText.textContent = 'Failed to load suggestions. Please try again.';
-                }
-
-            } catch (error) {
-                aiLoading.style.display = 'none';
-                aiSuggestionText.textContent = 'Error loading suggestions.';
-            } finally {
-                // Re-enable refresh button
-                aiRefreshBtn.disabled = false;
-            }
-        }
-
-        // Fetch suggestions when the modal opens
-        createContentBtn.addEventListener('click', () => fetchAISuggestions(false));
-        createButton.addEventListener('click', () => fetchAISuggestions(false));
-        
-        // Add refresh button functionality
-        aiRefreshBtn.addEventListener('click', () => fetchAISuggestions(true));
-
-        // --- Sample Content Data ---
-            let allContent = [
-                {
-                    id: 1,
-                    type: 'post',
-                    title: 'The Future of AI in Content Creation',
-                    excerpt: 'Explore how artificial intelligence is revolutionizing content generation, from drafting blog posts to optimizing video scripts. Understand the tools and techniques shaping the industry...',
-                    date: '2025-07-20',
-                    status: 'published',
-                    platform: 'website',
-                    platformName: 'Website',
-                },
-                {
-                    id: 2,
-                    type: 'video',
-                    title: 'AI Tools for Social Media Marketing in 2024',
-                    excerpt: 'A comprehensive video guide to the best AI tools that can boost your social media presence, automate posting, analyze engagement, and generate compelling captions...',
-                    date: '2025-07-25',
-                    status: 'published',
-                    platform: 'youtube',
-                    platformName: 'YouTube',
-                },
-                {
-                    id: 3,
-                    type: 'social',
-                    title: 'Quick Tip: Boost Engagement with Interactive Polls!',
-                    excerpt: 'Learn how to use interactive polls on Facebook and Instagram to drive higher engagement and gather valuable audience insights. Simple steps for viral content...',
-                    date: '2025-07-28',
-                    status: 'scheduled',
-                    platform: 'facebook',
-                    platformName: 'Facebook',
-                },
-                {
-                    id: 4,
-                    type: 'email',
-                    title: 'Your Weekly Content Digest - July 29th',
-                    excerpt: 'Catch up on the latest trends in AI content, upcoming webinars, and exclusive tips for optimizing your marketing strategy. Don\'t miss out on valuable insights...',
-                    date: '2025-07-29',
-                    status: 'draft',
-                    platform: 'email',
-                    platformName: 'Email',
-                },
-                {
-                    id: 5,
-                    type: 'post',
-                    title: 'Understanding SEO for AI-Generated Content',
-                    excerpt: 'Can AI-generated content rank well on Google? This article dives into SEO best practices for AI-assisted writing, keyword research, and content structure...',
-                    date: '2025-07-15',
-                    status: 'published',
-                    platform: 'website',
-                    platformName: 'Website',
-                },
-                {
-                    id: 6,
-                    type: 'social',
-                    title: 'New Feature Alert: AI Image Generation Now Live!',
-                    excerpt: 'Exciting news! Our new AI image generation feature is now available. Create stunning visuals for your social posts in seconds. Try it out today! #AI #ContentCreation',
-                    date: '2025-07-30',
-                    status: 'published',
-                    platform: 'twitter',
-                    platformName: 'Twitter',
-                },
-            ];
-            let filteredContent = [...allContent]; // Initialize with all content
-            let currentFilter = 'all'; // Default filter
+            let allContent = [];
+            let filteredContent = [];
+            let currentFilter = 'all';
             let selectedModalContentType = 'post';
             let selectedAspectRatio = '9:16';
             let selectedVideoDuration = '15s';
-            
+            let editingContentId = null;
+
+            // --- Helper to get JWT token ---
+            function getToken() {
+                const cookie = document.cookie.split('; ').find(row => row.startsWith('token='));
+                return cookie ? cookie.split('=')[1] : null;
+            }
+
+            // --- Fetch Credits ---
+            async function fetchCredits() {
+                try {
+                    const response = await fetch('/api/credits', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${getToken()}`
+                        }
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    currentCredits = data.currentCredits || 0;
+                    maxFreeCredits = data.maxFreeCredits || 3;
+                    nextResetDate = data.nextResetDate ? new Date(data.nextResetDate) : new Date();
+                    updateCreditsDisplay();
+                } catch (error) {
+                    console.error('Error fetching credits:', error);
+                    showSuccessMessage('Failed to load credits.', 'danger');
+                }
+            }
+
+            // --- Fetch Content ---
+            async function fetchContent() {
+                try {
+                    const response = await fetch('/api/content', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${getToken()}`
+                        }
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    allContent = await response.json();
+                    applyFilterAndRender();
+                    updateContentStats();
+                } catch (error) {
+                    console.error('Error fetching content:', error);
+                    showSuccessMessage('Failed to load content.', 'danger');
+                    contentTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">Failed to load content.</td></tr>';
+                }
+            }
+
+            // --- Fetch AI Suggestions ---
+            async function fetchAISuggestions(isRefresh = false) {
+                aiRefreshBtn.disabled = true;
+                aiLoading.style.display = 'inline';
+                aiSuggestionsList.style.display = 'none';
+                aiSuggestionText.textContent = '';
+
+                try {
+                    const response = await fetch('/api/trending-suggestions?count=3', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${getToken()}`
+                        }
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    aiLoading.style.display = 'none';
+                    aiSuggestionsList.style.display = 'block';
+                    aiSuggestionsList.innerHTML = '';
+
+                    if (data.success && data.suggestions.length > 0) {
+                        data.suggestions.forEach(suggestion => {
+                            const suggestionDiv = document.createElement('div');
+                            suggestionDiv.innerHTML = `<strong>${suggestion.hashtag}</strong>: ${suggestion.content_type} for ${suggestion.platform} (${suggestion.region})`;
+                            aiSuggestionsList.appendChild(suggestionDiv);
+                        });
+                        if (isRefresh) {
+                            showSuccessMessage('AI suggestions refreshed successfully!');
+                        }
+                    } else {
+                        aiSuggestionText.textContent = 'No suggestions available.';
+                    }
+                } catch (error) {
+                    console.error('Error fetching AI suggestions:', error);
+                    aiLoading.style.display = 'none';
+                    aiSuggestionText.textContent = 'Error loading suggestions.';
+                } finally {
+                    aiRefreshBtn.disabled = false;
+                }
+            }
+
             // --- Initial Render ---
-            renderContentTable();
-            updateContentStats();
-            updateCreditsDisplay(); // For top bar
-            updateVideoDurationOptions(); // Initialize video duration options
-            
+            fetchCredits();
+            fetchContent();
+            updateVideoDurationOptions();
+
             // --- Event Listeners ---
-            createContentBtn.addEventListener('click', openCreateModal);
-            createButton.addEventListener('click', openCreateModal);
+            createContentBtn.addEventListener('click', () => {
+                editingContentId = null;
+                openCreateModal();
+                fetchAISuggestions(false);
+            });
+            createButton.addEventListener('click', () => {
+                editingContentId = null;
+                openCreateModal();
+                fetchAISuggestions(false);
+            });
             closeModalBtn.addEventListener('click', closeCreateModal);
             cancelModalBtn.addEventListener('click', closeCreateModal);
             saveContentBtn.addEventListener('click', saveNewContent);
-            
-            // Filter button & menu
+            aiRefreshBtn.addEventListener('click', () => fetchAISuggestions(true));
+
             filterBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent document click from closing it immediately
+                e.stopPropagation();
                 filterMenu.classList.toggle('active');
                 filterBtn.setAttribute('aria-expanded', filterMenu.classList.contains('active'));
             });
+
             filterMenu.querySelectorAll('.filter-item').forEach(item => {
                 item.addEventListener('click', function() {
                     filterMenu.classList.remove('active');
                     filterBtn.setAttribute('aria-expanded', false);
-                    // Update selected visual state
                     filterMenu.querySelectorAll('.filter-item').forEach(li => li.classList.remove('selected'));
                     this.classList.add('selected');
                     currentFilter = this.dataset.filter;
                     applyFilterAndRender();
                 });
             });
-            
-            // Close filter menu when clicking outside
+
             document.addEventListener('click', (e) => {
                 if (!filterBtn.contains(e.target) && !filterMenu.contains(e.target)) {
                     filterMenu.classList.remove('active');
                     filterBtn.setAttribute('aria-expanded', false);
                 }
             });
-            
-            // Sidebar toggle
+
             document.querySelector('.menu-toggle').addEventListener('click', function() {
                 document.querySelector('.sidebar').classList.toggle('active');
             });
-            
-            // Modal content type selector logic
+
             document.querySelectorAll('.content-type-modal-option').forEach(type => {
                 type.addEventListener('click', function() {
                     document.querySelectorAll('.content-type-modal-option').forEach(t => t.classList.remove('selected'));
                     this.classList.add('selected');
                     selectedModalContentType = this.getAttribute('data-type');
-                    const credits = selectedModalContentType === 'video' ? 2 : 1;
-                    document.getElementById('creditsRequired').value = credits;
-                    
-                    // Show/hide video duration selector based on content type
-                    if (selectedModalContentType === 'video') {
-                        videoDurationSelector.classList.add('active');
-                    } else {
-                        videoDurationSelector.classList.remove('active');
-                    }
+                    document.getElementById('creditsRequired').value = selectedModalContentType === 'video' ? 2 : 1;
+                    videoDurationSelector.classList.toggle('active', selectedModalContentType === 'video');
                 });
             });
-            
-            // Aspect ratio selector logic
+
             document.querySelectorAll('.aspect-ratio-option').forEach(option => {
                 option.addEventListener('click', function() {
                     document.querySelectorAll('.aspect-ratio-option').forEach(o => o.classList.remove('selected'));
@@ -1331,8 +1246,7 @@
                     updateVideoDurationOptions();
                 });
             });
-            
-            // Video duration selector logic
+
             videoDurationOptions.addEventListener('click', function(e) {
                 if (e.target.classList.contains('video-duration-option')) {
                     document.querySelectorAll('.video-duration-option').forEach(o => o.classList.remove('selected'));
@@ -1340,39 +1254,43 @@
                     selectedVideoDuration = e.target.textContent;
                 }
             });
-            
-            // Generate script button logic
+
             modalContentDescription.addEventListener('input', function() {
-                if (this.value.trim() !== '') {
-                    generateScriptBtn.disabled = false;
-                } else {
-                    generateScriptBtn.disabled = true;
+                generateScriptBtn.disabled = this.value.trim() === '';
+            });
+
+            generateScriptBtn.addEventListener('click', async function() {
+                const description = modalContentDescription.value;
+                try {
+                    const response = await fetch('/api/generate-script', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${getToken()}`
+                        },
+                        body: JSON.stringify({ description, contentType: selectedModalContentType })
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    modalContentDescription.value = data.script || 'Generated script unavailable.';
+                    showSuccessMessage('Script generated successfully!');
+                } catch (error) {
+                    console.error('Error generating script:', error);
+                    showSuccessMessage('Failed to generate script.', 'danger');
                 }
             });
-            
-            generateScriptBtn.addEventListener('click', function() {
-                // Mock AI script generation
-                const description = modalContentDescription.value;
-                const generatedScript = `Based on your description "${description}", here's a generated script:\n\nIntroduction: Grab your audience's attention with a compelling hook.\n\nMain Content: Expand on your key points, providing valuable insights and examples.\n\nConclusion: Summarize your main points and include a call to action.`;
-                
-                modalContentDescription.value = generatedScript;
-                showSuccessMessage('Script generated successfully!');
-            });
-            
+
             // --- Functions ---
-            // Renders content in a tabular form
             function renderContentTable() {
                 contentTableBody.innerHTML = '';
-                
+
                 if (filteredContent.length === 0) {
-                    const noContentRow = document.createElement('tr');
-                    noContentRow.innerHTML = `
-                        <td colspan="7" style="text-align: center; padding: 20px;">No content found for the current filter.</td>
-                    `;
-                    contentTableBody.appendChild(noContentRow);
+                    contentTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No content found for the current filter.</td></tr>';
                     return;
                 }
-                
+
                 filteredContent.forEach(content => {
                     const row = document.createElement('tr');
                     const platformIconClass = getPlatformIcon(content.platform);
@@ -1404,18 +1322,15 @@
                     `;
                     contentTableBody.appendChild(row);
                 });
-                
-                // Add event listeners for dynamic buttons
+
                 addContentActionListeners();
             }
-            
-            // Attaches event listeners to action buttons on content table rows
+
             function addContentActionListeners() {
-                // Use event delegation on the parent table for efficiency
                 contentTableBody.addEventListener('click', function(event) {
                     const targetButton = event.target.closest('.table-action-btn');
-                    if (!targetButton) return; // Not a button click
-                    const id = parseInt(targetButton.dataset.id);
+                    if (!targetButton) return;
+                    const id = targetButton.dataset.id;
                     if (targetButton.classList.contains('edit-content')) {
                         editContent(id);
                     } else if (targetButton.classList.contains('share-content')) {
@@ -1425,85 +1340,54 @@
                     }
                 });
             }
-            
-            // Updates video duration options based on aspect ratio
+
             function updateVideoDurationOptions() {
                 videoDurationOptions.innerHTML = '';
-                
+                let durations = [];
                 if (selectedAspectRatio === '9:16') {
-                    const durations = ['10s', '15s', '20s', '25s', '30s', '35s', '40s', '45s', '50s', '55s', '60s'];
-                    durations.forEach(duration => {
-                        const option = document.createElement('div');
-                        option.className = 'video-duration-option';
-                        if (duration === selectedVideoDuration) {
-                            option.classList.add('selected');
-                        }
-                        option.textContent = duration;
-                        videoDurationOptions.appendChild(option);
-                    });
+                    durations = ['10s', '15s', '20s', '25s', '30s', '35s', '40s', '45s', '50s', '55s', '60s'];
                 } else if (selectedAspectRatio === '16:9') {
-                    const durations = ['1min', '1.30min', '2min', '2.30min', '3min', '3.30min', '4min'];
-                    durations.forEach(duration => {
-                        const option = document.createElement('div');
-                        option.className = 'video-duration-option';
-                        if (duration === selectedVideoDuration) {
-                            option.classList.add('selected');
-                        }
-                        option.textContent = duration;
-                        videoDurationOptions.appendChild(option);
-                    });
+                    durations = ['1min', '1.30min', '2min', '2.30min', '3min', '3.30min', '4min'];
                 } else if (selectedAspectRatio === '1:1') {
-                    const durations = ['10s', '15s', '20s', '30s', '45s', '60s'];
-                    durations.forEach(duration => {
-                        const option = document.createElement('div');
-                        option.className = 'video-duration-option';
-                        if (duration === selectedVideoDuration) {
-                            option.classList.add('selected');
-                        }
-                        option.textContent = duration;
-                        videoDurationOptions.appendChild(option);
-                    });
+                    durations = ['10s', '15s', '20s', '30s', '45s', '60s'];
                 }
+                durations.forEach(duration => {
+                    const option = document.createElement('div');
+                    option.className = 'video-duration-option';
+                    if (duration === selectedVideoDuration) {
+                        option.classList.add('selected');
+                    }
+                    option.textContent = duration;
+                    videoDurationOptions.appendChild(option);
+                });
             }
-            
-            // Opens the content creation/edit modal
+
             function openCreateModal() {
-                // Set default date to today
                 document.getElementById('scheduleDate').value = formatDateForInput(today);
-                // Set default time to current time
                 const now = new Date();
-                const currentTime = now.toTimeString().slice(0, 5); // "HH:MM"
-                document.getElementById('scheduleTime').value = currentTime;
+                document.getElementById('scheduleTime').value = now.toTimeString().slice(0, 5);
                 createContentModal.classList.add('active');
+                saveContentBtn.onclick = saveNewContent;
+                document.querySelector('.modal-title').textContent = 'Create New Content';
             }
-            
-            // Closes the content creation/edit modal
+
             function closeCreateModal() {
                 createContentModal.classList.remove('active');
                 createContentForm.reset();
-                // Reset content type selector to default (e.g., Post)
                 document.querySelectorAll('.content-type-modal-option').forEach(t => t.classList.remove('selected'));
                 document.querySelector('.content-type-modal-option[data-type="post"]').classList.add('selected');
                 selectedModalContentType = 'post';
                 document.getElementById('creditsRequired').value = 1;
-                
-                // Reset aspect ratio and video duration
                 document.querySelectorAll('.aspect-ratio-option').forEach(o => o.classList.remove('selected'));
                 document.querySelector('.aspect-ratio-option[data-ratio="9:16"]').classList.add('selected');
                 selectedAspectRatio = '9:16';
                 updateVideoDurationOptions();
-                
-                // Hide video duration selector if not video type
-                if (selectedModalContentType !== 'video') {
-                    videoDurationSelector.classList.remove('active');
-                }
-                
-                // Reset generate script button
+                videoDurationSelector.classList.remove('active');
                 generateScriptBtn.disabled = true;
+                editingContentId = null;
             }
-            
-            // Handles saving new content from the modal
-            function saveNewContent() {
+
+            async function saveNewContent() {
                 if (!createContentForm.checkValidity()) {
                     createContentForm.reportValidity();
                     return;
@@ -1514,46 +1398,62 @@
                 const time = document.getElementById('scheduleTime').value;
                 const platform = document.getElementById('platform').value;
                 const creditsRequired = parseInt(document.getElementById('creditsRequired').value);
-                
-                // Mock credit check
+                const scheduleDateTime = new Date(`${date}T${time}:00`).toISOString();
+
                 if (currentCredits < creditsRequired) {
                     showSuccessMessage('Not enough credits to create this content!', 'danger');
                     return;
                 }
-                currentCredits -= creditsRequired; // Deduct credits
-                
-                const newId = allContent.length > 0 ? Math.max(...allContent.map(c => c.id)) + 1 : 1;
-                const newContent = {
-                    id: newId,
+
+                const contentData = {
                     type: selectedModalContentType,
-                    title: title,
-                    excerpt: description.substring(0, 150) + (description.length > 150 ? '...' : ''), // Take first 150 chars as excerpt
-                    date: date,
-                    status: 'scheduled', // New content is scheduled by default
-                    platform: platform,
+                    title,
+                    excerpt: description.substring(0, 150) + (description.length > 150 ? '...' : ''),
+                    date: scheduleDateTime,
+                    status: 'scheduled',
+                    platform,
                     platformName: platform.charAt(0).toUpperCase() + platform.slice(1),
+                    contentData: {
+                        description,
+                        aspectRatio: selectedModalContentType === 'video' ? selectedAspectRatio : null,
+                        videoDuration: selectedModalContentType === 'video' ? selectedVideoDuration : null
+                    }
                 };
-                allContent.push(newContent);
-                applyFilterAndRender(); // Re-filter and render content
-                updateContentStats();
-                updateCreditsDisplay(); // Update credits in top bar
-                showSuccessMessage('Content created and scheduled successfully!');
-                closeCreateModal();
+
+                try {
+                    const url = editingContentId ? `/api/content/${editingContentId}` : '/api/content';
+                    const method = editingContentId ? 'PATCH' : 'POST';
+                    const response = await fetch(url, {
+                        method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${getToken()}`
+                        },
+                        body: JSON.stringify(contentData)
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    await fetchContent();
+                    await fetchCredits();
+                    showSuccessMessage(editingContentId ? 'Content updated successfully!' : 'Content created and scheduled successfully!');
+                    closeCreateModal();
+                } catch (error) {
+                    console.error('Error saving content:', error);
+                    showSuccessMessage(`Failed to ${editingContentId ? 'update' : 'create'} content.`, 'danger');
+                }
             }
-            
-            // Handles editing existing content
-            function editContent(id) {
+
+            async function editContent(id) {
                 const contentToEdit = allContent.find(c => c.id === id);
                 if (contentToEdit) {
-                    // Populate modal with existing content data
+                    editingContentId = id;
                     document.getElementById('modalContentTitle').value = contentToEdit.title;
-                    document.getElementById('modalContentDescription').value = contentToEdit.excerpt; // Using excerpt for simplicity
-                    document.getElementById('scheduleDate').value = contentToEdit.date;
-                    // Time might need proper parsing if not stored as "HH:MM"
-                    document.getElementById('scheduleTime').value = contentToEdit.time ? contentToEdit.time.slice(0,5) : '09:00'; // Assuming HH:MM or default
+                    document.getElementById('modalContentDescription').value = contentToEdit.contentData?.description || contentToEdit.excerpt;
+                    const date = new Date(contentToEdit.date);
+                    document.getElementById('scheduleDate').value = formatDateForInput(date);
+                    document.getElementById('scheduleTime').value = date.toTimeString().slice(0, 5);
                     document.getElementById('platform').value = contentToEdit.platform;
-                    
-                    // Set content type in modal
                     document.querySelectorAll('.content-type-modal-option').forEach(t => {
                         t.classList.remove('selected');
                         if (t.dataset.type === contentToEdit.type) {
@@ -1561,52 +1461,55 @@
                             selectedModalContentType = t.dataset.type;
                         }
                     });
-                    
-                    // Show/hide video duration selector based on content type
-                    if (selectedModalContentType === 'video') {
-                        videoDurationSelector.classList.add('active');
-                    } else {
-                        videoDurationSelector.classList.remove('active');
-                    }
-                    
-                    document.getElementById('creditsRequired').value = selectedModalContentType === 'video' ? 2 : 1; // Recalculate credits
-                    
-                    // Open modal
-                    createContentModal.classList.add('active');
-                    
-                    // Change save button behavior to update
-                    saveContentBtn.onclick = function() {
-                        if (!createContentForm.checkValidity()) {
-                            createContentForm.reportValidity();
-                            return;
+                    if (contentToEdit.contentData?.aspectRatio) {
+                        document.querySelectorAll('.aspect-ratio-option').forEach(o => {
+                            o.classList.remove('selected');
+                            if (o.dataset.ratio === contentToEdit.contentData.aspectRatio) {
+                                o.classList.add('selected');
+                                selectedAspectRatio = o.dataset.ratio;
+                            }
+                        });
+                        updateVideoDurationOptions();
+                        if (contentToEdit.contentData?.videoDuration) {
+                            selectedVideoDuration = contentToEdit.contentData.videoDuration;
+                            document.querySelectorAll('.video-duration-option').forEach(o => {
+                                o.classList.remove('selected');
+                                if (o.textContent === selectedVideoDuration) {
+                                    o.classList.add('selected');
+                                }
+                            });
                         }
-                        // Update the content object
-                        contentToEdit.title = document.getElementById('modalContentTitle').value;
-                        contentToEdit.excerpt = document.getElementById('modalContentDescription').value.substring(0, 150) + (document.getElementById('modalContentDescription').value.length > 150 ? '...' : '');
-                        contentToEdit.date = document.getElementById('scheduleDate').value;
-                        contentToEdit.time = document.getElementById('scheduleTime').value; // Retaining time even if not explicitly shown on card
-                        contentToEdit.platform = document.getElementById('platform').value;
-                        contentToEdit.platformName = contentToEdit.platform.charAt(0).toUpperCase() + contentToEdit.platform.slice(1);
-                        contentToEdit.type = selectedModalContentType; // Update content type if changed in modal
-                        applyFilterAndRender();
-                        showSuccessMessage('Content updated successfully!');
-                        closeCreateModal();
-                        saveContentBtn.onclick = saveNewContent; // Reset save button to add new content
-                    };
+                    }
+                    videoDurationSelector.classList.toggle('active', selectedModalContentType === 'video');
+                    document.getElementById('creditsRequired').value = selectedModalContentType === 'video' ? 2 : 1;
+                    document.querySelector('.modal-title').textContent = 'Edit Content';
+                    createContentModal.classList.add('active');
+                    fetchAISuggestions(false);
                 }
             }
-            
-            // Handles deleting content
-            function deleteContent(id) {
+
+            async function deleteContent(id) {
                 if (confirm('Are you sure you want to delete this content? This action cannot be undone.')) {
-                    allContent = allContent.filter(content => content.id !== id);
-                    applyFilterAndRender();
-                    updateContentStats();
-                    showSuccessMessage('Content deleted successfully!');
+                    try {
+                        const response = await fetch(`/api/content/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${getToken()}`
+                            }
+                        });
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        await fetchContent();
+                        showSuccessMessage('Content deleted successfully!');
+                    } catch (error) {
+                        console.error('Error deleting content:', error);
+                        showSuccessMessage('Failed to delete content.', 'danger');
+                    }
                 }
             }
-            
-            // Applies the current filter to content and re-renders
+
             function applyFilterAndRender() {
                 switch (currentFilter) {
                     case 'all':
@@ -1641,20 +1544,22 @@
                 }
                 renderContentTable();
             }
-            
-            // Updates the content statistics cards
+
             function updateContentStats() {
                 totalContentCount.textContent = allContent.length;
                 publishedContentCount.textContent = allContent.filter(c => c.status === 'published').length;
                 draftsContentCount.textContent = allContent.filter(c => c.status === 'draft').length;
                 scheduledContentCount.textContent = allContent.filter(c => c.status === 'scheduled').length;
             }
-            
-            // Updates the credits display in the top bar
+
             function updateCreditsDisplay() {
                 currentCreditsDisplay.textContent = `${currentCredits}/${maxFreeCredits} Credits`;
+                if (!nextResetDate) {
+                    creditsResetTime.textContent = 'Resets soon';
+                    return;
+                }
                 const now = new Date();
-                const timeLeft = nextResetDate.getTime() - now.getTime(); // Time in milliseconds
+                const timeLeft = nextResetDate.getTime() - now.getTime();
                 const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
@@ -1672,8 +1577,7 @@
                 }
                 creditsResetTime.textContent = resetText;
             }
-            
-            // Helper to get platform icon class
+
             function getPlatformIcon(platform) {
                 switch (platform) {
                     case 'facebook': return 'fa-facebook-f';
@@ -1686,27 +1590,24 @@
                     default: return 'fa-info-circle';
                 }
             }
-            
-            // Helper to format date for display
+
             function formatDateForDisplay(dateString) {
                 const date = new Date(dateString);
                 const options = { month: 'short', day: 'numeric', year: 'numeric' };
                 return date.toLocaleDateString('en-US', options);
             }
-            
-            // Helper to format date for input (YYYY-MM-DD)
+
             function formatDateForInput(date) {
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const day = String(date.getDate()).padStart(2, '0');
                 return `${year}-${month}-${day}`;
             }
-            
-            // General success message function
+
             function showSuccessMessage(messageText, type = 'success') {
                 const messageDiv = document.querySelector('.success-message');
                 messageDiv.textContent = messageText;
-                messageDiv.style.backgroundColor = type === 'success' ? '#28a745' : '#dc3545'; // Green for success, red for danger
+                messageDiv.style.backgroundColor = type === 'success' ? '#28a745' : '#dc3545';
                 messageDiv.style.display = 'block';
                 setTimeout(() => {
                     messageDiv.style.display = 'none';
