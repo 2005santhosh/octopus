@@ -110,3 +110,5 @@ jspm_packages/
 tmp/
 temp/
 .env
+backend/.env
+backend/text file
